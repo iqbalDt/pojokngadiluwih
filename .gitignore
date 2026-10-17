@@ -25,3 +25,12 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Python & AI Service
+ai_service/.env
+ai_service/data/chroma_db/
+__pycache__/
+*.pyc
+.venv/
+venv/
+

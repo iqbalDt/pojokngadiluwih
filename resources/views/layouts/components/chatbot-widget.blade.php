@@ -51,6 +51,9 @@
 
         <!-- Quick Prompts -->
         <div class="px-3 py-1.5 bg-slate-100/80 border-t border-slate-200 flex gap-1.5 overflow-x-auto text-[11px]">
+            <button type="button" onclick="sendQuickPrompt('Bisa nanya apa saja di sini?')" class="whitespace-nowrap px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition">
+                Bisa Nanya Apa?
+            </button>
             <button type="button" onclick="sendQuickPrompt('Bagaimana cara buat surat pengantar?')" class="whitespace-nowrap px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition">
                 Panduan Surat
             </button>
@@ -153,12 +156,24 @@
             <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
                 AI
             </div>
-            <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3 text-slate-700 shadow-sm max-w-[85%] leading-relaxed">
-                ${escapeHtml(text)}
+            <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3 text-slate-700 shadow-sm max-w-[85%] leading-relaxed text-xs">
+                ${formatBotReply(text)}
             </div>
         `;
         messages.appendChild(div);
         messages.scrollTop = messages.scrollHeight;
+    }
+
+    function formatBotReply(text) {
+        if (!text) return '';
+        let escaped = escapeHtml(text);
+        // Bold: **text**
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>');
+        // Italics: *text*
+        escaped = escaped.replace(/(^|[^*])\*(?!\s)([^*]+?)\*(?!\*)/g, '$1<em class="italic text-slate-800">$2</em>');
+        // Newlines: \n -> <br>
+        escaped = escaped.replace(/\n/g, '<br>');
+        return escaped;
     }
 
     function appendLoadingIndicator() {
