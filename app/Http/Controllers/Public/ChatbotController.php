@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class ChatbotController extends Controller
@@ -25,11 +26,13 @@ class ChatbotController extends Controller
             ], 422);
         }
 
-        $pythonServiceUrl = (string) env('AI_SERVICE_URL', 'http://127.0.0.1:8001/api/chat');
+        $pythonServiceUrl = (string) config('services.ai_service.url', 'http://127.0.0.1:8001/api/chat');
+        $timeout = (int) config('services.ai_service.timeout', 120);
 
         try {
-            set_time_limit(45);
-            $response = Http::timeout(20)->post($pythonServiceUrl, [
+            @ini_set('max_execution_time', (string) ($timeout + 30));
+            set_time_limit($timeout + 30);
+            $response = Http::timeout($timeout)->post($pythonServiceUrl, [
                 'message' => $message,
             ]);
 
@@ -42,15 +45,24 @@ class ChatbotController extends Controller
                     'source_context' => $data['source_context'] ?? [],
                 ]);
             }
-        } catch (Throwable) {
+
+            Log::warning('AI Service returned non-success response', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+        } catch (Throwable $e) {
             // Service AI Python belum aktif atau sedang inisialisasi
+            Log::error('AI Service connection failed', [
+                'url' => $pythonServiceUrl,
+                'error' => $e->getMessage(),
+            ]);
         }
 
-        // Fallback cerdas jika service Python sedang offline atau dalam proses inisialisasi
+        // Respon cadangan jika service AI mengalami kendala koneksi
         return response()->json([
-            'status' => 'success',
-            'reply' => "Halo! Saya Asisten Virtual Desa Ngadiluwih. Pertanyaan Anda: \"{$message}\" telah kami terima.\n\nDi portal PojokNgadiluwih ini, Anda dapat menanyakan berbagai informasi resmi seputar:\n1. Panduan & syarat surat desa (SKU, SKCK, Surat Domisili, SKTM)\n2. Rekomendasi produk UMKM warga & kontak WhatsApp pemesanan langsung\n3. Jam operasional loket balai desa (Senin-Jumat, 08.00 - 15.00 WIB)\n4. Profil aparatur desa, visi misi, dan wilayah 4 dusun.\n\nSilakan ketik pertanyaan Anda sesuai topik di atas atau hubungi WhatsApp balai desa di 0812-3456-7890.",
-            'source_context' => ['PojokNgadiluwih Guidance Fallback'],
+            'status' => 'fallback',
+            'reply' => "Mohon maaf, koneksi ke asisten AI sedang dipulihkan atau mengalami jeda sesaat. Silakan coba kirim ulang pertanyaan Anda: \"{$message}\" dalam beberapa detik lagi ya!",
+            'source_context' => [],
         ]);
     }
 }

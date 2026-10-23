@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from app.config import GOOGLE_API_KEY, KNOWLEDGE_BASE_DIR
+from app.config import GEMINI_MODEL, GOOGLE_API_KEY, KNOWLEDGE_BASE_DIR
 from app.rag_chain import answer_question
 from app.vector_store import build_and_persist_vector_store
 
@@ -53,7 +53,7 @@ def root():
     """Root endpoint untuk memeriksa ketersediaan service."""
     return {
         "service": "PojokNgadiluwih AI Conversational Assistant",
-        "engine": "Google Gemini (gemini-3.8-flash) via LangChain",
+        "engine": f"Google Gemini ({GEMINI_MODEL}) via LangChain",
         "status": "online",
     }
 
@@ -65,7 +65,7 @@ def health_check():
     return {
         "status": "healthy" if is_key_configured else "warning",
         "api_key_configured": is_key_configured,
-        "model": "gemini-3.8-flash",
+        "model": GEMINI_MODEL,
     }
 
 
