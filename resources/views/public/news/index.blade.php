@@ -31,30 +31,36 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- News Card 1 -->
+        
+        <!-- LOOPING DATA DARI DATABASE -->
+        @forelse($news as $item)
         <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
                 <div class="h-48 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-4xl text-white">
-                    🌾
+                    📰 <!-- Ikon default, sementara -->
                 </div>
                 <div class="p-5">
                     <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                        <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">Kegiatan</span>
+                        <!-- Menampilkan Kategori dari Database -->
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">{{ $item->category ?? 'Umum' }}</span>
                         <span>•</span>
-                        <span>12 Okt 2026</span>
+                        <!-- Menampilkan Tanggal (format: 12 Okt 2026) -->
+                        <span>{{ \Carbon\Carbon::parse($item->published_at)->format('d M Y') }}</span>
                     </div>
                     <h2 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                        <a href="{{ route('news.show', 'pelatihan-digitalisasi-umkm-desa-ngadiluwih') }}">
-                            Pelatihan Digitalisasi & Pemasaran Online bagi UMKM Desa Ngadiluwih
+                        <!-- Link menggunakan slug dari database -->
+                        <a href="{{ route('news.show', $item->slug) }}">
+                            {{ $item->title }}
                         </a>
                     </h2>
                     <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                        Pemerintah Desa Ngadiluwih bekerja sama dengan dinas terkait menyelenggarakan lokakarya strategi penjualan produk lokal via platform digital.
+                        <!-- Menampilkan excerpt/ringkasan -->
+                        {{ $item->excerpt }}
                     </p>
                 </div>
             </div>
             <div class="px-5 pb-5">
-                <a href="{{ route('news.show', 'pelatihan-digitalisasi-umkm-desa-ngadiluwih') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center">
+                <a href="{{ route('news.show', $item->slug) }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center">
                     Baca Selengkapnya
                     <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -62,70 +68,19 @@
                 </a>
             </div>
         </article>
+        @empty
+        <!-- Tampilan Jika Database Kosong -->
+        <div class="col-span-3 text-center py-12 bg-white rounded-2xl border border-slate-200">
+            <p class="text-slate-500 text-sm">Belum ada berita atau pengumuman yang dipublikasikan.</p>
+        </div>
+        @endforelse
+        <!-- LOOPING SELESAI -->
 
-        <!-- News Card 2 -->
-        <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
-            <div>
-                <div class="h-48 bg-gradient-to-tr from-teal-600 to-cyan-500 flex items-center justify-center text-4xl text-white">
-                    💉
-                </div>
-                <div class="p-5">
-                    <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                        <span class="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 font-semibold">Pengumuman</span>
-                        <span>•</span>
-                        <span>08 Okt 2026</span>
-                    </div>
-                    <h2 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                        <a href="{{ route('news.show', 'jadwal-posyandu-dan-pemeriksaan-kesehatan-lansia') }}">
-                            Jadwal Posyandu Balita dan Pemeriksaan Kesehatan Lansia Bulan Ini
-                        </a>
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                        Warga dihimbau membawa balita ke Posyandu Dusun Krajan pada hari Selasa pagi untuk penimbangan dan imunisasi dasar.
-                    </p>
-                </div>
-            </div>
-            <div class="px-5 pb-5">
-                <a href="{{ route('news.show', 'jadwal-posyandu-dan-pemeriksaan-kesehatan-lansia') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center">
-                    Baca Selengkapnya
-                    <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </article>
+    </div>
 
-        <!-- News Card 3 -->
-        <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
-            <div>
-                <div class="h-48 bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-4xl text-white">
-                    🏗️
-                </div>
-                <div class="p-5">
-                    <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                        <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 font-semibold">Pembangunan</span>
-                        <span>•</span>
-                        <span>01 Okt 2026</span>
-                    </div>
-                    <h2 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                        <a href="{{ route('news.show', 'peningkatan-irigasi-pertanian-di-dusun-selatan') }}">
-                            Peningkatan Saluran Irigasi Pertanian di Wilayah Persawahan Ngadiluwih
-                        </a>
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                        Pembangunan saluran irigasi tersier terus digenjot guna memastikan pasokan air lancar selama masa tanam musim ini.
-                    </p>
-                </div>
-            </div>
-            <div class="px-5 pb-5">
-                <a href="{{ route('news.show', 'peningkatan-irigasi-pertanian-di-dusun-selatan') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center">
-                    Baca Selengkapnya
-                    <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </article>
+    <!-- Navigasi Halaman (Pagination) -->
+    <div class="mt-10">
+        {{ $news->links() }}
     </div>
 </div>
 @endsection

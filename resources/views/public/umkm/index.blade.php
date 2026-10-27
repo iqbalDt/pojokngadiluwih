@@ -23,114 +23,73 @@
             </div>
         </div>
 
-        <!-- Filter bar -->
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+        <!-- Filter & Search Bar -->
+        <form method="GET" action="{{ route('umkm.index') }}" class="mt-8 flex flex-col sm:flex-row gap-3">
+            @if(request('category'))
+                <input type="hidden" name="category" value="{{ request('category') }}">
+            @endif
             <div class="relative flex-1">
-                <input type="text" placeholder="Cari produk UMKM, nama toko, atau dusun..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari produk UMKM, nama toko, atau dusun..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
             <div class="flex gap-2 overflow-x-auto text-xs">
-                <button class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold whitespace-nowrap">Semua Kategori</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Kuliner</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Pertanian & Bibit</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Kerajinan Tangan</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Jasa Lokal</button>
+                <a href="{{ route('umkm.index', array_filter(['q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ !request('category') ? 'bg-emerald-600 text-white font-semibold' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap">Semua Kategori</a>
+                <a href="{{ route('umkm.index', array_filter(['category' => 'Kuliner & Camilan', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Kuliner & Camilan' ? 'bg-emerald-600 text-white font-semibold' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap">Kuliner & Camilan</a>
+                <a href="{{ route('umkm.index', array_filter(['category' => 'Pertanian & Hasil Alam', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Pertanian & Hasil Alam' ? 'bg-emerald-600 text-white font-semibold' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap">Pertanian & Hasil Alam</a>
+                <a href="{{ route('umkm.index', array_filter(['category' => 'Kerajinan Tangan', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Kerajinan Tangan' ? 'bg-emerald-600 text-white font-semibold' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap">Kerajinan Tangan</a>
+                <a href="{{ route('umkm.index', array_filter(['category' => 'Jasa & Servis Lokal', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Jasa & Servis Lokal' ? 'bg-emerald-600 text-white font-semibold' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap">Jasa Lokal</a>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Item 1 -->
+        @forelse($umkms as $item)
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
             <div>
-                <div class="w-full h-40 bg-amber-50 rounded-xl flex items-center justify-center text-5xl mb-4">
-                    🥜
+                <div class="w-full h-40 bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-xl flex items-center justify-center text-5xl mb-4 border border-slate-100">
+                    🛍️
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">Kuliner</span>
-                    <span class="text-[11px] text-slate-400">Dusun Wonorejo</span>
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">{{ $item->category }}</span>
+                    <span class="text-[11px] text-slate-400">Dusun {{ $item->dusun }}</span>
                 </div>
-                <h3 class="font-bold text-slate-900 text-base mt-2">Kacang Oven Gurih Bu Sumi</h3>
-                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Kacang tanah pilihan diolah secara higienis tanpa minyak goreng berlebih.</p>
-                <p class="text-emerald-700 font-extrabold text-base mt-2">Rp 15.000 <span class="text-xs text-slate-400 font-normal">/ bks</span></p>
+                <h3 class="font-bold text-slate-900 text-base mt-2 line-clamp-1">
+                    <a href="{{ route('umkm.show', $item->slug) }}" class="hover:text-emerald-600 transition">
+                        {{ $item->name }}
+                    </a>
+                </h3>
+                <p class="text-xs text-slate-500 mt-1 line-clamp-2">{{ $item->description }}</p>
+                @if($item->price)
+                    <p class="text-emerald-700 font-extrabold text-base mt-2">
+                        Rp {{ number_format($item->price, 0, ',', '.') }}
+                        <span class="text-xs text-slate-400 font-normal">/ {{ $item->price_unit ?? 'pcs' }}</span>
+                    </p>
+                @else
+                    <p class="text-emerald-700 font-bold text-xs mt-2">Hubungi Penjual</p>
+                @endif
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ route('umkm.show', 'kacang-oven-bu-sumi') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail Produk</a>
-                <a href="https://wa.me/6281234567890?text=Halo%20Bu%20Sumi,%20saya%20melihat%20toko%20Anda%20di%20PojokNgadiluwih%20dan%20ingin%20memesan%20Kacang%20Oven" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
-                    Pesan via WA
+                <a href="{{ route('umkm.show', $item->slug) }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail Produk</a>
+                <a href="{{ $item->whatsapp_order_url }}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition inline-flex items-center">
+                    <span>Pesan via WA</span>
                 </a>
             </div>
         </div>
+        @empty
+        <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200">
+            <p class="text-slate-500 text-sm">Belum ada usaha UMKM yang cocok dengan pencarian Anda.</p>
+            <a href="{{ route('umkm.index') }}" class="mt-3 inline-block text-xs font-semibold text-emerald-600 hover:text-emerald-700">Lihat Semua UMKM</a>
+        </div>
+        @endforelse
+    </div>
 
-        <!-- Item 2 -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
-            <div>
-                <div class="w-full h-40 bg-emerald-50 rounded-xl flex items-center justify-center text-5xl mb-4">
-                    🍯
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">Hasil Alam</span>
-                    <span class="text-[11px] text-slate-400">Dusun Krajan</span>
-                </div>
-                <h3 class="font-bold text-slate-900 text-base mt-2">Madu Murni Randu Ngadiluwih</h3>
-                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Madu asli ternak bunga randu dengan kemurnian 100% tanpa bahan pengawet.</p>
-                <p class="text-emerald-700 font-extrabold text-base mt-2">Rp 75.000 <span class="text-xs text-slate-400 font-normal">/ botol</span></p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ route('umkm.show', 'madu-murni-randu') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail Produk</a>
-                <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Madu%20Murni%20Randu%20di%20PojokNgadiluwih" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
-                    Pesan via WA
-                </a>
-            </div>
-        </div>
-
-        <!-- Item 3 -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
-            <div>
-                <div class="w-full h-40 bg-teal-50 rounded-xl flex items-center justify-center text-5xl mb-4">
-                    🧺
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 text-[10px] font-bold">Kerajinan</span>
-                    <span class="text-[11px] text-slate-400">Dusun Karangrejo</span>
-                </div>
-                <h3 class="font-bold text-slate-900 text-base mt-2">Anyaman Bambu Berkah Jaya</h3>
-                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Keranjang anyaman bambu kokoh untuk souvenir hajatan dan wadah makanan ramah lingkungan.</p>
-                <p class="text-emerald-700 font-extrabold text-base mt-2">Rp 12.000 <span class="text-xs text-slate-400 font-normal">/ pcs</span></p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ route('umkm.show', 'anyaman-bambu-berkah') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail Produk</a>
-                <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20memesan%20Anyaman%20Bambu%20Berkah%20Jaya" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
-                    Pesan via WA
-                </a>
-            </div>
-        </div>
-
-        <!-- Item 4 -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
-            <div>
-                <div class="w-full h-40 bg-rose-50 rounded-xl flex items-center justify-center text-5xl mb-4">
-                    🌶️
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[10px] font-bold">Kuliner Olahan</span>
-                    <span class="text-[11px] text-slate-400">Dusun Sukorejo</span>
-                </div>
-                <h3 class="font-bold text-slate-900 text-base mt-2">Sambal Pecel Khas Kediri</h3>
-                <p class="text-xs text-slate-500 mt-1 line-clamp-2">Bumbu pecel otentik gurih pedas siap seduh air hangat, awet disimpan hingga 3 bulan.</p>
-                <p class="text-emerald-700 font-extrabold text-base mt-2">Rp 25.000 <span class="text-xs text-slate-400 font-normal">/ 500gr</span></p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ route('umkm.show', 'sambal-pecel-khas-kediri') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail Produk</a>
-                <a href="https://wa.me/6281234567890?text=Halo,%20saya%20mau%20pesan%20Sambal%20Pecel%20Khas%20Kediri" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
-                    Pesan via WA
-                </a>
-            </div>
-        </div>
+    <!-- Navigasi Halaman (Pagination) -->
+    <div class="mt-10">
+        {{ $umkms->links() }}
     </div>
 </div>
 @endsection

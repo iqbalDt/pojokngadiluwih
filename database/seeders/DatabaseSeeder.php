@@ -15,11 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Pastikan akun admin utama tersedia
+        User::firstOrCreate(
+            ['email' => 'admin@ngadiluwih.desa.id'],
+            [
+                'name' => 'Admin Desa Ngadiluwih',
+                'password' => bcrypt('password123'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Jalankan seeder konten desa
+        $this->call([
+            NewsSeeder::class,
+            UmkmSeeder::class,
+            AspirationSeeder::class,
         ]);
     }
 }

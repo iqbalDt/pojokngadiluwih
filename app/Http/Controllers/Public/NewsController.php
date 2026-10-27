@@ -4,24 +4,23 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
+use App\Models\News;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of news and announcements.
-     */
-    public function index(): View
+    public function index()
     {
-        return view('public.news.index');
+        // Ambil berita yang statusnya 'published', diurutkan dari yang terbaru, 9 per halaman
+        $news = News::where('status', 'published')->latest('published_at')->paginate(9);
+        
+        return view('public.news.index', compact('news'));
     }
 
-    /**
-     * Display the specified news article.
-     */
-    public function show(string $slug): View
+    public function show($slug)
     {
-        return view('public.news.show', [
-            'slug' => $slug,
-        ]);
+        // Cari berita berdasarkan slug, kalau tidak ketemu akan metampilkan error 404
+        $news = News::where('slug', $slug)->firstOrFail();
+        
+        return view('public.news.show', compact('news'));
     }
 }
