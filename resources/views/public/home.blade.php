@@ -122,71 +122,42 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- News Card 1 -->
-        <article class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="h-44 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-3xl font-bold">
-                🌾
-            </div>
-            <div class="p-5">
-                <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">Kegiatan Desa</span>
-                    <span>•</span>
-                    <span>12 Oktober 2026</span>
+        @forelse($latestNews as $item)
+        <article class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+            <div>
+                <div class="h-44 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-3xl font-bold">
+                    📰
                 </div>
-                <h3 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                    <a href="{{ route('news.show', 'pelatihan-digitalisasi-umkm-desa-ngadiluwih') }}">
-                        Pelatihan Digitalisasi & Pemasaran Online bagi UMKM Desa Ngadiluwih
-                    </a>
-                </h3>
-                <p class="text-xs text-slate-500 mt-2 line-clamp-2">
-                    Pemerintah Desa Ngadiluwih mengadakan program intensif pembekalan pemasaran daring bagi seluruh pelaku usaha rumahan.
-                </p>
+                <div class="p-5">
+                    <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">{{ $item->category ?? 'Kegiatan Desa' }}</span>
+                        <span>•</span>
+                        <span>{{ \Carbon\Carbon::parse($item->published_at)->translatedFormat('d F Y') }}</span>
+                    </div>
+                    <h3 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
+                        <a href="{{ route('news.show', $item->slug) }}">
+                            {{ $item->title }}
+                        </a>
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-2 line-clamp-2">
+                        {{ $item->excerpt }}
+                    </p>
+                </div>
+            </div>
+            <div class="px-5 pb-5">
+                <a href="{{ route('news.show', $item->slug) }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center">
+                    Baca Selengkapnya
+                    <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
             </div>
         </article>
-
-        <!-- News Card 2 -->
-        <article class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="h-44 bg-gradient-to-tr from-teal-600 to-cyan-500 flex items-center justify-center text-white text-3xl font-bold">
-                💉
-            </div>
-            <div class="p-5">
-                <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                    <span class="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 font-semibold">Pengumuman</span>
-                    <span>•</span>
-                    <span>08 Oktober 2026</span>
-                </div>
-                <h3 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                    <a href="{{ route('news.show', 'jadwal-posyandu-dan-pemeriksaan-kesehatan-lansia') }}">
-                        Jadwal Posyandu Balita dan Pemeriksaan Kesehatan Lansia Bulan Ini
-                    </a>
-                </h3>
-                <p class="text-xs text-slate-500 mt-2 line-clamp-2">
-                    Layanan kesehatan berkala akan dilaksanakan serentak di Poskesdes Dusun Krajan dan Dusun Wonorejo.
-                </p>
-            </div>
-        </article>
-
-        <!-- News Card 3 -->
-        <article class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="h-44 bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white text-3xl font-bold">
-                🏗️
-            </div>
-            <div class="p-5">
-                <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                    <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 font-semibold">Pembangunan</span>
-                    <span>•</span>
-                    <span>01 Oktober 2026</span>
-                </div>
-                <h3 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                    <a href="{{ route('news.show', 'peningkatan-irigasi-pertanian-di-dusun-selatan') }}">
-                        Peningkatan Saluran Irigasi Pertanian di Wilayah Persawahan Ngadiluwih
-                    </a>
-                </h3>
-                <p class="text-xs text-slate-500 mt-2 line-clamp-2">
-                    Proyek rabat beton dan normalisasi saluran air sawah untuk mendukung ketahanan pangan warga petani.
-                </p>
-            </div>
-        </article>
+        @empty
+        <div class="col-span-3 text-center py-8 bg-white rounded-2xl border border-slate-200">
+            <p class="text-xs text-slate-500">Belum ada berita yang dipublikasikan.</p>
+        </div>
+        @endforelse
     </div>
 </section>
 
@@ -207,81 +178,43 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- UMKM Item 1 -->
-            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm">
+            @forelse($featuredUmkm as $item)
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
                 <div>
-                    <div class="w-full h-36 bg-amber-50 rounded-xl flex items-center justify-center text-4xl mb-4">
-                        🥜
+                    <div class="w-full h-36 bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-xl flex items-center justify-center text-4xl mb-4 border border-slate-100">
+                        🛍️
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">Kuliner & Camilan</span>
-                    <h3 class="font-bold text-slate-900 text-sm mt-2">Kacang Oven Gurih Bu Sumi</h3>
-                    <p class="text-xs text-slate-500 mt-1">Kacang khas renyah tanpa minyak berlebih, oleh-oleh favorit.</p>
-                    <p class="text-emerald-700 font-extrabold text-sm mt-2">Rp 15.000 / bks</p>
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">{{ $item->category }}</span>
+                        <span class="text-[11px] text-slate-400">Dusun {{ $item->dusun }}</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-sm mt-2 line-clamp-1">
+                        <a href="{{ route('umkm.show', $item->slug) }}" class="hover:text-emerald-600 transition">
+                            {{ $item->name }}
+                        </a>
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1 line-clamp-2">{{ $item->description }}</p>
+                    @if($item->price)
+                        <p class="text-emerald-700 font-extrabold text-sm mt-2">
+                            Rp {{ number_format($item->price, 0, ',', '.') }}
+                            <span class="text-xs text-slate-400 font-normal">/ {{ $item->price_unit ?? 'pcs' }}</span>
+                        </p>
+                    @else
+                        <p class="text-emerald-700 font-bold text-xs mt-2">Hubungi Penjual</p>
+                    @endif
                 </div>
                 <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <a href="{{ route('umkm.show', 'kacang-oven-bu-sumi') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail</a>
-                    <a href="https://wa.me/6281234567890?text=Halo%20Bu%20Sumi,%20saya%20tertarik%20dengan%20Kacang%20Oven" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center space-x-1">
+                    <a href="{{ route('umkm.show', $item->slug) }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail</a>
+                    <a href="{{ $item->whatsapp_order_url }}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center space-x-1 shadow-sm transition">
                         <span>Pesan via WA</span>
                     </a>
                 </div>
             </div>
-
-            <!-- UMKM Item 2 -->
-            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm">
-                <div>
-                    <div class="w-full h-36 bg-emerald-50 rounded-xl flex items-center justify-center text-4xl mb-4">
-                        🍯
-                    </div>
-                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">Hasil Alam</span>
-                    <h3 class="font-bold text-slate-900 text-sm mt-2">Madu Murni Randu Ngadiluwih</h3>
-                    <p class="text-xs text-slate-500 mt-1">Madu ternak bunga randu asli berkualitas tanpa pemanis buatan.</p>
-                    <p class="text-emerald-700 font-extrabold text-sm mt-2">Rp 75.000 / botol</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <a href="{{ route('umkm.show', 'madu-murni-randu') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail</a>
-                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20mau%20pesan%20Madu%20Murni" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center space-x-1">
-                        <span>Pesan via WA</span>
-                    </a>
-                </div>
+            @empty
+            <div class="col-span-4 text-center py-8 bg-white rounded-2xl border border-slate-200">
+                <p class="text-xs text-slate-500">Belum ada UMKM yang ditampilkan.</p>
             </div>
-
-            <!-- UMKM Item 3 -->
-            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm">
-                <div>
-                    <div class="w-full h-36 bg-teal-50 rounded-xl flex items-center justify-center text-4xl mb-4">
-                        🧺
-                    </div>
-                    <span class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 text-[10px] font-bold">Kerajinan</span>
-                    <h3 class="font-bold text-slate-900 text-sm mt-2">Anyaman Bambu Berkah Jaya</h3>
-                    <p class="text-xs text-slate-500 mt-1">Keranjang, besek, dan wadah ramah lingkungan karya perajin desa.</p>
-                    <p class="text-emerald-700 font-extrabold text-sm mt-2">Mulai Rp 10.000</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <a href="{{ route('umkm.show', 'anyaman-bambu-berkah') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail</a>
-                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20Anyaman%20Bambu" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center space-x-1">
-                        <span>Pesan via WA</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- UMKM Item 4 -->
-            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm">
-                <div>
-                    <div class="w-full h-36 bg-rose-50 rounded-xl flex items-center justify-center text-4xl mb-4">
-                        🌶️
-                    </div>
-                    <span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[10px] font-bold">Kuliner Olahan</span>
-                    <h3 class="font-bold text-slate-900 text-sm mt-2">Sambal Pecel Khas Kediri</h3>
-                    <p class="text-xs text-slate-500 mt-1">Resep turun temurun kacang sangrai dengan aroma daun jeruk sedap.</p>
-                    <p class="text-emerald-700 font-extrabold text-sm mt-2">Rp 25.000 / pack</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <a href="{{ route('umkm.show', 'sambal-pecel-khas-kediri') }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail</a>
-                    <a href="https://wa.me/6281234567890?text=Halo,%20saya%20mau%20order%20Sambal%20Pecel" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center space-x-1">
-                        <span>Pesan via WA</span>
-                    </a>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </section>

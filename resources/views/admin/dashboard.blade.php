@@ -24,8 +24,8 @@
                 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">UMKM Terverifikasi</span>
                 <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">🛍️</span>
             </div>
-            <p class="text-2xl font-black text-slate-900 mt-2">85</p>
-            <span class="text-[11px] text-emerald-600 font-medium mt-1 block">+4 toko minggu ini</span>
+            <p class="text-2xl font-black text-slate-900 mt-2">{{ $approvedUmkmCount }}</p>
+            <span class="text-[11px] text-emerald-600 font-medium mt-1 block">Toko aktif di katalog</span>
         </div>
 
         <!-- Stat 2 -->
@@ -34,7 +34,7 @@
                 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pengajuan Baru</span>
                 <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">⏳</span>
             </div>
-            <p class="text-2xl font-black text-amber-600 mt-2">6</p>
+            <p class="text-2xl font-black text-amber-600 mt-2">{{ $pendingUmkmCount }}</p>
             <span class="text-[11px] text-slate-500 font-medium mt-1 block">Menunggu verifikasi admin</span>
         </div>
 
@@ -44,18 +44,18 @@
                 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Aspirasi Warga</span>
                 <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">📢</span>
             </div>
-            <p class="text-2xl font-black text-slate-900 mt-2">18</p>
-            <span class="text-[11px] text-indigo-600 font-medium mt-1 block">14 ditindaklanjuti</span>
+            <p class="text-2xl font-black text-slate-900 mt-2">{{ $aspirationCount }}</p>
+            <span class="text-[11px] text-indigo-600 font-medium mt-1 block">Total pesan masuk</span>
         </div>
 
         <!-- Stat 4 -->
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Interaksi Chatbot AI</span>
-                <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs">🤖</span>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Berita & Publikasi</span>
+                <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs">📰</span>
             </div>
-            <p class="text-2xl font-black text-teal-700 mt-2">342</p>
-            <span class="text-[11px] text-slate-500 font-medium mt-1 block">Pertanyaan terjawab otomatis</span>
+            <p class="text-2xl font-black text-teal-700 mt-2">{{ $newsCount }}</p>
+            <span class="text-[11px] text-slate-500 font-medium mt-1 block">Artikel terpublikasi</span>
         </div>
     </div>
 
@@ -80,33 +80,29 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
+                        @forelse($recentUmkms as $umkm)
                         <tr>
-                            <td class="py-3 font-semibold text-slate-900">Madu Randu Berkah</td>
-                            <td class="py-3">Bu Siti Sumarni</td>
-                            <td class="py-3">Hasil Alam</td>
-                            <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-50 text-amber-700 font-bold">Menunggu</span></td>
+                            <td class="py-3 font-semibold text-slate-900">{{ $umkm->name }}</td>
+                            <td class="py-3">{{ $umkm->owner_name }}</td>
+                            <td class="py-3">{{ $umkm->category }}</td>
+                            <td class="py-3">
+                                @if($umkm->status === 'approved')
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 font-bold">Disetujui</span>
+                                @elseif($umkm->status === 'rejected')
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] bg-rose-50 text-rose-700 font-bold">Ditolak</span>
+                                @else
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-50 text-amber-700 font-bold">Menunggu</span>
+                                @endif
+                            </td>
                             <td class="py-3 text-right">
                                 <a href="{{ route('admin.umkm.index') }}" class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold">Tinjau</a>
                             </td>
                         </tr>
+                        @empty
                         <tr>
-                            <td class="py-3 font-semibold text-slate-900">Keripik Tempe Renyah</td>
-                            <td class="py-3">Pak Sukardi</td>
-                            <td class="py-3">Kuliner</td>
-                            <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-50 text-amber-700 font-bold">Menunggu</span></td>
-                            <td class="py-3 text-right">
-                                <a href="{{ route('admin.umkm.index') }}" class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold">Tinjau</a>
-                            </td>
+                            <td colspan="5" class="py-6 text-center text-slate-400 text-xs">Belum ada pengajuan UMKM masuk.</td>
                         </tr>
-                        <tr>
-                            <td class="py-3 font-semibold text-slate-900">Anyaman Bambu Berkah</td>
-                            <td class="py-3">Pak Bambang</td>
-                            <td class="py-3">Kerajinan</td>
-                            <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 font-bold">Disetujui</span></td>
-                            <td class="py-3 text-right">
-                                <span class="text-slate-400 text-[11px]">Selesai</span>
-                            </td>
-                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -120,13 +116,13 @@
                     <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mr-3 font-bold text-sm">✍️</span>
                     Tulis Pengumuman / Berita
                 </a>
-                <a href="{{ route('admin.ai-knowledge.index') }}" class="flex items-center p-3 rounded-xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50/50 transition text-xs font-semibold text-slate-700">
-                    <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center mr-3 font-bold text-sm">🧠</span>
-                    Update Knowledge Base AI
+                <a href="{{ route('admin.umkm.index') }}" class="flex items-center p-3 rounded-xl border border-slate-200 hover:border-amber-300 hover:bg-amber-50/50 transition text-xs font-semibold text-slate-700">
+                    <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center mr-3 font-bold text-sm">⏳</span>
+                    Verifikasi Pendaftaran UMKM ({{ $pendingUmkmCount }})
                 </a>
-                <a href="{{ route('admin.insights') }}" class="flex items-center p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition text-xs font-semibold text-slate-700">
-                    <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center mr-3 font-bold text-sm">📊</span>
-                    Lihat Rekomendasi Data Science
+                <a href="{{ route('admin.services.index') }}" class="flex items-center p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition text-xs font-semibold text-slate-700">
+                    <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center mr-3 font-bold text-sm">📢</span>
+                    Kelola Aspirasi & Layanan Warga
                 </a>
             </div>
         </div>
