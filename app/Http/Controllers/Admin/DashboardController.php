@@ -3,32 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Aspiration;
-use App\Models\News;
-use App\Models\Umkm;
+use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 
 class DashboardController extends Controller
 {
     /**
-     * Display the admin overview dashboard with live database metrics.
+     * Display the admin overview dashboard with live database metrics from Firebase.
      */
-    public function index(): View
+    public function index(FirebaseService $firebase): View
     {
-        $approvedUmkmCount = Umkm::approved()->count();
-        $pendingUmkmCount = Umkm::pending()->count();
-        $aspirationCount = Aspiration::count();
-        $newsCount = News::count();
-
-        // Ambil 5 pengajuan UMKM terbaru untuk ditinjau admin
-        $recentUmkms = Umkm::latest()->take(5)->get();
+        $metrics = $firebase->getDashboardMetrics();
 
         return view('admin.dashboard', [
-            'approvedUmkmCount' => $approvedUmkmCount,
-            'pendingUmkmCount' => $pendingUmkmCount,
-            'aspirationCount' => $aspirationCount,
-            'newsCount' => $newsCount,
-            'recentUmkms' => $recentUmkms,
+            'approvedUmkmCount' => $metrics['approvedUmkmCount'],
+            'pendingUmkmCount' => $metrics['pendingUmkmCount'],
+            'aspirationCount' => $metrics['aspirationCount'],
+            'newsCount' => $metrics['newsCount'],
+            'recentUmkms' => $metrics['recentUmkms'],
         ]);
     }
 }

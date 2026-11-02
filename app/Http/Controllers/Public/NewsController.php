@@ -3,24 +3,28 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
-use App\Models\News;
 
 class NewsController extends Controller
 {
-    public function index()
+    /**
+     * Display public news & announcements catalog.
+     */
+    public function index(FirebaseService $firebase): View
     {
-        // Ambil berita yang statusnya 'published', diurutkan dari yang terbaru, 9 per halaman
-        $news = News::where('status', 'published')->latest('published_at')->paginate(9);
-        
+        $news = $firebase->getNewsPaginated(9);
+
         return view('public.news.index', compact('news'));
     }
 
-    public function show($slug)
+    /**
+     * Display single news article details by slug.
+     */
+    public function show(string $slug, FirebaseService $firebase): View
     {
-        // Cari berita berdasarkan slug, kalau tidak ketemu akan metampilkan error 404
-        $news = News::where('slug', $slug)->firstOrFail();
-        
+        $news = $firebase->findNewsBySlug($slug);
+
         return view('public.news.show', compact('news'));
     }
 }

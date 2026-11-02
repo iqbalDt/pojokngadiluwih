@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Umkm;
+use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -12,39 +12,34 @@ class UmkmApprovalController extends Controller
     /**
      * Display pending and verified UMKM applications.
      */
-    public function index(): View
+    public function index(FirebaseService $firebase): View
     {
-        $umkms = Umkm::orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END")
-            ->latest()
-            ->paginate(15);
-
-        $pendingCount = Umkm::pending()->count();
+        $umkms = $firebase->getAdminUmkmsPaginated(15);
+        $metrics = $firebase->getDashboardMetrics();
 
         return view('admin.umkm.index', [
             'umkms' => $umkms,
-            'pendingCount' => $pendingCount,
+            'pendingCount' => $metrics['pendingUmkmCount'],
         ]);
     }
 
     /**
      * Approve an UMKM application to be published in the public catalog.
      */
-    public function approve(int|string $id): RedirectResponse
+    public function approve(int|string $id, FirebaseService $firebase): RedirectResponse
     {
-        $umkm = Umkm::findOrFail($id);
-        $umkm->update(['status' => 'approved']);
+        $firebase->updateUmkmStatus($id, 'approved');
 
-        return redirect()->route('admin.umkm.index')->with('success', "Pengajuan usaha \"{$umkm->name}\" berhasil disetujui dan kini tayang di katalog publik.");
+        return redirect()->route('admin.umkm.index')->with('success', 'Pengajuan usaha berhasil disetujui dan kini tayang di katalog publik.');
     }
 
     /**
      * Reject an UMKM application.
      */
-    public function reject(int|string $id): RedirectResponse
+    public function reject(int|string $id, FirebaseService $firebase): RedirectResponse
     {
-        $umkm = Umkm::findOrFail($id);
-        $umkm->update(['status' => 'rejected']);
+        $firebase->updateUmkmStatus($id, 'rejected');
 
-        return redirect()->route('admin.umkm.index')->with('success', "Pengajuan usaha \"{$umkm->name}\" telah ditolak.");
+        return redirect()->route('admin.umkm.index')->with('success', 'Pengajuan usaha telah ditolak.');
     }
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\ProfileController;
 use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\UmkmController;
 use App\Models\User;
+use App\Services\FirebaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,11 @@ Route::get('/demografi', [DemographicsController::class, 'index'])->name('demogr
 
 // API Bridge ke Python AI Service
 Route::post('/api/chatbot/message', [ChatbotController::class, 'sendMessage'])->name('chatbot.send');
+
+// Firebase Diagnostic & Health Check Route
+Route::get('/firebase/ping', function (FirebaseService $firebase) {
+    return response()->json($firebase->testConnection());
+})->name('firebase.ping');
 
 /*
 |--------------------------------------------------------------------------

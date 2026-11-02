@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\News;
+use App\Models\Umkm;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -12,6 +14,40 @@ class PojokNgadiluwihRoutesTest extends TestCase
      */
     public function test_public_routes_are_accessible(): void
     {
+        // Pastikan record sampel ada agar URL detail tidak 404
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@ngadiluwih.desa.id'],
+            ['name' => 'Admin Test', 'password' => bcrypt('password')]
+        );
+
+        News::firstOrCreate(
+            ['slug' => 'pelatihan-digitalisasi'],
+            [
+                'title' => 'Pelatihan Digitalisasi',
+                'category' => 'Kegiatan',
+                'excerpt' => 'Ringkasan pelatihan',
+                'content' => 'Konten pelatihan lengkap',
+                'author_id' => $admin->id,
+                'status' => 'published',
+                'published_at' => now(),
+            ]
+        );
+
+        Umkm::firstOrCreate(
+            ['slug' => 'madu-murni-randu'],
+            [
+                'name' => 'Madu Murni Randu',
+                'owner_name' => 'Pak Tani',
+                'nik' => '3506123456780001',
+                'whatsapp' => '081234567890',
+                'category' => 'Pertanian',
+                'dusun' => 'Krajan',
+                'address' => 'Krajan',
+                'description' => 'Madu murni',
+                'status' => 'approved',
+            ]
+        );
+
         $routes = [
             '/',
             '/profil',
@@ -23,6 +59,7 @@ class PojokNgadiluwihRoutesTest extends TestCase
             '/layanan/daftar-toko',
             '/layanan/aspirasi',
             '/demografi',
+            '/firebase/ping',
         ];
 
         foreach ($routes as $url) {

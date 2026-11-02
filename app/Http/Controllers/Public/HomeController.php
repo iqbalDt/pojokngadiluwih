@@ -3,27 +3,21 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\News;
-use App\Models\Umkm;
+use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
 {
-    public function index(): View
+    /**
+     * Display landing page with latest news and featured UMKM.
+     */
+    public function index(FirebaseService $firebase): View
     {
-        // 1. Ambil 3 berita terbaru yang statusnya 'published'
-        $latestNews = News::where('status', 'published')
-                          ->latest('published_at')
-                          ->take(3)
-                          ->get();
+        $homeData = $firebase->getHomeData();
 
-        // 2. Ambil 4 UMKM unggulan yang statusnya 'approved'
-        $featuredUmkm = Umkm::approved()
-                            ->latest()
-                            ->take(4)
-                            ->get();
-
-        // 3. Kirim data ke view public/home.blade.php
-        return view('public.home', compact('latestNews', 'featuredUmkm'));
+        return view('public.home', [
+            'latestNews' => $homeData['latestNews'],
+            'featuredUmkm' => $homeData['featuredUmkm'],
+        ]);
     }
 }

@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Aspiration;
-use App\Models\Umkm;
+use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -29,9 +27,9 @@ class ServiceController extends Controller
     }
 
     /**
-     * Handle submission of UMKM store registration.
+     * Handle submission of UMKM store registration to Firebase.
      */
-    public function submitStoreRegister(Request $request): RedirectResponse
+    public function submitStoreRegister(Request $request, FirebaseService $firebase): RedirectResponse
     {
         $validated = $request->validate([
             'store_name' => ['required', 'string', 'max:255'],
@@ -54,18 +52,8 @@ class ServiceController extends Controller
             'description.required' => 'Deskripsi usaha dan produk utama wajib diisi.',
         ]);
 
-        // Auto-generate unique slug dari nama toko
-        $baseSlug = Str::slug($validated['store_name']);
-        $slug = $baseSlug;
-        $counter = 1;
-        while (Umkm::where('slug', $slug)->exists()) {
-            $slug = "{$baseSlug}-{$counter}";
-            $counter++;
-        }
-
-        Umkm::create([
-            'name' => $validated['store_name'],
-            'slug' => $slug,
+        $firebase->createUmkm([
+            'store_name' => $validated['store_name'],
             'owner_name' => $validated['owner_name'],
             'nik' => $validated['nik'],
             'whatsapp' => $validated['whatsapp'],
@@ -88,9 +76,9 @@ class ServiceController extends Controller
     }
 
     /**
-     * Handle submission of public feedback or aspiration.
+     * Handle submission of public feedback or aspiration to Firebase.
      */
-    public function submitFeedback(Request $request): RedirectResponse
+    public function submitFeedback(Request $request, FirebaseService $firebase): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -109,7 +97,7 @@ class ServiceController extends Controller
             'message.required' => 'Rincian aspirasi atau saran wajib diisi.',
         ]);
 
-        Aspiration::create([
+        $firebase->createAspiration([
             'name' => $validated['name'],
             'phone' => $validated['phone'],
             'dusun' => $validated['dusun'],
@@ -117,7 +105,6 @@ class ServiceController extends Controller
             'title' => $validated['title'],
             'message' => $validated['message'],
             'is_anonymous' => (bool) $request->boolean('is_anonymous'),
-            'status' => 'pending',
         ]);
 
         return redirect()->route('services.feedback')->with('success', 'Aspirasi / pengaduan Anda berhasil dikirim ke perangkat desa.');

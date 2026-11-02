@@ -43,51 +43,47 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 text-slate-700">
+                    @forelse($news as $item)
                     <tr>
-                        <td class="p-4 font-semibold text-slate-900">Pelatihan Digitalisasi & Pemasaran Online bagi UMKM Desa Ngadiluwih</td>
-                        <td class="p-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold">Kegiatan</span></td>
-                        <td class="p-4 text-slate-500">12 Oktober 2026</td>
-                        <td class="p-4"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold">Terbit</span></td>
+                        <td class="p-4 font-semibold text-slate-900">{{ $item->title }}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold">{{ $item->category }}</span>
+                        </td>
+                        <td class="p-4 text-slate-500">{{ $item->published_at ? $item->published_at->translatedFormat('d F Y') : '-' }}</td>
+                        <td class="p-4">
+                            @if($item->status === 'published')
+                                <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold">Terbit</span>
+                            @elseif($item->status === 'draft')
+                                <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-800 font-bold">Draft</span>
+                            @else
+                                <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold">Arsip</span>
+                            @endif
+                        </td>
                         <td class="p-4 text-right space-x-2">
-                            <a href="{{ route('admin.news.edit', 1) }}" class="text-xs font-semibold text-slate-600 hover:text-emerald-600">Edit</a>
-                            <form action="{{ route('admin.news.destroy', 1) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
+                            <a href="{{ route('admin.news.edit', $item->id) }}" class="text-xs font-semibold text-slate-600 hover:text-emerald-600">Edit</a>
+                            <form action="{{ route('admin.news.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-xs font-semibold text-rose-600 hover:text-rose-700 ml-2">Hapus</button>
                             </form>
                         </td>
                     </tr>
+                    @empty
                     <tr>
-                        <td class="p-4 font-semibold text-slate-900">Jadwal Posyandu Balita dan Pemeriksaan Kesehatan Lansia Bulan Ini</td>
-                        <td class="p-4"><span class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 text-[11px] font-semibold">Pengumuman</span></td>
-                        <td class="p-4 text-slate-500">08 Oktober 2026</td>
-                        <td class="p-4"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold">Terbit</span></td>
-                        <td class="p-4 text-right space-x-2">
-                            <a href="{{ route('admin.news.edit', 2) }}" class="text-xs font-semibold text-slate-600 hover:text-emerald-600">Edit</a>
-                            <form action="{{ route('admin.news.destroy', 2) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-xs font-semibold text-rose-600 hover:text-rose-700 ml-2">Hapus</button>
-                            </form>
+                        <td colspan="5" class="p-8 text-center text-slate-400">
+                            Belum ada berita atau artikel yang diterbitkan.
                         </td>
                     </tr>
-                    <tr>
-                        <td class="p-4 font-semibold text-slate-900">Peningkatan Saluran Irigasi Pertanian di Wilayah Persawahan Ngadiluwih</td>
-                        <td class="p-4"><span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-semibold">Pembangunan</span></td>
-                        <td class="p-4 text-slate-500">01 Oktober 2026</td>
-                        <td class="p-4"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold">Terbit</span></td>
-                        <td class="p-4 text-right space-x-2">
-                            <a href="{{ route('admin.news.edit', 3) }}" class="text-xs font-semibold text-slate-600 hover:text-emerald-600">Edit</a>
-                            <form action="{{ route('admin.news.destroy', 3) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-xs font-semibold text-rose-600 hover:text-rose-700 ml-2">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if($news->hasPages())
+        <div class="p-4 border-t border-slate-200">
+            {{ $news->links() }}
+        </div>
+        @endif
     </div>
 </div>
 @endsection
