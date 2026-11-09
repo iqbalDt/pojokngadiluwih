@@ -125,9 +125,13 @@
         @forelse($latestNews as $item)
         <article class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-                <div class="h-44 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-3xl font-bold">
-                    📰
-                </div>
+                @if($item->image_url)
+                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-44 object-cover">
+                @else
+                    <div class="h-44 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-3xl font-bold">
+                        📰
+                    </div>
+                @endif
                 <div class="p-5">
                     <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
                         <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">{{ $item->category ?? 'Kegiatan Desa' }}</span>
@@ -181,9 +185,13 @@
             @forelse($featuredUmkm as $item)
             <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
                 <div>
-                    <div class="w-full h-36 bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-xl flex items-center justify-center text-4xl mb-4 border border-slate-100">
-                        🛍️
-                    </div>
+                    @if($item->image_url)
+                        <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-full h-36 object-cover rounded-xl mb-4 border border-slate-100">
+                    @else
+                        <div class="w-full h-36 bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-xl flex items-center justify-center text-4xl mb-4 border border-slate-100">
+                            🛍️
+                        </div>
+                    @endif
                     <div class="flex items-center justify-between">
                         <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">{{ $item->category }}</span>
                         <span class="text-[11px] text-slate-400">Dusun {{ $item->dusun }}</span>

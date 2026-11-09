@@ -36,9 +36,13 @@
         @forelse($news as $item)
         <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-                <div class="h-48 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-4xl text-white">
-                    📰 <!-- Ikon default, sementara -->
-                </div>
+                @if($item->image_url)
+                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-48 object-cover">
+                @else
+                    <div class="h-48 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-4xl text-white">
+                        📰
+                    </div>
+                @endif
                 <div class="p-5">
                     <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
                         <!-- Menampilkan Kategori dari Database -->

@@ -39,19 +39,12 @@ class DocumentServiceController extends Controller
      */
     public function updateStatus(Request $request, int|string $id, FirebaseService $firebase): RedirectResponse
     {
-        $newStatus = (string) $request->input('status');
+        $validated = $request->validate([
+            'status' => ['required', 'string', 'in:pending,processed,completed'],
+            'admin_notes' => ['nullable', 'string', 'max:2000'],
+        ]);
 
-        if (! in_array($newStatus, ['pending', 'processed', 'completed'], true)) {
-            $current = $firebase->findAspirationById($id);
-            $newStatus = match ($current->status) {
-                'pending' => 'processed',
-                'processed' => 'completed',
-                default => 'completed',
-            };
-        }
-
-        $adminNotes = $request->input('admin_notes');
-        $firebase->updateAspirationStatus($id, $newStatus, $adminNotes ? (string) $adminNotes : null);
+        abort_unless($firebase->updateAspirationStatus($id, $validated['status'], $validated['admin_notes'] ?? null), 404);
 
         return redirect()->route('admin.services.index')->with('success', 'Status pengajuan / aspirasi warga berhasil diperbarui.');
     }

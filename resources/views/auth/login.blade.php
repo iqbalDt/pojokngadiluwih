@@ -20,17 +20,23 @@
 
             <div>
                 <label for="email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Email Petugas</label>
-                <input id="email" name="email" type="email" value="admin@ngadiluwih.desa.id" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                <input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="username" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                @error('email')
+                    <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kata Sandi</label>
-                <input id="password" name="password" type="password" value="password" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                <input id="password" name="password" type="password" autocomplete="current-password" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                @error('password')
+                    <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex items-center justify-between text-xs text-slate-500">
                 <label class="flex items-center">
-                    <input type="checkbox" name="remember" checked class="rounded text-emerald-600 focus:ring-emerald-500">
+                    <input type="checkbox" name="remember" value="1" @checked(old('remember')) class="rounded text-emerald-600 focus:ring-emerald-500">
                     <span class="ml-2">Ingat saya</span>
                 </label>
                 <a href="{{ route('home') }}" class="text-emerald-600 hover:text-emerald-700 font-semibold">Kembali ke Beranda</a>
@@ -45,7 +51,7 @@
 
         <div class="pt-4 border-t border-slate-100 text-center">
             <p class="text-[11px] text-slate-400">
-                Mode Demo: Form telah terisi otomatis. Klik tombol di atas untuk masuk langsung sebagai Admin Desa.
+                Gunakan akun petugas yang telah terdaftar untuk masuk ke panel admin.
             </p>
         </div>
     </div>

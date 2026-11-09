@@ -127,11 +127,21 @@
                     Sistem Aktif
                 </span>
                 <div class="flex items-center space-x-2 text-xs font-medium text-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold">
-                        AD
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                        {{ strtoupper(substr(Auth::user()?->name ?? 'AD', 0, 2)) }}
                     </div>
-                    <span class="hidden sm:inline">Admin Desa</span>
+                    <span class="hidden sm:inline font-semibold">{{ Auth::user()?->name ?? 'Admin Desa' }}</span>
                 </div>
+
+                <form action="{{ route('logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 transition flex items-center space-x-1.5" title="Keluar dari Panel Admin">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span class="hidden sm:inline">Keluar</span>
+                    </button>
+                </form>
             </div>
         </header>
 

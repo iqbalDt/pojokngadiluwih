@@ -31,9 +31,15 @@
             {{ $news->title }}
         </h1>
 
-        <div class="my-8 w-full h-72 sm:h-96 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-6xl shadow-inner">
-            📰
-        </div>
+        @if($news->image_url)
+            <div class="my-8 w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <img src="{{ $news->image_url }}" alt="{{ $news->title }}" class="w-full max-h-[500px] object-cover">
+            </div>
+        @else
+            <div class="my-8 w-full h-72 sm:h-96 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-6xl shadow-inner">
+                📰
+            </div>
+        @endif
 
         <!-- Mengambil Isi Berita dari database. -->
         <div class="prose max-w-none text-slate-700 text-sm leading-relaxed space-y-4">

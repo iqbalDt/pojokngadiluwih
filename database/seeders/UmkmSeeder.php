@@ -2,17 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\Umkm;
+use App\Services\FirebaseService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class UmkmSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(FirebaseService $firebase): void
     {
+        $client = $firebase->firestore();
+        if (! $client) {
+            throw new RuntimeException('Firestore must be configured before seeding UMKM.');
+        }
+
         $umkms = [
             [
                 'name' => 'Kacang Oven Gurih Bu Sumi',
@@ -82,22 +88,29 @@ class UmkmSeeder extends Seeder
         ];
 
         foreach ($umkms as $item) {
-            Umkm::firstOrCreate(
-                ['slug' => Str::slug($item['name'])],
-                [
-                    'name' => $item['name'],
-                    'owner_name' => $item['owner_name'],
-                    'nik' => $item['nik'],
-                    'whatsapp' => $item['whatsapp'],
-                    'category' => $item['category'],
-                    'dusun' => $item['dusun'],
-                    'address' => $item['address'],
-                    'price' => $item['price'],
-                    'price_unit' => $item['price_unit'],
-                    'description' => $item['description'],
-                    'status' => $item['status'],
-                ]
-            );
+            $slug = Str::slug($item['name']);
+            $existingDocs = $client->collection('umkms')
+                ->where('slug', '=', $slug)
+                ->limit(1)
+                ->documents();
+
+            $exists = false;
+            foreach ($existingDocs as $doc) {
+                if ($doc->exists()) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            if (! $exists) {
+                $client->collection('umkms')->document($slug)->set([
+                    ...$item,
+                    'slug' => $slug,
+                    'image_path' => null,
+                    'created_at' => now()->toIso8601String(),
+                    'updated_at' => now()->toIso8601String(),
+                ]);
+            }
         }
     }
 }

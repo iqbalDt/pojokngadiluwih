@@ -55,7 +55,7 @@
                 <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs">📰</span>
             </div>
             <p class="text-2xl font-black text-teal-700 mt-2">{{ $newsCount }}</p>
-            <span class="text-[11px] text-slate-500 font-medium mt-1 block">Artikel terpublikasi</span>
+            <span class="text-[11px] text-slate-500 font-medium mt-1 block">Total berita di CMS</span>
         </div>
     </div>
 

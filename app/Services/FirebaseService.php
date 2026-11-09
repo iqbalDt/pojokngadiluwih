@@ -5,15 +5,19 @@ namespace App\Services;
 use App\Models\Aspiration;
 use App\Models\News;
 use App\Models\Umkm;
+use App\Models\User;
 use Carbon\Carbon;
 use Google\Cloud\Firestore\FirestoreClient;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Kreait\Firebase\Contract\Database;
 use Kreait\Firebase\Contract\Firestore;
 use Kreait\Firebase\Contract\Storage;
+use RuntimeException;
 use Throwable;
 
 class FirebaseService
@@ -41,7 +45,22 @@ class FirebaseService
 
         $path = is_string($credentials) ? base_path($credentials) : null;
 
-        return $path !== null && file_exists($path) && is_readable($path);
+        if ($path === null || ! file_exists($path)) {
+            return false;
+        }
+
+        if (is_readable($path)) {
+            return true;
+        }
+
+        $handle = @fopen($path, 'r');
+        if ($handle !== false) {
+            fclose($handle);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -88,6 +107,15 @@ class FirebaseService
 
             return null;
         }
+    }
+
+    /**
+     * Resolve Firestore as the authoritative store for application data.
+     */
+    protected function firestoreOrFail(): FirestoreClient
+    {
+        return $this->firestore()
+            ?? throw new RuntimeException('Firestore is unavailable. Configure Firebase credentials and verify the Firestore connection.');
     }
 
     /**
@@ -194,59 +222,44 @@ class FirebaseService
 
     public function getHomeData(): array
     {
-        $client = $this->firestore();
+        $client = $this->firestoreOrFail();
 
-        if ($client) {
-            try {
-                // Latest 3 published news
-                $newsDocs = $client->collection('news')
-                    ->where('status', '=', 'published')
-                    ->documents();
+        $newsDocs = $client->collection('news')
+            ->where('status', '=', 'published')
+            ->documents();
 
-                $newsList = [];
-                foreach ($newsDocs as $doc) {
-                    if ($doc->exists()) {
-                        $newsList[] = $this->hydrateNews($doc->id(), $doc->data());
-                    }
-                }
-
-                $latestNews = collect($newsList)
-                    ->sortByDesc(fn ($item) => $item->published_at ? $item->published_at->timestamp : 0)
-                    ->take(3)
-                    ->values();
-
-                // 4 approved featured UMKM
-                $umkmDocs = $client->collection('umkms')
-                    ->where('status', '=', 'approved')
-                    ->documents();
-
-                $umkmList = [];
-                foreach ($umkmDocs as $doc) {
-                    if ($doc->exists()) {
-                        $umkmList[] = $this->hydrateUmkm($doc->id(), $doc->data());
-                    }
-                }
-
-                $featuredUmkm = collect($umkmList)
-                    ->sortByDesc(fn ($item) => $item->created_at ? $item->created_at->timestamp : 0)
-                    ->take(4)
-                    ->values();
-
-                return [
-                    'latestNews' => $latestNews,
-                    'featuredUmkm' => $featuredUmkm,
-                    'source' => 'firebase',
-                ];
-            } catch (Throwable $e) {
-                Log::warning('Firebase getHomeData failed, falling back to local database: '.$e->getMessage());
+        $newsList = [];
+        foreach ($newsDocs as $doc) {
+            if ($doc->exists()) {
+                $newsList[] = $this->hydrateNews($doc->id(), $doc->data());
             }
         }
 
-        // Fallback to local Eloquent database
+        $latestNews = collect($newsList)
+            ->sortByDesc(fn ($item) => $item->published_at ? $item->published_at->timestamp : 0)
+            ->take(3)
+            ->values();
+
+        $umkmDocs = $client->collection('umkms')
+            ->where('status', '=', 'approved')
+            ->documents();
+
+        $umkmList = [];
+        foreach ($umkmDocs as $doc) {
+            if ($doc->exists()) {
+                $umkmList[] = $this->hydrateUmkm($doc->id(), $doc->data());
+            }
+        }
+
+        $featuredUmkm = collect($umkmList)
+            ->sortByDesc(fn ($item) => $item->created_at ? $item->created_at->timestamp : 0)
+            ->take(4)
+            ->values();
+
         return [
-            'latestNews' => News::where('status', 'published')->latest('published_at')->take(3)->get(),
-            'featuredUmkm' => Umkm::approved()->latest()->take(4)->get(),
-            'source' => 'local_database',
+            'latestNews' => $latestNews,
+            'featuredUmkm' => $featuredUmkm,
+            'source' => 'firebase',
         ];
     }
 
@@ -258,79 +271,62 @@ class FirebaseService
 
     public function getNewsPaginated(int $perPage = 9): LengthAwarePaginator
     {
-        $client = $this->firestore();
+        $docs = $this->firestoreOrFail()->collection('news')
+            ->where('status', '=', 'published')
+            ->documents();
 
-        if ($client) {
-            try {
-                $docs = $client->collection('news')
-                    ->where('status', '=', 'published')
-                    ->documents();
-
-                $items = [];
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        $items[] = $this->hydrateNews($doc->id(), $doc->data());
-                    }
-                }
-
-                $collection = collect($items)->sortByDesc(fn ($n) => $n->published_at ? $n->published_at->timestamp : 0)->values();
-
-                return $this->paginateCollection($collection, $perPage);
-            } catch (Throwable $e) {
-                Log::warning('Firebase getNewsPaginated failed: '.$e->getMessage());
+        $items = [];
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                $items[] = $this->hydrateNews($doc->id(), $doc->data());
             }
         }
 
-        return News::where('status', 'published')->latest('published_at')->paginate($perPage);
+        $collection = collect($items)->sortByDesc(fn ($n) => $n->published_at ? $n->published_at->timestamp : 0)->values();
+
+        return $this->paginateCollection($collection, $perPage);
     }
 
     public function findNewsBySlug(string $slug): News
     {
-        $client = $this->firestore();
+        $docs = $this->firestoreOrFail()->collection('news')
+            ->where('slug', '=', $slug)
+            ->where('status', '=', 'published')
+            ->limit(1)
+            ->documents();
 
-        if ($client) {
-            try {
-                $docs = $client->collection('news')
-                    ->where('slug', '=', $slug)
-                    ->limit(1)
-                    ->documents();
-
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        return $this->hydrateNews($doc->id(), $doc->data());
-                    }
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase findNewsBySlug failed: '.$e->getMessage());
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                return $this->hydrateNews($doc->id(), $doc->data());
             }
         }
 
-        return News::where('slug', $slug)->firstOrFail();
+        throw (new ModelNotFoundException)->setModel(News::class);
+    }
+
+    public function findNewsById(string|int $id): News
+    {
+        $doc = $this->firestoreOrFail()->collection('news')->document((string) $id)->snapshot();
+        if ($doc->exists()) {
+            return $this->hydrateNews($doc->id(), $doc->data());
+        }
+
+        throw (new ModelNotFoundException)->setModel(News::class, [$id]);
     }
 
     public function getAdminNewsPaginated(int $perPage = 15): LengthAwarePaginator
     {
-        $client = $this->firestore();
-
-        if ($client) {
-            try {
-                $docs = $client->collection('news')->documents();
-                $items = [];
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        $items[] = $this->hydrateNews($doc->id(), $doc->data());
-                    }
-                }
-
-                $collection = collect($items)->sortByDesc(fn ($n) => $n->created_at ? $n->created_at->timestamp : 0)->values();
-
-                return $this->paginateCollection($collection, $perPage);
-            } catch (Throwable $e) {
-                Log::warning('Firebase getAdminNewsPaginated failed: '.$e->getMessage());
+        $docs = $this->firestoreOrFail()->collection('news')->documents();
+        $items = [];
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                $items[] = $this->hydrateNews($doc->id(), $doc->data());
             }
         }
 
-        return News::latest()->paginate($perPage);
+        $collection = collect($items)->sortByDesc(fn ($n) => $n->created_at ? $n->created_at->timestamp : 0)->values();
+
+        return $this->paginateCollection($collection, $perPage);
     }
 
     public function createNews(array $data): News
@@ -350,72 +346,36 @@ class FirebaseService
             'updated_at' => now()->toIso8601String(),
         ];
 
-        $client = $this->firestore();
-        $docId = null;
+        $docRef = $this->firestoreOrFail()->collection('news')->add($payload);
 
-        if ($client) {
-            try {
-                $docRef = $client->collection('news')->add($payload);
-                $docId = $docRef->id();
-            } catch (Throwable $e) {
-                Log::warning('Firebase createNews error: '.$e->getMessage());
-            }
-        }
-
-        // Local mirror / fallback
-        try {
-            $model = News::create($payload);
-            if ($docId) {
-                $model->setAttribute('firebase_id', $docId);
-            }
-
-            return $model;
-        } catch (Throwable) {
-            return $this->hydrateNews($docId ?? (string) time(), $payload);
-        }
+        return $this->hydrateNews($docRef->id(), $payload);
     }
 
     public function updateNews(string|int $id, array $data): bool
     {
-        $client = $this->firestore();
-        if ($client) {
-            try {
-                $docRef = $client->collection('news')->document((string) $id);
-                $snapshot = $docRef->snapshot();
-                if ($snapshot->exists()) {
-                    $data['updated_at'] = now()->toIso8601String();
-                    $docRef->set($data, ['merge' => true]);
-
-                    return true;
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase updateNews error: '.$e->getMessage());
-            }
+        $docRef = $this->firestoreOrFail()->collection('news')->document((string) $id);
+        if (! $docRef->snapshot()->exists()) {
+            return false;
         }
 
-        $news = News::find($id);
-        if ($news) {
-            return $news->update($data);
+        if (isset($data['title'])) {
+            $data['slug'] = Str::slug($data['title']);
         }
 
-        return false;
+        $data['updated_at'] = now()->toIso8601String();
+        $docRef->set($data, ['merge' => true]);
+
+        return true;
     }
 
     public function deleteNews(string|int $id): bool
     {
-        $client = $this->firestore();
-        if ($client) {
-            try {
-                $client->collection('news')->document((string) $id)->delete();
-            } catch (Throwable $e) {
-                Log::warning('Firebase deleteNews error: '.$e->getMessage());
-            }
+        $docRef = $this->firestoreOrFail()->collection('news')->document((string) $id);
+        if (! $docRef->snapshot()->exists()) {
+            return false;
         }
 
-        $news = News::find($id);
-        if ($news) {
-            return (bool) $news->delete();
-        }
+        $docRef->delete();
 
         return true;
     }
@@ -428,134 +388,86 @@ class FirebaseService
 
     public function getApprovedUmkmsPaginated(?string $search = null, ?string $category = null, int $perPage = 12): LengthAwarePaginator
     {
-        $client = $this->firestore();
+        $query = $this->firestoreOrFail()->collection('umkms')->where('status', '=', 'approved');
 
-        if ($client) {
-            try {
-                $query = $client->collection('umkms')->where('status', '=', 'approved');
+        if ($category) {
+            $query = $query->where('category', '=', $category);
+        }
 
-                if ($category) {
-                    $query = $query->where('category', '=', $category);
-                }
+        $docs = $query->documents();
+        $items = [];
 
-                $docs = $query->documents();
-                $items = [];
-
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        $items[] = $this->hydrateUmkm($doc->id(), $doc->data());
-                    }
-                }
-
-                $collection = collect($items);
-
-                if ($search) {
-                    $needle = mb_strtolower(trim($search));
-                    $collection = $collection->filter(function ($u) use ($needle) {
-                        return str_contains(mb_strtolower($u->name ?? ''), $needle)
-                            || str_contains(mb_strtolower($u->description ?? ''), $needle)
-                            || str_contains(mb_strtolower($u->dusun ?? ''), $needle);
-                    });
-                }
-
-                $collection = $collection->sortByDesc(fn ($u) => $u->created_at ? $u->created_at->timestamp : 0)->values();
-
-                return $this->paginateCollection($collection, $perPage);
-            } catch (Throwable $e) {
-                Log::warning('Firebase getApprovedUmkmsPaginated failed: '.$e->getMessage());
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                $items[] = $this->hydrateUmkm($doc->id(), $doc->data());
             }
         }
 
-        // Local DB Fallback
-        $dbQuery = Umkm::approved()->latest();
+        $collection = collect($items);
+
         if ($search) {
-            $dbQuery->where(function ($q) use ($search): void {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('dusun', 'like', "%{$search}%");
+            $needle = mb_strtolower(trim($search));
+            $collection = $collection->filter(function ($umkm) use ($needle) {
+                return str_contains(mb_strtolower($umkm->name ?? ''), $needle)
+                    || str_contains(mb_strtolower($umkm->description ?? ''), $needle)
+                    || str_contains(mb_strtolower($umkm->dusun ?? ''), $needle);
             });
         }
-        if ($category) {
-            $dbQuery->where('category', $category);
-        }
 
-        return $dbQuery->paginate($perPage)->withQueryString();
+        $collection = $collection->sortByDesc(fn ($umkm) => $umkm->created_at ? $umkm->created_at->timestamp : 0)->values();
+
+        return $this->paginateCollection($collection, $perPage);
     }
 
     public function findUmkmBySlug(string $slug): Umkm
     {
-        $client = $this->firestore();
+        $docs = $this->firestoreOrFail()->collection('umkms')
+            ->where('slug', '=', $slug)
+            ->where('status', '=', 'approved')
+            ->limit(1)
+            ->documents();
 
-        if ($client) {
-            try {
-                $docs = $client->collection('umkms')
-                    ->where('slug', '=', $slug)
-                    ->where('status', '=', 'approved')
-                    ->limit(1)
-                    ->documents();
-
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        return $this->hydrateUmkm($doc->id(), $doc->data());
-                    }
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase findUmkmBySlug failed: '.$e->getMessage());
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                return $this->hydrateUmkm($doc->id(), $doc->data());
             }
         }
 
-        return Umkm::where('slug', $slug)->approved()->firstOrFail();
+        throw (new ModelNotFoundException)->setModel(Umkm::class);
     }
 
     public function findUmkmById(string|int $id): Umkm
     {
-        $client = $this->firestore();
-
-        if ($client) {
-            try {
-                $doc = $client->collection('umkms')->document((string) $id)->snapshot();
-                if ($doc->exists()) {
-                    return $this->hydrateUmkm($doc->id(), $doc->data());
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase findUmkmById failed: '.$e->getMessage());
-            }
+        $doc = $this->firestoreOrFail()->collection('umkms')->document((string) $id)->snapshot();
+        if ($doc->exists()) {
+            return $this->hydrateUmkm($doc->id(), $doc->data());
         }
 
-        return Umkm::findOrFail($id);
+        throw (new ModelNotFoundException)->setModel(Umkm::class, [$id]);
     }
 
-    public function getAdminUmkmsPaginated(int $perPage = 15): LengthAwarePaginator
+    public function getAdminUmkmsPaginated(int $perPage = 15, ?string $status = 'pending'): LengthAwarePaginator
     {
-        $client = $this->firestore();
+        $collectionRef = $this->firestoreOrFail()->collection('umkms');
 
-        if ($client) {
-            try {
-                $docs = $client->collection('umkms')->documents();
-                $items = [];
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        $items[] = $this->hydrateUmkm($doc->id(), $doc->data());
-                    }
-                }
+        if ($status && $status !== 'all') {
+            $docs = $collectionRef->where('status', '=', $status)->documents();
+        } else {
+            $docs = $collectionRef->documents();
+        }
 
-                // Sort: pending first, then newest
-                $collection = collect($items)->sortBy(function ($u) {
-                    $priority = ($u->status === 'pending') ? 1 : 2;
-                    $time = $u->created_at ? $u->created_at->timestamp : 0;
-
-                    return sprintf('%d_%012d', $priority, 999999999999 - $time);
-                })->values();
-
-                return $this->paginateCollection($collection, $perPage);
-            } catch (Throwable $e) {
-                Log::warning('Firebase getAdminUmkmsPaginated failed: '.$e->getMessage());
+        $items = [];
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                $items[] = $this->hydrateUmkm($doc->id(), $doc->data());
             }
         }
 
-        return Umkm::orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END")
-            ->latest()
-            ->paginate($perPage);
+        $collection = collect($items)
+            ->sortByDesc(fn ($umkm) => $umkm->created_at ? $umkm->created_at->timestamp : 0)
+            ->values();
+
+        return $this->paginateCollection($collection, $perPage);
     }
 
     public function createUmkm(array $data): Umkm
@@ -565,22 +477,11 @@ class FirebaseService
         $slug = $baseSlug;
         $counter = 1;
 
-        $client = $this->firestore();
+        $client = $this->firestoreOrFail();
 
-        if ($client) {
-            try {
-                while ($this->firestoreSlugExists('umkms', $slug)) {
-                    $slug = "{$baseSlug}-{$counter}";
-                    $counter++;
-                }
-            } catch (Throwable) {
-                $slug = "{$baseSlug}-".time();
-            }
-        } else {
-            while (Umkm::where('slug', $slug)->exists()) {
-                $slug = "{$baseSlug}-{$counter}";
-                $counter++;
-            }
+        while ($this->firestoreSlugExists('umkms', $slug)) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
         }
 
         $payload = [
@@ -601,49 +502,52 @@ class FirebaseService
             'updated_at' => now()->toIso8601String(),
         ];
 
-        $docId = null;
-        if ($client) {
-            try {
-                $docRef = $client->collection('umkms')->add($payload);
-                $docId = $docRef->id();
-            } catch (Throwable $e) {
-                Log::warning('Firebase createUmkm error: '.$e->getMessage());
-            }
-        }
+        $docRef = $client->collection('umkms')->add($payload);
 
-        // Local mirror / fallback
-        try {
-            $model = Umkm::create($payload);
-            if ($docId) {
-                $model->setAttribute('firebase_id', $docId);
-            }
-
-            return $model;
-        } catch (Throwable) {
-            return $this->hydrateUmkm($docId ?? (string) time(), $payload);
-        }
+        return $this->hydrateUmkm($docRef->id(), $payload);
     }
 
     public function updateUmkmStatus(string|int $id, string $status): bool
     {
-        $client = $this->firestore();
-
-        if ($client) {
-            try {
-                $docRef = $client->collection('umkms')->document((string) $id);
-                $snapshot = $docRef->snapshot();
-                if ($snapshot->exists()) {
-                    $docRef->set(['status' => $status, 'updated_at' => now()->toIso8601String()], ['merge' => true]);
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase updateUmkmStatus error: '.$e->getMessage());
-            }
+        $docRef = $this->firestoreOrFail()->collection('umkms')->document((string) $id);
+        $snapshot = $docRef->snapshot();
+        if (! $snapshot->exists() || ($snapshot->data()['status'] ?? null) !== 'pending') {
+            return false;
         }
 
-        $umkm = Umkm::find($id);
-        if ($umkm) {
-            return $umkm->update(['status' => $status]);
+        $docRef->set(['status' => $status, 'updated_at' => now()->toIso8601String()], ['merge' => true]);
+
+        return true;
+    }
+
+    public function updateUmkm(string|int $id, array $data): bool
+    {
+        $docRef = $this->firestoreOrFail()->collection('umkms')->document((string) $id);
+        if (! $docRef->snapshot()->exists()) {
+            return false;
         }
+
+        if (isset($data['name'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+        if (isset($data['price'])) {
+            $data['price'] = $data['price'] !== null && $data['price'] !== '' ? (int) $data['price'] : null;
+        }
+
+        $data['updated_at'] = now()->toIso8601String();
+        $docRef->set($data, ['merge' => true]);
+
+        return true;
+    }
+
+    public function deleteUmkm(string|int $id): bool
+    {
+        $docRef = $this->firestoreOrFail()->collection('umkms')->document((string) $id);
+        if (! $docRef->snapshot()->exists()) {
+            return false;
+        }
+
+        $docRef->delete();
 
         return true;
     }
@@ -656,57 +560,33 @@ class FirebaseService
 
     public function getAspirationsPaginated(?string $search = null, ?string $status = null, int $perPage = 15): LengthAwarePaginator
     {
-        $client = $this->firestore();
+        $query = $this->firestoreOrFail()->collection('aspirations');
+        if ($status) {
+            $query = $query->where('status', '=', $status);
+        }
 
-        if ($client) {
-            try {
-                $query = $client->collection('aspirations');
-                if ($status) {
-                    $query = $query->where('status', '=', $status);
-                }
-
-                $docs = $query->documents();
-                $items = [];
-                foreach ($docs as $doc) {
-                    if ($doc->exists()) {
-                        $items[] = $this->hydrateAspiration($doc->id(), $doc->data());
-                    }
-                }
-
-                $collection = collect($items);
-
-                if ($search) {
-                    $needle = mb_strtolower(trim($search));
-                    $collection = $collection->filter(function ($a) use ($needle) {
-                        return str_contains(mb_strtolower($a->name ?? ''), $needle)
-                            || str_contains(mb_strtolower($a->title ?? ''), $needle)
-                            || str_contains(mb_strtolower($a->message ?? ''), $needle)
-                            || str_contains(mb_strtolower($a->dusun ?? ''), $needle);
-                    });
-                }
-
-                $collection = $collection->sortByDesc(fn ($a) => $a->created_at ? $a->created_at->timestamp : 0)->values();
-
-                return $this->paginateCollection($collection, $perPage);
-            } catch (Throwable $e) {
-                Log::warning('Firebase getAspirationsPaginated failed: '.$e->getMessage());
+        $docs = $query->documents();
+        $items = [];
+        foreach ($docs as $doc) {
+            if ($doc->exists()) {
+                $items[] = $this->hydrateAspiration($doc->id(), $doc->data());
             }
         }
 
-        $dbQuery = Aspiration::latest();
+        $collection = collect($items);
         if ($search) {
-            $dbQuery->where(function ($q) use ($search): void {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('title', 'like', "%{$search}%")
-                    ->orWhere('message', 'like', "%{$search}%")
-                    ->orWhere('dusun', 'like', "%{$search}%");
+            $needle = mb_strtolower(trim($search));
+            $collection = $collection->filter(function ($aspiration) use ($needle) {
+                return str_contains(mb_strtolower($aspiration->name ?? ''), $needle)
+                    || str_contains(mb_strtolower($aspiration->title ?? ''), $needle)
+                    || str_contains(mb_strtolower($aspiration->message ?? ''), $needle)
+                    || str_contains(mb_strtolower($aspiration->dusun ?? ''), $needle);
             });
         }
-        if ($status) {
-            $dbQuery->where('status', $status);
-        }
 
-        return $dbQuery->paginate($perPage)->withQueryString();
+        $collection = $collection->sortByDesc(fn ($aspiration) => $aspiration->created_at ? $aspiration->created_at->timestamp : 0)->values();
+
+        return $this->paginateCollection($collection, $perPage);
     }
 
     public function createAspiration(array $data): Aspiration
@@ -725,80 +605,35 @@ class FirebaseService
             'updated_at' => now()->toIso8601String(),
         ];
 
-        $client = $this->firestore();
-        $docId = null;
+        $docRef = $this->firestoreOrFail()->collection('aspirations')->add($payload);
 
-        if ($client) {
-            try {
-                $docRef = $client->collection('aspirations')->add($payload);
-                $docId = $docRef->id();
-            } catch (Throwable $e) {
-                Log::warning('Firebase createAspiration error: '.$e->getMessage());
-            }
-        }
-
-        // Local mirror / fallback
-        try {
-            $model = Aspiration::create($payload);
-            if ($docId) {
-                $model->setAttribute('firebase_id', $docId);
-            }
-
-            return $model;
-        } catch (Throwable) {
-            return $this->hydrateAspiration($docId ?? (string) time(), $payload);
-        }
+        return $this->hydrateAspiration($docRef->id(), $payload);
     }
 
     public function updateAspirationStatus(string|int $id, string $status, ?string $notes = null): bool
     {
-        $client = $this->firestore();
-
-        if ($client) {
-            try {
-                $docRef = $client->collection('aspirations')->document((string) $id);
-                $snapshot = $docRef->snapshot();
-                if ($snapshot->exists()) {
-                    $update = ['status' => $status, 'updated_at' => now()->toIso8601String()];
-                    if ($notes !== null) {
-                        $update['admin_notes'] = $notes;
-                    }
-                    $docRef->set($update, ['merge' => true]);
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase updateAspirationStatus error: '.$e->getMessage());
-            }
+        $docRef = $this->firestoreOrFail()->collection('aspirations')->document((string) $id);
+        if (! $docRef->snapshot()->exists()) {
+            return false;
         }
 
-        $item = Aspiration::find($id);
-        if ($item) {
-            $item->status = $status;
-            if ($notes !== null) {
-                $item->admin_notes = $notes;
-            }
-
-            return $item->save();
+        $update = ['status' => $status, 'updated_at' => now()->toIso8601String()];
+        if ($notes !== null) {
+            $update['admin_notes'] = $notes;
         }
+        $docRef->set($update, ['merge' => true]);
 
         return true;
     }
 
     public function findAspirationById(string|int $id): Aspiration
     {
-        $client = $this->firestore();
-
-        if ($client) {
-            try {
-                $doc = $client->collection('aspirations')->document((string) $id)->snapshot();
-                if ($doc->exists()) {
-                    return $this->hydrateAspiration($doc->id(), $doc->data());
-                }
-            } catch (Throwable $e) {
-                Log::warning('Firebase findAspirationById failed: '.$e->getMessage());
-            }
+        $doc = $this->firestoreOrFail()->collection('aspirations')->document((string) $id)->snapshot();
+        if ($doc->exists()) {
+            return $this->hydrateAspiration($doc->id(), $doc->data());
         }
 
-        return Aspiration::findOrFail($id);
+        throw (new ModelNotFoundException)->setModel(Aspiration::class, [$id]);
     }
 
     /*
@@ -809,67 +644,225 @@ class FirebaseService
 
     public function getDashboardMetrics(): array
     {
+        $client = $this->firestoreOrFail();
+        $approvedUmkmCount = 0;
+        $pendingUmkmCount = 0;
+        $umkms = [];
+
+        foreach ($client->collection('umkms')->documents() as $doc) {
+            if ($doc->exists()) {
+                $data = $doc->data();
+                $status = $data['status'] ?? 'pending';
+                if ($status === 'approved') {
+                    $approvedUmkmCount++;
+                } elseif ($status === 'pending') {
+                    $pendingUmkmCount++;
+                }
+                $umkms[] = $this->hydrateUmkm($doc->id(), $data);
+            }
+        }
+
+        $aspirationCount = 0;
+        foreach ($client->collection('aspirations')->documents() as $doc) {
+            if ($doc->exists()) {
+                $aspirationCount++;
+            }
+        }
+
+        $newsCount = 0;
+        foreach ($client->collection('news')->documents() as $doc) {
+            if ($doc->exists()) {
+                $newsCount++;
+            }
+        }
+
+        $recentUmkms = collect($umkms)
+            ->sortByDesc(fn ($umkm) => $umkm->created_at ? $umkm->created_at->timestamp : 0)
+            ->take(5)
+            ->values();
+
+        return [
+            'approvedUmkmCount' => $approvedUmkmCount,
+            'pendingUmkmCount' => $pendingUmkmCount,
+            'aspirationCount' => $aspirationCount,
+            'newsCount' => $newsCount,
+            'recentUmkms' => $recentUmkms,
+            'source' => 'firebase',
+        ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN MANAGEMENT (Firestore "admins" collection)
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get all registered administrators from Firestore (or fallback).
+     */
+    public function getAdmins(): Collection
+    {
+        $client = $this->firestore();
+
+        if (! $client) {
+            try {
+                return User::all();
+            } catch (Throwable) {
+                return collect();
+            }
+        }
+
+        try {
+            $docs = $client->collection('admins')->documents();
+            $admins = collect();
+
+            foreach ($docs as $doc) {
+                if ($doc->exists()) {
+                    $admins->push($this->hydrateAdmin($doc->id(), $doc->data()));
+                }
+            }
+
+            return $admins;
+        } catch (Throwable $e) {
+            Log::warning('Firebase getAdmins failed: '.$e->getMessage());
+
+            try {
+                return User::all();
+            } catch (Throwable) {
+                return collect();
+            }
+        }
+    }
+
+    /**
+     * Find admin by email in Firestore (or fallback).
+     */
+    public function findAdminByEmail(string $email): ?User
+    {
         $client = $this->firestore();
 
         if ($client) {
             try {
-                $approvedUmkmCount = 0;
-                $pendingUmkmCount = 0;
-                $umkms = [];
+                // Check direct document ID (email as doc id)
+                $docRef = $client->collection('admins')->document($email);
+                $snapshot = $docRef->snapshot();
 
-                foreach ($client->collection('umkms')->documents() as $doc) {
-                    if ($doc->exists()) {
-                        $data = $doc->data();
-                        $status = $data['status'] ?? 'pending';
-                        if ($status === 'approved') {
-                            $approvedUmkmCount++;
-                        } elseif ($status === 'pending') {
-                            $pendingUmkmCount++;
-                        }
-                        $umkms[] = $this->hydrateUmkm($doc->id(), $data);
-                    }
+                if ($snapshot->exists()) {
+                    return $this->hydrateAdmin($snapshot->id(), $snapshot->data());
                 }
 
-                $aspirationCount = 0;
-                foreach ($client->collection('aspirations')->documents() as $doc) {
+                // Query by email field
+                $query = $client->collection('admins')
+                    ->where('email', '=', $email)
+                    ->limit(1)
+                    ->documents();
+
+                foreach ($query as $doc) {
                     if ($doc->exists()) {
-                        $aspirationCount++;
+                        return $this->hydrateAdmin($doc->id(), $doc->data());
                     }
                 }
-
-                $newsCount = 0;
-                foreach ($client->collection('news')->documents() as $doc) {
-                    if ($doc->exists()) {
-                        $newsCount++;
-                    }
-                }
-
-                $recentUmkms = collect($umkms)
-                    ->sortByDesc(fn ($u) => $u->created_at ? $u->created_at->timestamp : 0)
-                    ->take(5)
-                    ->values();
-
-                return [
-                    'approvedUmkmCount' => $approvedUmkmCount,
-                    'pendingUmkmCount' => $pendingUmkmCount,
-                    'aspirationCount' => $aspirationCount,
-                    'newsCount' => $newsCount,
-                    'recentUmkms' => $recentUmkms,
-                    'source' => 'firebase',
-                ];
             } catch (Throwable $e) {
-                Log::warning('Firebase getDashboardMetrics failed: '.$e->getMessage());
+                Log::warning('Firebase findAdminByEmail failed: '.$e->getMessage());
             }
         }
 
-        return [
-            'approvedUmkmCount' => Umkm::approved()->count(),
-            'pendingUmkmCount' => Umkm::pending()->count(),
-            'aspirationCount' => Aspiration::count(),
-            'newsCount' => News::count(),
-            'recentUmkms' => Umkm::latest()->take(5)->get(),
-            'source' => 'local_database',
+        // Fallback to local User model if present
+        try {
+            return User::where('email', $email)->first();
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * Create or update administrator in Firestore (and sync locally if possible).
+     */
+    public function saveAdmin(array $data): User
+    {
+        $email = strtolower(trim($data['email']));
+        $name = $data['name'] ?? 'Admin Desa Ngadiluwih';
+        $password = $data['password'];
+
+        if (! str_starts_with($password, '$2y$') && ! str_starts_with($password, '$2a$')) {
+            $password = Hash::make($password);
+        }
+
+        $payload = [
+            'name' => $name,
+            'email' => $email,
+            'password' => $password,
+            'role' => $data['role'] ?? 'admin',
+            'is_active' => true,
+            'updated_at' => Carbon::now()->toIso8601String(),
         ];
+
+        $client = $this->firestore();
+
+        if ($client) {
+            try {
+                $docRef = $client->collection('admins')->document($email);
+                $snapshot = $docRef->snapshot();
+
+                $payload['created_at'] = $snapshot->exists() && $snapshot->get('created_at')
+                    ? $snapshot->get('created_at')
+                    : Carbon::now()->toIso8601String();
+
+                $docRef->set($payload, ['merge' => true]);
+            } catch (Throwable $e) {
+                Log::warning('Firebase saveAdmin failed: '.$e->getMessage());
+            }
+        }
+
+        try {
+            return User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name,
+                    'password' => $password,
+                ]
+            );
+        } catch (Throwable) {
+            return $this->hydrateAdmin($email, $payload);
+        }
+    }
+
+    /**
+     * Authenticate admin credentials against Firestore.
+     */
+    public function authenticateAdmin(string $email, string $password): ?User
+    {
+        $admin = $this->findAdminByEmail($email);
+
+        if (! $admin) {
+            return null;
+        }
+
+        if (! Hash::check($password, $admin->password)) {
+            return null;
+        }
+
+        // Sync to local database so Laravel SessionGuard and Auth::user() work seamlessly
+        try {
+            $local = User::where('email', $admin->email)->first();
+
+            if (! $local) {
+                $local = User::create([
+                    'name' => $admin->name,
+                    'email' => $admin->email,
+                    'password' => $admin->password,
+                ]);
+            } elseif ($local->password !== $admin->password || $local->name !== $admin->name) {
+                $local->update([
+                    'name' => $admin->name,
+                    'password' => $admin->password,
+                ]);
+            }
+
+            return $local;
+        } catch (Throwable) {
+            return $admin;
+        }
     }
 
     /*
@@ -882,6 +875,7 @@ class FirebaseService
     {
         $news = new News;
         $news->exists = true;
+        $news->setKeyType('string')->setIncrementing(false);
         $news->id = $id;
 
         foreach ($data as $key => $value) {
@@ -920,6 +914,7 @@ class FirebaseService
     {
         $aspiration = new Aspiration;
         $aspiration->exists = true;
+        $aspiration->setKeyType('string')->setIncrementing(false);
         $aspiration->id = $id;
 
         foreach ($data as $key => $value) {
@@ -931,6 +926,27 @@ class FirebaseService
         }
 
         return $aspiration;
+    }
+
+    protected function hydrateAdmin(string $id, array $data): User
+    {
+        $admin = new User;
+        $admin->exists = true;
+        $admin->setKeyType('string')->setIncrementing(false);
+        $admin->id = $id;
+
+        foreach ($data as $key => $value) {
+            $admin->setAttribute($key, $value);
+        }
+
+        if (isset($data['created_at']) && is_string($data['created_at'])) {
+            $admin->setAttribute('created_at', Carbon::parse($data['created_at']));
+        }
+        if (isset($data['updated_at']) && is_string($data['updated_at'])) {
+            $admin->setAttribute('updated_at', Carbon::parse($data['updated_at']));
+        }
+
+        return $admin;
     }
 
     protected function firestoreSlugExists(string $collection, string $slug): bool

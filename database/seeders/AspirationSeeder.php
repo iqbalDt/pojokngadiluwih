@@ -2,16 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\Aspiration;
+use App\Services\FirebaseService;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 class AspirationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(FirebaseService $firebase): void
     {
+        $client = $firebase->firestore();
+        if (! $client) {
+            throw new RuntimeException('Firestore must be configured before seeding aspirations.');
+        }
+
         $aspirations = [
             [
                 'name' => 'Joko Prasetyo',
@@ -48,13 +54,27 @@ class AspirationSeeder extends Seeder
         ];
 
         foreach ($aspirations as $item) {
-            Aspiration::firstOrCreate(
-                [
-                    'title' => $item['title'],
-                    'phone' => $item['phone'],
-                ],
-                $item
-            );
+            $existingDocs = $client->collection('aspirations')
+                ->where('title', '=', $item['title'])
+                ->where('phone', '=', $item['phone'])
+                ->limit(1)
+                ->documents();
+
+            $exists = false;
+            foreach ($existingDocs as $doc) {
+                if ($doc->exists()) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            if (! $exists) {
+                $client->collection('aspirations')->add([
+                    ...$item,
+                    'created_at' => now()->toIso8601String(),
+                    'updated_at' => now()->toIso8601String(),
+                ]);
+            }
         }
     }
 }

@@ -26,7 +26,7 @@
     @endif
 
     <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
-        <form action="{{ route('services.store-register.submit') }}" method="POST" class="space-y-6">
+        <form action="{{ route('services.store-register.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             <!-- Nama Usaha -->
@@ -126,6 +126,18 @@
                 </label>
                 <textarea id="description" name="description" rows="4" required placeholder="Jelaskan produk apa saja yang Anda jual, kisaran harga, dan keunggulan produk Anda..." class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('description') ? 'border-rose-400' : 'border-slate-300' }} text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">{{ old('description') }}</textarea>
                 @error('description')
+                    <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Foto Produk / Usaha -->
+            <div>
+                <label for="image" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Foto Produk / Logo Usaha (Opsional)
+                </label>
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/jpg,image/webp" class="w-full px-4 py-2 rounded-xl border {{ $errors->has('image') ? 'border-rose-400' : 'border-slate-300' }} text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                <span class="text-[11px] text-slate-400 mt-1 block">Format: JPG, JPEG, PNG, WEBP. Maksimal 2MB. Foto produk utama yang akan ditampilkan di katalog publik.</span>
+                @error('image')
                     <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                 @enderror
             </div>

@@ -50,9 +50,13 @@
         @forelse($umkms as $item)
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
             <div>
-                <div class="w-full h-40 bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-xl flex items-center justify-center text-5xl mb-4 border border-slate-100">
-                    🛍️
-                </div>
+                @if($item->image_url)
+                    <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-full h-40 object-cover rounded-xl mb-4 border border-slate-100">
+                @else
+                    <div class="w-full h-40 bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-xl flex items-center justify-center text-5xl mb-4 border border-slate-100">
+                        🛍️
+                    </div>
+                @endif
                 <div class="flex items-center justify-between">
                     <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">{{ $item->category }}</span>
                     <span class="text-[11px] text-slate-400">Dusun {{ $item->dusun }}</span>

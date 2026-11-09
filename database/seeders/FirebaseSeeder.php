@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Services\FirebaseService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class FirebaseSeeder extends Seeder
 {
@@ -186,6 +187,19 @@ class FirebaseSeeder extends Seeder
             $client->collection('aspirations')->document('aspiration_'.($index + 1))->set($asp, ['merge' => true]);
         }
 
-        $this->command->info('✅ Berhasil menyuntikkan data contoh ke koleksi Firebase Firestore: news, umkms, dan aspirations!');
+        // 4. Seed Akun Admin Petugas ke Firebase Firestore
+        $this->command->info('4. Seeding koleksi "admins"...');
+        $adminEmail = 'admin@ngadiluwih.desa.id';
+        $client->collection('admins')->document($adminEmail)->set([
+            'name' => 'Admin Desa Ngadiluwih',
+            'email' => $adminEmail,
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+            'is_active' => true,
+            'created_at' => now()->toIso8601String(),
+            'updated_at' => now()->toIso8601String(),
+        ], ['merge' => true]);
+
+        $this->command->info('✅ Berhasil menyuntikkan data contoh ke koleksi Firebase Firestore: news, umkms, aspirations, dan admins!');
     }
 }

@@ -14,11 +14,17 @@
     </nav>
 
     <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-10">
-        <!-- Product Image Placeholder -->
-        <div class="flex flex-col items-center justify-center bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-2xl border border-slate-200/60 p-10 min-h-80">
-            <div class="text-8xl mb-4">🛍️</div>
-            <span class="text-xs text-slate-500 font-medium">Katalog Resmi UMKM Desa Ngadiluwih</span>
-        </div>
+        <!-- Product Image -->
+        @if($umkm->image_url)
+            <div class="rounded-2xl border border-slate-200/60 overflow-hidden min-h-80 max-h-96">
+                <img src="{{ $umkm->image_url }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover">
+            </div>
+        @else
+            <div class="flex flex-col items-center justify-center bg-gradient-to-tr from-amber-50 to-emerald-50 rounded-2xl border border-slate-200/60 p-10 min-h-80">
+                <div class="text-8xl mb-4">🛍️</div>
+                <span class="text-xs text-slate-500 font-medium">Katalog Resmi UMKM Desa Ngadiluwih</span>
+            </div>
+        @endif
 
         <!-- Product Details -->
         <div class="flex flex-col justify-between">

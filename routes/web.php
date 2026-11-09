@@ -13,7 +13,6 @@ use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\ProfileController;
 use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\UmkmController;
-use App\Models\User;
 use App\Services\FirebaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,17 +76,24 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::post('/login', function (Request $request) {
-    // Cari atau buat demo admin jika belum ada untuk kemudahan pengujian
-    $user = User::firstOrCreate(
-        ['email' => 'admin@ngadiluwih.desa.id'],
-        [
-            'name' => 'Admin Desa Ngadiluwih',
-            'password' => bcrypt('password'),
-        ]
-    );
+Route::post('/login', function (Request $request, FirebaseService $firebase) {
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'string'],
+        'remember' => ['sometimes', 'boolean'],
+    ]);
 
-    Auth::login($user, (bool) $request->boolean('remember'));
+    $user = $firebase->authenticateAdmin($credentials['email'], $credentials['password']);
+
+    if (! $user) {
+        return back()
+            ->withErrors(['email' => 'Email atau kata sandi tidak sesuai.'])
+            ->onlyInput('email');
+    }
+
+    Auth::login($user, $request->boolean('remember'));
+
+    $request->session()->regenerate();
 
     return redirect()->intended(route('admin.dashboard'));
 })->name('login.perform');
@@ -120,9 +126,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): v
         Route::delete('/{id}', [ContentController::class, 'destroy'])->name('destroy');
     });
 
-    // Verifikasi Pengajuan Toko UMKM
+    // Verifikasi & Pengelolaan Toko UMKM
     Route::prefix('umkm')->name('umkm.')->group(function (): void {
         Route::get('/', [UmkmApprovalController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [UmkmApprovalController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [UmkmApprovalController::class, 'update'])->name('update');
+        Route::delete('/{id}', [UmkmApprovalController::class, 'destroy'])->name('destroy');
         Route::post('/{id}/approve', [UmkmApprovalController::class, 'approve'])->name('approve');
         Route::post('/{id}/reject', [UmkmApprovalController::class, 'reject'])->name('reject');
     });

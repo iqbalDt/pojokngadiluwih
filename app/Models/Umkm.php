@@ -88,4 +88,20 @@ class Umkm extends Model
 
         return 'https://wa.me/'.$this->clean_whatsapp_number.'?text='.rawurlencode($message);
     }
+
+    /**
+     * Akses URL publik dari gambar atau logo UMKM.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! $this->image_path) {
+            return null;
+        }
+
+        if (str_starts_with($this->image_path, 'http://') || str_starts_with($this->image_path, 'https://')) {
+            return $this->image_path;
+        }
+
+        return asset('storage/' . ltrim($this->image_path, '/'));
+    }
 }

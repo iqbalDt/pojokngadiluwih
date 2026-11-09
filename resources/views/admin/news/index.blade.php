@@ -45,7 +45,18 @@
                 <tbody class="divide-y divide-slate-100 text-slate-700">
                     @forelse($news as $item)
                     <tr>
-                        <td class="p-4 font-semibold text-slate-900">{{ $item->title }}</td>
+                        <td class="p-4 font-semibold text-slate-900">
+                            <div class="flex items-center space-x-3">
+                                @if($item->image_url)
+                                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-10 h-10 object-cover rounded-lg shrink-0 border border-slate-200">
+                                @else
+                                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100 text-sm">
+                                        📰
+                                    </div>
+                                @endif
+                                <span>{{ $item->title }}</span>
+                            </div>
+                        </td>
                         <td class="p-4">
                             <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold">{{ $item->category }}</span>
                         </td>
