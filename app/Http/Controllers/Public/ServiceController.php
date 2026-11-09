@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Services\CloudinaryService;
 use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,7 @@ class ServiceController extends Controller
     /**
      * Handle submission of UMKM store registration to Firebase.
      */
-    public function submitStoreRegister(Request $request, FirebaseService $firebase): RedirectResponse
+    public function submitStoreRegister(Request $request, FirebaseService $firebase, CloudinaryService $cloudinary): RedirectResponse
     {
         $validated = $request->validate([
             'store_name' => ['required', 'string', 'max:255'],
@@ -73,7 +74,7 @@ class ServiceController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $payload['image_path'] = $request->file('image')->store('news', 'public');
+            $payload['image_path'] = $cloudinary->upload($request->file('image'), 'umkms');
         }
 
         $firebase->createUmkm($payload);

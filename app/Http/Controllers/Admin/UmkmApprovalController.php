@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\CloudinaryService;
 use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -44,7 +45,7 @@ class UmkmApprovalController extends Controller
     /**
      * Update an UMKM data and optionally upload product image.
      */
-    public function update(Request $request, int|string $id, FirebaseService $firebase): RedirectResponse
+    public function update(Request $request, int|string $id, FirebaseService $firebase, CloudinaryService $cloudinary): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -63,14 +64,14 @@ class UmkmApprovalController extends Controller
         if ($request->hasFile('image')) {
             try {
                 $existing = $firebase->findUmkmById($id);
-                if ($existing->image_path && Storage::disk('public')->exists($existing->image_path)) {
-                    Storage::disk('public')->delete($existing->image_path);
+                if ($existing->image_path) {
+                    $cloudinary->delete($existing->image_path);
                 }
             } catch (Throwable) {
                 // Ignore if cannot be deleted
             }
 
-            $validated['image_path'] = $request->file('image')->store('news', 'public');
+            $validated['image_path'] = $cloudinary->upload($request->file('image'), 'umkms');
         }
         unset($validated['image']);
 
@@ -83,12 +84,12 @@ class UmkmApprovalController extends Controller
     /**
      * Delete an UMKM from Firestore.
      */
-    public function destroy(int|string $id, FirebaseService $firebase): RedirectResponse
+    public function destroy(int|string $id, FirebaseService $firebase, CloudinaryService $cloudinary): RedirectResponse
     {
         try {
             $existing = $firebase->findUmkmById($id);
-            if ($existing->image_path && Storage::disk('public')->exists($existing->image_path)) {
-                Storage::disk('public')->delete($existing->image_path);
+            if ($existing->image_path) {
+                $cloudinary->delete($existing->image_path);
             }
         } catch (Throwable) {
             // Ignore if cannot be deleted

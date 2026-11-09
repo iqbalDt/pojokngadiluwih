@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\CloudinaryService;
 use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -35,7 +36,7 @@ class ContentController extends Controller
     /**
      * Store a newly created article in Firebase.
      */
-    public function store(Request $request, FirebaseService $firebase): RedirectResponse
+    public function store(Request $request, FirebaseService $firebase, CloudinaryService $cloudinary): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -58,7 +59,7 @@ class ContentController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $payload['image_path'] = $request->file('image')->store('news', 'public');
+            $payload['image_path'] = $cloudinary->upload($request->file('image'), 'news');
         }
 
         $firebase->createNews($payload);
@@ -81,7 +82,7 @@ class ContentController extends Controller
     /**
      * Update the specified article in Firebase.
      */
-    public function update(Request $request, int|string $id, FirebaseService $firebase): RedirectResponse
+    public function update(Request $request, int|string $id, FirebaseService $firebase, CloudinaryService $cloudinary): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -96,14 +97,14 @@ class ContentController extends Controller
         if ($request->hasFile('image')) {
             try {
                 $existingNews = $firebase->findNewsById($id);
-                if ($existingNews->image_path && Storage::disk('public')->exists($existingNews->image_path)) {
-                    Storage::disk('public')->delete($existingNews->image_path);
+                if ($existingNews->image_path) {
+                    $cloudinary->delete($existingNews->image_path);
                 }
             } catch (Throwable) {
                 // Ignore if existing file cannot be deleted
             }
 
-            $validated['image_path'] = $request->file('image')->store('news', 'public');
+            $validated['image_path'] = $cloudinary->upload($request->file('image'), 'news');
         }
         unset($validated['image']);
 
@@ -115,12 +116,12 @@ class ContentController extends Controller
     /**
      * Remove the specified article from Firebase.
      */
-    public function destroy(int|string $id, FirebaseService $firebase): RedirectResponse
+    public function destroy(int|string $id, FirebaseService $firebase, CloudinaryService $cloudinary): RedirectResponse
     {
         try {
             $existingNews = $firebase->findNewsById($id);
-            if ($existingNews->image_path && Storage::disk('public')->exists($existingNews->image_path)) {
-                Storage::disk('public')->delete($existingNews->image_path);
+            if ($existingNews->image_path) {
+                $cloudinary->delete($existingNews->image_path);
             }
         } catch (Throwable) {
             // Ignore if existing file cannot be found/deleted
