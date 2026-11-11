@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.config import GEMINI_MODEL, GOOGLE_API_KEY, KNOWLEDGE_BASE_DIR
 from app.rag_chain import answer_question
-from app.vector_store import build_and_persist_vector_store
+from app.vector_store import build_and_persist_vector_store, save_firestore_docs_snapshot, Document
 
 # Inisialisasi FastAPI
 app = FastAPI(
@@ -13,6 +13,27 @@ app = FastAPI(
     description="Layanan AI RAG berbasis Google Gemini untuk Asisten Virtual Desa Ngadiluwih",
     version="1.0.0",
 )
+
+
+@app.on_event("startup")
+def preload_ai_models():
+    """Pre-load embedding model & vector store saat server start,
+    agar request pertama dari user tidak perlu menunggu lama."""
+    import logging
+    logger = logging.getLogger("uvicorn")
+    try:
+        logger.info("⏳ Pre-loading embedding model (all-MiniLM-L6-v2)...")
+        from app.vector_store import get_embedding_model, get_vector_store
+        get_embedding_model()
+        logger.info("✅ Embedding model loaded.")
+
+        logger.info("⏳ Pre-loading ChromaDB vector store...")
+        get_vector_store()
+        logger.info("✅ ChromaDB vector store ready.")
+
+        logger.info("🚀 AI service siap menerima pertanyaan warga!")
+    except Exception as e:
+        logger.warning(f"⚠️ Pre-load gagal (akan retry saat request pertama): {e}")
 
 # Konfigurasi CORS
 app.add_middleware(
@@ -40,6 +61,17 @@ class ChatResponse(BaseModel):
         default_factory=list,
         description="Kutipan teks dokumen resmi yang dijadikan acuan jawaban",
     )
+
+
+class DocumentItem(BaseModel):
+    id: Optional[str] = None
+    topic: str
+    category: Optional[str] = "Umum"
+    content: str
+
+
+class ReindexRequest(BaseModel):
+    documents: Optional[List[DocumentItem]] = None
 
 
 class ReindexResponse(BaseModel):
@@ -95,18 +127,34 @@ def chat_endpoint(payload: ChatRequest):
 
 
 @app.post("/api/reindex", response_model=ReindexResponse)
-def reindex_knowledge_base():
+def reindex_knowledge_base(payload: Optional[ReindexRequest] = None):
     """
     Endpoint untuk me-refresh dan memperbarui vector database Chroma
-    dari dokumen .txt terbaru di direktori knowledge base.
+    dari dokumen .txt terbaru dan data Firestore yang disinkronkan.
     """
     try:
         from app.rag_chain import reset_rag_cache
-        build_and_persist_vector_store()
+
+        extra_docs = []
+        if payload and payload.documents:
+            save_firestore_docs_snapshot(payload.documents)
+            for item in payload.documents:
+                page_text = f"Topik: {item.topic}\nKategori: {item.category}\n\n{item.content}"
+                extra_docs.append(Document(
+                    page_content=page_text,
+                    metadata={
+                        "source": item.topic,
+                        "category": item.category or "Umum",
+                        "id": str(item.id or ""),
+                    }
+                ))
+
+        build_and_persist_vector_store(extra_documents=extra_docs)
         reset_rag_cache()
+        doc_count = len(extra_docs)
         return ReindexResponse(
             status="success",
-            message="Basis pengetahuan AI berhasil diindeks ulang ke ChromaDB.",
+            message=f"Basis pengetahuan AI berhasil diindeks ulang ke ChromaDB ({doc_count} dokumen Firestore disinkronkan).",
         )
 
     except Exception as e:

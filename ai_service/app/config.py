@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 # Base directory proyek ai_service
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load file .env jika ada
-ENV_PATH = BASE_DIR / ".env"
-load_dotenv(dotenv_path=ENV_PATH)
+# Load file .env (utamakan ai_service/.env, fallback ke root .env proyek Laravel)
+load_dotenv(dotenv_path=BASE_DIR / ".env")
+load_dotenv(dotenv_path=BASE_DIR.parent / ".env")
 
 # Google Gemini API Key & Model
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")

@@ -867,6 +867,102 @@ class FirebaseService
 
     /*
     |--------------------------------------------------------------------------
+    | KNOWLEDGE BASE MODULE (AI Corpus)
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get all AI knowledge base documents from Firestore.
+     *
+     * @return Collection<int, object>
+     */
+    public function getKnowledgeDocuments(): Collection
+    {
+        $client = $this->firestore();
+
+        if (! $client) {
+            return collect();
+        }
+
+        try {
+            $docs = $client->collection('knowledge_base')->documents();
+            $items = [];
+
+            foreach ($docs as $doc) {
+                if ($doc->exists()) {
+                    $items[] = $this->hydrateKnowledgeDocument($doc->id(), $doc->data());
+                }
+            }
+
+            return collect($items)
+                ->sortByDesc(fn ($item) => isset($item->created_at) && $item->created_at instanceof Carbon ? $item->created_at->timestamp : 0)
+                ->values();
+        } catch (Throwable $e) {
+            Log::warning('Firebase getKnowledgeDocuments failed: '.$e->getMessage());
+
+            return collect();
+        }
+    }
+
+    /**
+     * Create a new knowledge base document in Firestore.
+     */
+    public function createKnowledgeDocument(array $data): object
+    {
+        $client = $this->firestoreOrFail();
+
+        $payload = [
+            'topic' => trim((string) ($data['topic'] ?? '')),
+            'category' => trim((string) ($data['category'] ?? 'Umum')),
+            'content' => trim((string) ($data['content'] ?? '')),
+            'created_at' => Carbon::now()->toIso8601String(),
+            'updated_at' => Carbon::now()->toIso8601String(),
+        ];
+
+        $docRef = $client->collection('knowledge_base')->add($payload);
+
+        return $this->hydrateKnowledgeDocument($docRef->id(), $payload);
+    }
+
+    /**
+     * Delete a knowledge base document from Firestore by its ID.
+     */
+    public function deleteKnowledgeDocument(string $id): bool
+    {
+        $client = $this->firestoreOrFail();
+
+        try {
+            $client->collection('knowledge_base')->document($id)->delete();
+
+            return true;
+        } catch (Throwable $e) {
+            Log::warning("Firebase deleteKnowledgeDocument ({$id}) failed: ".$e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * Wrap raw knowledge document array into an object.
+     */
+    protected function hydrateKnowledgeDocument(string $id, array $data): object
+    {
+        return (object) [
+            'id' => $id,
+            'topic' => $data['topic'] ?? '',
+            'category' => $data['category'] ?? 'Umum',
+            'content' => $data['content'] ?? '',
+            'created_at' => isset($data['created_at']) && is_string($data['created_at'])
+                ? Carbon::parse($data['created_at'])
+                : Carbon::now(),
+            'updated_at' => isset($data['updated_at']) && is_string($data['updated_at'])
+                ? Carbon::parse($data['updated_at'])
+                : Carbon::now(),
+        ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | HYDRATION HELPERS (Wrap Firestore documents into compatible model instances)
     |--------------------------------------------------------------------------
     */

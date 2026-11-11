@@ -5,14 +5,26 @@
 
 @section('content')
 <div class="space-y-6">
+    @if(session('success'))
+        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between">
+            <span>✅ {{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center justify-between">
+            <span>⚠️ {{ session('error') }}</span>
+        </div>
+    @endif
+
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="text-xl font-bold text-slate-900">Basis Pengetahuan Asisten AI PojokNgadiluwih</h2>
-            <p class="text-xs text-slate-500 mt-1">Dokumen dan data referensi yang digunakan oleh model AI dalam menjawab pertanyaan warga.</p>
+            <p class="text-xs text-slate-500 mt-1">Dokumen dan data referensi yang digunakan oleh model AI dalam menjawab pertanyaan warga secara cerdas.</p>
         </div>
         <div class="flex items-center space-x-2">
             <span class="px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold">
-                🧠 5 Dokumen Terindeks di Vector DB
+                🧠 {{ $documents->count() }} Dokumen Terindeks di Firestore & AI
             </span>
         </div>
     </div>
@@ -42,6 +54,7 @@
                         <option value="Profil & Struktur Desa">Profil & Struktur Desa</option>
                         <option value="Katalog UMKM">Katalog UMKM</option>
                         <option value="Agenda & Kegiatan">Agenda & Kegiatan</option>
+                        <option value="Umum & Layanan">Umum & Layanan</option>
                     </select>
                 </div>
 
@@ -59,69 +72,53 @@
         </div>
 
         <!-- Indexed Knowledge List -->
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
             <div class="p-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
                 <h3 class="text-sm font-bold text-slate-900">Koleksi Pengetahuan Terindeks</h3>
                 <span class="text-xs text-slate-500">Sinkronisasi Python AI: <strong class="text-emerald-600">Real-time</strong></span>
             </div>
 
-            <div class="divide-y divide-slate-100 text-xs">
-                <!-- Item 1 -->
-                <div class="p-4 hover:bg-slate-50/80 transition flex items-start justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">Administrasi & Surat</span>
-                            <span class="text-[11px] text-slate-400">Diperbarui: 10 Okt 2026</span>
+            <div class="divide-y divide-slate-100 text-xs flex-1">
+                @forelse($documents as $doc)
+                    <div class="p-4 hover:bg-slate-50/80 transition flex items-start justify-between gap-4">
+                        <div class="space-y-1 flex-1">
+                            <div class="flex items-center space-x-2">
+                                @php
+                                    $badgeColor = match($doc->category) {
+                                        'Administrasi & Surat' => 'bg-emerald-50 text-emerald-700',
+                                        'Profil & Struktur Desa' => 'bg-teal-50 text-teal-700',
+                                        'Katalog UMKM' => 'bg-amber-50 text-amber-700',
+                                        'Regulasi & Perdes' => 'bg-indigo-50 text-indigo-700',
+                                        default => 'bg-slate-100 text-slate-700',
+                                    };
+                                @endphp
+                                <span class="px-2 py-0.5 rounded-full font-bold text-[10px] {{ $badgeColor }}">
+                                    {{ $doc->category }}
+                                </span>
+                                <span class="text-[11px] text-slate-400">
+                                    Diperbarui: {{ $doc->created_at->format('d M Y, H:i') }} WIB
+                                </span>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-sm">{{ $doc->topic }}</h4>
+                            <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                                {{ $doc->content }}
+                            </p>
                         </div>
-                        <h4 class="font-bold text-slate-900 text-sm">Persyaratan & Prosedur Surat Keterangan Usaha (SKU)</h4>
-                        <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
-                            Dokumen yang wajib dibawa pemohon: Fotokopi KTP Ngadiluwih, Fotokopi KK, Surat Pengantar RT/RW setempat, dan foto tempat usaha. Dilayani Senin-Jumat pukul 08.00 - 15.00 WIB.
-                        </p>
+                        <form action="{{ route('admin.ai-knowledge.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Hapus dokumen knowledge ini dari Firestore & AI?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-rose-600 hover:text-rose-700 font-semibold text-xs whitespace-nowrap p-1">
+                                Hapus
+                            </button>
+                        </form>
                     </div>
-                    <form action="{{ route('admin.ai-knowledge.destroy', 1) }}" method="POST" onsubmit="return confirm('Hapus dokumen knowledge ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-rose-600 hover:text-rose-700 font-semibold text-xs whitespace-nowrap">Hapus</button>
-                    </form>
-                </div>
-
-                <!-- Item 2 -->
-                <div class="p-4 hover:bg-slate-50/80 transition flex items-start justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 font-bold text-[10px]">Profil & Struktur</span>
-                            <span class="text-[11px] text-slate-400">Diperbarui: 05 Okt 2026</span>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-sm">Profil Geografis & Wilayah Desa Ngadiluwih</h4>
-                        <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
-                            Desa Ngadiluwih terdiri dari 4 dusun: Dusun Krajan (Pusat Pemerintahan), Dusun Wonorejo (Sentra UMKM Kuliner), Dusun Sukorejo (Pertanian), dan Dusun Karangrejo (Pengrajin).
-                        </p>
+                @empty
+                    <div class="p-12 text-center text-slate-400 text-xs space-y-2">
+                        <div class="text-3xl mb-2">📚</div>
+                        <p class="font-semibold text-slate-600">Belum ada dokumen pengetahuan khusus di Firestore.</p>
+                        <p class="text-slate-400">Tambahkan informasi atau SOP desa melalui formulir di sebelah kiri agar AI langsung mempelajarinya.</p>
                     </div>
-                    <form action="{{ route('admin.ai-knowledge.destroy', 2) }}" method="POST" onsubmit="return confirm('Hapus dokumen knowledge ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-rose-600 hover:text-rose-700 font-semibold text-xs whitespace-nowrap">Hapus</button>
-                    </form>
-                </div>
-
-                <!-- Item 3 -->
-                <div class="p-4 hover:bg-slate-50/80 transition flex items-start justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 font-bold text-[10px]">Katalog UMKM</span>
-                            <span class="text-[11px] text-slate-400">Diperbarui: 02 Okt 2026</span>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-sm">Daftar Produk Unggulan & Kontak Pemesanan UMKM</h4>
-                        <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
-                            Informasi katalog produk unggulan desa: Kacang Oven Bu Sumi, Madu Randu Murni, Anyaman Bambu Berkah Jaya, dan Sambal Pecel Asli Kediri lengkap dengan nomor kontak WhatsApp pemesanan.
-                        </p>
-                    </div>
-                    <form action="{{ route('admin.ai-knowledge.destroy', 3) }}" method="POST" onsubmit="return confirm('Hapus dokumen knowledge ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-rose-600 hover:text-rose-700 font-semibold text-xs whitespace-nowrap">Hapus</button>
-                    </form>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>

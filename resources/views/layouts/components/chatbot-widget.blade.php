@@ -68,10 +68,15 @@
         <!-- Chat Input Form -->
         <form id="chatbot-form" onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-slate-200 flex items-center space-x-2">
             @csrf
-            <input id="chatbot-input" type="text" placeholder="Ketik pertanyaan Anda..." autocomplete="off" class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800">
-            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-xl transition shadow-sm">
-                <svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <input id="chatbot-input" type="text" placeholder="Ketik pertanyaan Anda..." autocomplete="off" class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors">
+            <button id="chatbot-send-btn" type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-xl transition shadow-sm disabled:bg-slate-400 disabled:cursor-not-allowed">
+                <!-- Send icon (default) -->
+                <svg id="send-icon" class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                <!-- Stop icon (shown during loading) -->
+                <svg id="stop-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <rect x="6" y="6" width="12" height="12" rx="2" />
                 </svg>
             </button>
         </form>
@@ -79,6 +84,10 @@
 </div>
 
 <script>
+    // AbortController untuk cancel request yang sedang berjalan
+    let currentAbortController = null;
+    let isChatLoading = false;
+
     function toggleChatbot() {
         const windowEl = document.getElementById('chatbot-window');
         const iconOpen = document.getElementById('chat-icon-open');
@@ -89,7 +98,9 @@
             windowEl.classList.remove('hidden');
             iconOpen.classList.add('hidden');
             iconClose.classList.remove('hidden');
-            document.getElementById('chatbot-input').focus();
+            if (!isChatLoading) {
+                document.getElementById('chatbot-input').focus();
+            }
         } else {
             windowEl.classList.add('hidden');
             iconOpen.classList.remove('hidden');
@@ -98,12 +109,71 @@
     }
 
     function sendQuickPrompt(promptText) {
+        if (isChatLoading) return; // Jangan kirim kalau masih loading
         document.getElementById('chatbot-input').value = promptText;
         handleChatSubmit(new Event('submit'));
     }
 
+    function setChatLoading(loading) {
+        isChatLoading = loading;
+        const inputEl = document.getElementById('chatbot-input');
+        const sendBtn = document.getElementById('chatbot-send-btn');
+        const sendIcon = document.getElementById('send-icon');
+        const stopIcon = document.getElementById('stop-icon');
+        const quickBtns = document.querySelectorAll('#chatbot-widget-container [onclick^="sendQuickPrompt"]');
+
+        if (loading) {
+            // Disable input & ubah ke abu-abu
+            inputEl.disabled = true;
+            inputEl.placeholder = 'AI sedang menjawab...';
+
+            // Ubah tombol send jadi tombol stop (merah)
+            sendBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'disabled:bg-slate-400');
+            sendBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+            sendBtn.disabled = false; // Tombol stop harus bisa diklik
+            sendBtn.type = 'button'; // Bukan submit lagi
+            sendBtn.onclick = abortChatRequest;
+            sendIcon.classList.add('hidden');
+            stopIcon.classList.remove('hidden');
+
+            // Disable quick prompt buttons
+            quickBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        } else {
+            // Enable input kembali
+            inputEl.disabled = false;
+            inputEl.placeholder = 'Ketik pertanyaan Anda...';
+            inputEl.focus();
+
+            // Kembalikan tombol send
+            sendBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            sendBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'disabled:bg-slate-400');
+            sendBtn.type = 'submit';
+            sendBtn.onclick = null;
+            sendIcon.classList.remove('hidden');
+            stopIcon.classList.add('hidden');
+
+            // Enable quick prompt buttons
+            quickBtns.forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+        }
+    }
+
+    function abortChatRequest() {
+        if (currentAbortController) {
+            currentAbortController.abort();
+            currentAbortController = null;
+        }
+    }
+
     async function handleChatSubmit(e) {
         e.preventDefault();
+        if (isChatLoading) return; // Cegah double submit
+
         const inputEl = document.getElementById('chatbot-input');
         const message = inputEl.value.trim();
         if (!message) return;
@@ -111,8 +181,12 @@
         appendUserMessage(message);
         inputEl.value = '';
 
-        // Add loading state
+        // Set loading state
         const loadingId = appendLoadingIndicator();
+        setChatLoading(true);
+
+        // Buat AbortController baru untuk request ini
+        currentAbortController = new AbortController();
 
         try {
             const token = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
@@ -123,7 +197,8 @@
                     'X-CSRF-TOKEN': token,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({ message: message }),
+                signal: currentAbortController.signal
             });
 
             const data = await response.json();
@@ -131,7 +206,14 @@
             appendBotMessage(data.reply || 'Mohon maaf, asisten AI sedang sibuk. Silakan coba sesaat lagi.');
         } catch (err) {
             removeLoadingIndicator(loadingId);
-            appendBotMessage('Terjadi gangguan saat menghubungkan ke asisten AI. Silakan coba kembali nanti.');
+            if (err.name === 'AbortError') {
+                appendBotMessage('Permintaan dibatalkan. Silakan ketik pertanyaan baru.');
+            } else {
+                appendBotMessage('Terjadi gangguan saat menghubungkan ke asisten AI. Silakan coba kembali nanti.');
+            }
+        } finally {
+            currentAbortController = null;
+            setChatLoading(false);
         }
     }
 
