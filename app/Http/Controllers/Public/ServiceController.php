@@ -41,6 +41,7 @@ class ServiceController extends Controller
             'dusun' => ['required', 'string', 'in:Krajan,Wonorejo,Sukorejo,Karangrejo'],
             'address' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:10000'],
+            'products' => ['nullable', 'string', 'max:5000'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ], [
             'store_name.required' => 'Nama toko atau usaha wajib diisi.',
@@ -70,6 +71,7 @@ class ServiceController extends Controller
             'dusun' => $validated['dusun'],
             'address' => $validated['address'],
             'description' => $validated['description'],
+            'products' => $validated['products'] ?? null,
             'status' => 'pending',
         ];
 

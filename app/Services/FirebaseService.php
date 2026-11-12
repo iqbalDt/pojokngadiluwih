@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Aspiration;
+use App\Models\FirebaseAdmin;
 use App\Models\News;
 use App\Models\Umkm;
 use App\Models\User;
@@ -269,7 +270,7 @@ class FirebaseService
     |--------------------------------------------------------------------------
     */
 
-    public function getNewsPaginated(int $perPage = 9): LengthAwarePaginator
+    public function getNewsPaginated(?string $search = null, ?string $category = null, int $perPage = 9): LengthAwarePaginator
     {
         $docs = $this->firestoreOrFail()->collection('news')
             ->where('status', '=', 'published')
@@ -282,7 +283,30 @@ class FirebaseService
             }
         }
 
-        $collection = collect($items)->sortByDesc(fn ($n) => $n->published_at ? $n->published_at->timestamp : 0)->values();
+        $collection = collect($items);
+
+        if ($category && trim($category) !== '') {
+            $catNeedle = mb_strtolower(trim($category));
+            $collection = $collection->filter(function ($n) use ($catNeedle) {
+                $newsCat = mb_strtolower(trim((string) ($n->category ?? '')));
+
+                return $newsCat === $catNeedle
+                    || str_contains($newsCat, $catNeedle)
+                    || str_contains($catNeedle, $newsCat);
+            });
+        }
+
+        if ($search && trim($search) !== '') {
+            $needle = mb_strtolower(trim($search));
+            $collection = $collection->filter(function ($n) use ($needle) {
+                return str_contains(mb_strtolower($n->title ?? ''), $needle)
+                    || str_contains(mb_strtolower($n->excerpt ?? ''), $needle)
+                    || str_contains(mb_strtolower($n->content ?? ''), $needle)
+                    || str_contains(mb_strtolower($n->category ?? ''), $needle);
+            });
+        }
+
+        $collection = $collection->sortByDesc(fn ($n) => $n->published_at ? $n->published_at->timestamp : 0)->values();
 
         return $this->paginateCollection($collection, $perPage);
     }
@@ -484,6 +508,16 @@ class FirebaseService
             $counter++;
         }
 
+        $products = [];
+        if (isset($data['products'])) {
+            if (is_array($data['products'])) {
+                $products = array_values(array_filter(array_map('trim', $data['products'])));
+            } elseif (is_string($data['products']) && trim($data['products']) !== '') {
+                $lines = preg_split('/[\r\n]+/', $data['products']);
+                $products = array_values(array_filter(array_map('trim', (array) $lines)));
+            }
+        }
+
         $payload = [
             'name' => $storeName,
             'slug' => $slug,
@@ -496,6 +530,7 @@ class FirebaseService
             'price' => isset($data['price']) ? (int) $data['price'] : null,
             'price_unit' => $data['price_unit'] ?? null,
             'description' => $data['description'],
+            'products' => $products,
             'image_path' => $data['image_path'] ?? null,
             'status' => $data['status'] ?? 'pending',
             'created_at' => now()->toIso8601String(),
@@ -532,6 +567,14 @@ class FirebaseService
         }
         if (isset($data['price'])) {
             $data['price'] = $data['price'] !== null && $data['price'] !== '' ? (int) $data['price'] : null;
+        }
+        if (isset($data['products'])) {
+            if (is_array($data['products'])) {
+                $data['products'] = array_values(array_filter(array_map('trim', $data['products'])));
+            } elseif (is_string($data['products'])) {
+                $lines = preg_split('/[\r\n]+/', $data['products']);
+                $data['products'] = array_values(array_filter(array_map('trim', (array) $lines)));
+            }
         }
 
         $data['updated_at'] = now()->toIso8601String();
@@ -737,7 +780,7 @@ class FirebaseService
     /**
      * Find admin by email in Firestore (or fallback).
      */
-    public function findAdminByEmail(string $email): ?User
+    public function findAdminByEmail(string $email): User|FirebaseAdmin|null
     {
         $client = $this->firestore();
 
@@ -776,9 +819,75 @@ class FirebaseService
     }
 
     /**
-     * Create or update administrator in Firestore (and sync locally if possible).
+     * Find an administrator by their Firestore document ID (or local ID fallback).
      */
-    public function saveAdmin(array $data): User
+    public function findAdminById(string $id): User|FirebaseAdmin|null
+    {
+        $client = $this->firestore();
+
+        if ($client) {
+            try {
+                $snapshot = $client->collection('admins')->document($id)->snapshot();
+
+                if ($snapshot->exists()) {
+                    return $this->hydrateAdmin($snapshot->id(), $snapshot->data());
+                }
+            } catch (Throwable $e) {
+                Log::warning('Firebase findAdminById failed: '.$e->getMessage());
+            }
+        }
+
+        try {
+            return User::find($id);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * Persist a remember token for a Firebase administrator.
+     */
+    public function updateAdminRememberToken(string $id, string $token): void
+    {
+        $client = $this->firestore();
+
+        if ($client) {
+            $client->collection('admins')->document($id)->set([
+                'remember_token' => $token,
+            ], ['merge' => true]);
+
+            return;
+        }
+
+        $user = User::findOrFail($id);
+        $user->setRememberToken($token);
+        $user->save();
+    }
+
+    /**
+     * Persist a rehashed password for a Firebase administrator.
+     */
+    public function updateAdminPassword(string $id, string $password): void
+    {
+        $client = $this->firestore();
+
+        if ($client) {
+            $client->collection('admins')->document($id)->set([
+                'password' => $password,
+            ], ['merge' => true]);
+
+            return;
+        }
+
+        $user = User::findOrFail($id);
+        $user->password = $password;
+        $user->save();
+    }
+
+    /**
+     * Create or update an administrator in Firestore.
+     */
+    public function saveAdmin(array $data): User|FirebaseAdmin
     {
         $email = strtolower(trim($data['email']));
         $name = $data['name'] ?? 'Admin Desa Ngadiluwih';
@@ -809,6 +918,8 @@ class FirebaseService
                     : Carbon::now()->toIso8601String();
 
                 $docRef->set($payload, ['merge' => true]);
+
+                return $this->hydrateAdmin($email, $payload);
             } catch (Throwable $e) {
                 Log::warning('Firebase saveAdmin failed: '.$e->getMessage());
             }
@@ -830,7 +941,7 @@ class FirebaseService
     /**
      * Authenticate admin credentials against Firestore.
      */
-    public function authenticateAdmin(string $email, string $password): ?User
+    public function authenticateAdmin(string $email, string $password): User|FirebaseAdmin|null
     {
         $admin = $this->findAdminByEmail($email);
 
@@ -840,6 +951,10 @@ class FirebaseService
 
         if (! Hash::check($password, $admin->password)) {
             return null;
+        }
+
+        if ($admin instanceof FirebaseAdmin) {
+            return $admin;
         }
 
         // Sync to local database so Laravel SessionGuard and Auth::user() work seamlessly
@@ -1024,9 +1139,9 @@ class FirebaseService
         return $aspiration;
     }
 
-    protected function hydrateAdmin(string $id, array $data): User
+    protected function hydrateAdmin(string $id, array $data): FirebaseAdmin
     {
-        $admin = new User;
+        $admin = new FirebaseAdmin;
         $admin->exists = true;
         $admin->setKeyType('string')->setIncrementing(false);
         $admin->id = $id;

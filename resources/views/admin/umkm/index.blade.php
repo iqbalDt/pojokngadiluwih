@@ -45,7 +45,7 @@
                         <th class="p-4">Nama Toko & Usaha</th>
                         <th class="p-4">Pemilik & NIK</th>
                         <th class="p-4">Kategori & Dusun</th>
-                        <th class="p-4">Harga / Satuan</th>
+                        <th class="p-4">Daftar Produk</th>
                         <th class="p-4">WhatsApp</th>
                         <th class="p-4">Status</th>
                         <th class="p-4 text-right">Aksi</th>
@@ -77,12 +77,14 @@
                             <span class="font-medium text-slate-800 block">{{ $item->category }}</span>
                             <span class="text-[11px] text-slate-400">Dusun {{ $item->dusun }}</span>
                         </td>
-                        <td class="p-4 font-semibold text-slate-800">
-                            @if($item->price)
-                                Rp {{ number_format($item->price, 0, ',', '.') }}
-                                <span class="text-[10px] text-slate-400 font-normal">/ {{ $item->price_unit ?? 'pcs' }}</span>
+                        <td class="p-4 text-slate-700">
+                            @if(!empty($item->products_list))
+                                <span class="font-medium text-slate-800 block">{{ count($item->products_list) }} produk</span>
+                                <span class="text-[11px] text-slate-400 block truncate max-w-[150px]">{{ implode(', ', $item->products_list) }}</span>
+                            @elseif($item->price)
+                                <span class="font-semibold text-slate-800">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                             @else
-                                <span class="text-slate-400 font-normal italic">Menyesuaikan</span>
+                                <span class="text-slate-400 italic">Belum diisi</span>
                             @endif
                         </td>
                         <td class="p-4 font-mono text-emerald-700">

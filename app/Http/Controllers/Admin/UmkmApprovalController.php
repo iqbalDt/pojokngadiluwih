@@ -8,7 +8,6 @@ use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class UmkmApprovalController extends Controller
@@ -57,6 +56,7 @@ class UmkmApprovalController extends Controller
             'price' => ['nullable', 'numeric', 'min:0'],
             'price_unit' => ['nullable', 'string', 'max:50'],
             'description' => ['required', 'string'],
+            'products' => ['nullable', 'string', 'max:5000'],
             'status' => ['required', 'string', 'in:pending,approved,rejected'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ]);

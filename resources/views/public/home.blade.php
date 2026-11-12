@@ -201,20 +201,14 @@
                             {{ $item->name }}
                         </a>
                     </h3>
-                    <p class="text-xs text-slate-500 mt-1 line-clamp-2">{{ $item->description }}</p>
-                    @if($item->price)
-                        <p class="text-emerald-700 font-extrabold text-sm mt-2">
-                            Rp {{ number_format($item->price, 0, ',', '.') }}
-                            <span class="text-xs text-slate-400 font-normal">/ {{ $item->price_unit ?? 'pcs' }}</span>
-                        </p>
-                    @else
-                        <p class="text-emerald-700 font-bold text-xs mt-2">Hubungi Penjual</p>
-                    @endif
+                    <p class="text-xs text-slate-500 mt-1 line-clamp-3 leading-relaxed">{{ $item->description }}</p>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <a href="{{ route('umkm.show', $item->slug) }}" class="text-xs text-slate-600 hover:text-emerald-600 font-medium">Detail</a>
-                    <a href="{{ $item->whatsapp_order_url }}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center space-x-1 shadow-sm transition">
-                        <span>Pesan via WA</span>
+                <div class="mt-4 pt-3 border-t border-slate-100">
+                    <a href="{{ route('umkm.show', $item->slug) }}" class="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold border border-slate-200/80 hover:border-emerald-200 transition flex items-center justify-center space-x-1.5 shadow-sm">
+                        <span>Lihat Detail Toko</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
                     </a>
                 </div>
             </div>

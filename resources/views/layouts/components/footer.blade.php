@@ -35,7 +35,6 @@
                     <li><a href="{{ route('services.guides') }}" class="hover:text-emerald-400 transition">Panduan Permohonan Surat</a></li>
                     <li><a href="{{ route('services.store-register') }}" class="hover:text-emerald-400 transition">Pendaftaran Toko UMKM</a></li>
                     <li><a href="{{ route('services.feedback') }}" class="hover:text-emerald-400 transition">Kanal Aspirasi & Pengaduan</a></li>
-                    <li><a href="{{ route('admin.dashboard') }}" class="hover:text-emerald-400 transition">Masuk Panel Petugas</a></li>
                 </ul>
             </div>
 

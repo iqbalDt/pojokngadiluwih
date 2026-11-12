@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Services\FirebaseService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\DevCommands;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Auth::provider('firebase', static function (Application $app, array $config): FirebaseUserProvider {
+            return new FirebaseUserProvider($app->make(FirebaseService::class));
+        });
+
         DevCommands::register(
             command: $this->aiServiceCommand(),
             name: 'ai-service',

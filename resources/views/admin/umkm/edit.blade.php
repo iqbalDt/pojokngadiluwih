@@ -121,35 +121,19 @@
                 </div>
             </div>
 
-            <!-- Harga & Satuan -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label for="price" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                        Harga Produk (Rp)
-                    </label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value="{{ old('price', $umkm->price) }}"
-                        placeholder="Contoh: 15000 (kosongkan jika menyesuaikan)"
-                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                    >
-                    <span class="text-[11px] text-slate-400 mt-1 block">Tulis nominal angka tanpa titik/koma.</span>
-                </div>
-                <div>
-                    <label for="price_unit" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                        Satuan Harga
-                    </label>
-                    <input
-                        type="text"
-                        id="price_unit"
-                        name="price_unit"
-                        value="{{ old('price_unit', $umkm->price_unit) }}"
-                        placeholder="Contoh: bungkus, porsi, kg, botol, pcs"
-                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                    >
-                </div>
+            <!-- Daftar Barang / Produk yang Dijual -->
+            <div>
+                <label for="products" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Daftar Barang / Produk yang Dijual
+                </label>
+                <textarea
+                    id="products"
+                    name="products"
+                    rows="4"
+                    placeholder="Tuliskan nama produk/barang yang dijual, satu per baris (tekan Enter untuk produk berikutnya)&#10;Contoh:&#10;Keripik Tempe Original&#10;Keripik Tempe Balado Pedas&#10;Keripik Tempe Daun Jeruk"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                >{{ old('products', $umkm->products_text) }}</textarea>
+                <span class="text-[11px] text-slate-400 mt-1 block">Tuliskan setiap nama barang di baris baru (Enter). Daftar ini akan ditampilkan sebagai daftar barang pada halaman detail UMKM publik.</span>
             </div>
 
             <!-- Foto Produk -->

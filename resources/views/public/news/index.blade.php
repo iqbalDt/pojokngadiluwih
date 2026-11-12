@@ -12,20 +12,30 @@
         </p>
 
         <!-- Search and Category Filters -->
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+        <form method="GET" action="{{ route('news.index') }}" class="mt-8 flex flex-col sm:flex-row gap-3">
+            @if(request('category'))
+                <input type="hidden" name="category" value="{{ request('category') }}">
+            @endif
             <div class="relative flex-1">
-                <input type="text" placeholder="Cari berita atau pengumuman..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Cari berita atau pengumuman..."
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white"
+                >
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <div class="flex gap-2 overflow-x-auto text-xs">
-                <button class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold whitespace-nowrap">Semua</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Pengumuman</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Kegiatan Desa</button>
-                <button class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap">Pembangunan</button>
+            <div class="flex gap-2 overflow-x-auto text-xs pb-1 sm:pb-0">
+                <a href="{{ route('news.index', array_filter(['q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ !request('category') ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Semua</a>
+                <a href="{{ route('news.index', array_filter(['category' => 'Pengumuman', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Pengumuman' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Pengumuman</a>
+                <a href="{{ route('news.index', array_filter(['category' => 'Kegiatan Desa', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Kegiatan Desa' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Kegiatan Desa</a>
+                <a href="{{ route('news.index', array_filter(['category' => 'Pembangunan', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Pembangunan' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Pembangunan</a>
+                <a href="{{ route('news.index', array_filter(['category' => 'Sosial & Budaya', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Sosial & Budaya' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Sosial & Budaya</a>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 

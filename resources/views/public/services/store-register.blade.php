@@ -122,10 +122,22 @@
             <!-- Deskripsi Produk -->
             <div>
                 <label for="description" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Deskripsi Usaha & Daftar Produk Utama <span class="text-rose-500">*</span>
+                    Deskripsi Usaha & Profil Singkat <span class="text-rose-500">*</span>
                 </label>
-                <textarea id="description" name="description" rows="4" required placeholder="Jelaskan produk apa saja yang Anda jual, kisaran harga, dan keunggulan produk Anda..." class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('description') ? 'border-rose-400' : 'border-slate-300' }} text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">{{ old('description') }}</textarea>
+                <textarea id="description" name="description" rows="3" required placeholder="Jelaskan mengenai usaha Anda, keunggulan, serta informasi penting lainnya..." class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('description') ? 'border-rose-400' : 'border-slate-300' }} text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">{{ old('description') }}</textarea>
                 @error('description')
+                    <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Daftar Produk yang Dijual -->
+            <div>
+                <label for="products" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Daftar Barang / Produk yang Dijual <span class="text-slate-400 font-normal lowercase">(opsional)</span>
+                </label>
+                <textarea id="products" name="products" rows="3" placeholder="Tuliskan daftar barang yang Anda jual, satu per baris (tekan Enter).&#10;Contoh:&#10;Keripik Tempe Balado&#10;Keripik Tempe Original" class="w-full px-4 py-2.5 rounded-xl border {{ $errors->has('products') ? 'border-rose-400' : 'border-slate-300' }} text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none">{{ old('products') }}</textarea>
+                <span class="text-[11px] text-slate-400 mt-1 block">Tuliskan nama barang di baris baru untuk ditampilkan sebagai daftar produk di katalog desa.</span>
+                @error('products')
                     <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                 @enderror
             </div>

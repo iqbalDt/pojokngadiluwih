@@ -34,6 +34,7 @@ class Umkm extends Model
         'price',
         'price_unit',
         'description',
+        'products',
         'image_path',
         'status',
     ];
@@ -45,6 +46,7 @@ class Umkm extends Model
      */
     protected $casts = [
         'price' => 'integer',
+        'products' => 'array',
     ];
 
     /**
@@ -102,6 +104,36 @@ class Umkm extends Model
             return $this->image_path;
         }
 
-        return asset('storage/' . ltrim($this->image_path, '/'));
+        return asset('storage/'.ltrim($this->image_path, '/'));
+    }
+
+    /**
+     * Akses daftar produk atau barang yang dijual dalam bentuk array.
+     *
+     * @return array<int, string>
+     */
+    public function getProductsListAttribute(): array
+    {
+        $products = $this->getAttribute('products');
+
+        if (is_array($products)) {
+            return array_values(array_filter(array_map('trim', $products)));
+        }
+
+        if (is_string($products) && trim($products) !== '') {
+            $lines = preg_split('/[\r\n]+/', $products);
+
+            return array_values(array_filter(array_map('trim', (array) $lines)));
+        }
+
+        return [];
+    }
+
+    /**
+     * Akses daftar produk dalam bentuk teks baris per baris untuk form input.
+     */
+    public function getProductsTextAttribute(): string
+    {
+        return implode("\n", $this->products_list);
     }
 }

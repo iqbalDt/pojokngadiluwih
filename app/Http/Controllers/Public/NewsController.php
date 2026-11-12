@@ -5,17 +5,29 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Services\FirebaseService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
     /**
      * Display public news & announcements catalog.
      */
-    public function index(FirebaseService $firebase): View
+    public function index(Request $request, FirebaseService $firebase): View
     {
-        $news = $firebase->getNewsPaginated(9);
+        $search = trim((string) $request->input('q', ''));
+        $category = trim((string) $request->input('category', ''));
 
-        return view('public.news.index', compact('news'));
+        $news = $firebase->getNewsPaginated(
+            $search !== '' ? $search : null,
+            $category !== '' ? $category : null,
+            9
+        );
+
+        return view('public.news.index', [
+            'news' => $news,
+            'currentSearch' => $search,
+            'currentCategory' => $category,
+        ]);
     }
 
     /**
