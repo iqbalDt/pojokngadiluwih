@@ -22,8 +22,8 @@
             <!-- Mengambil Tanggal dari database (format tanggal Indonesia) -->
             <span>Dipublikasikan: {{ \Carbon\Carbon::parse($news->published_at)->translatedFormat('d F Y') }}</span>
             <span>•</span>
-            <!-- Mengambil Nama Penulis dari relasi tabel users -->
-            <span>Oleh: {{ $news->author->name ?? 'Admin Desa' }}</span>
+            <!-- Mengambil Nama Penulis -->
+            <span>Oleh: {{ $news->author_name }}</span>
         </div>
 
         <!-- Mengambil Judul dari database -->
@@ -55,8 +55,7 @@
             </a>
             <div class="flex items-center space-x-2 text-xs text-slate-500">
                 <span>Bagikan:</span>
-                <button class="px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition font-medium">WhatsApp</button>
-                <button class="px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition font-medium">Salin Tautan</button>
+                <button type="button" onclick="navigator.clipboard.writeText(window.location.href); const el = this; const old = el.innerText; el.innerText = 'Tersalin!'; setTimeout(() => el.innerText = old, 2000);" class="px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition font-medium">Salin Tautan</button>
             </div>
         </div>
     </article>

@@ -2,70 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\Authenticatable as LaravelAuthenticatable;
-use Kreait\Laravel\Firebase\Auth\User as FirebaseUser;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-/**
- * Wrapper for a Firebase authenticated user.
- *
- * Laravel's `auth()->user()` will return an instance of this class.
- * It implements the `Authenticatable` contract by delegating to the
- * underlying `FirebaseUser` object.
- */
-class User implements LaravelAuthenticatable
+#[Fillable(['name', 'email', 'password'])]
+#[Hidden(['password', 'remember_token'])]
+class User extends Authenticatable
 {
-    /** @var FirebaseUser */
-    public $firebaseUser;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable;
 
-    public function __construct(FirebaseUser $firebaseUser)
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        $this->firebaseUser = $firebaseUser;
-    }
-
-    public function getAuthIdentifierName()
-    {
-        return 'uid';
-    }
-
-    public function getAuthIdentifier()
-    {
-        return $this->firebaseUser->uid();
-    }
-
-    public function getAuthPasswordName(): string
-    {
-        return 'password';
-    }
-
-    public function getAuthPassword()
-    {
-        return null;
-    }
-
-    public function getRememberToken()
-    {
-        return null;
-    }
-
-    public function setRememberToken($value) {}
-
-    public function getRememberTokenName()
-    {
-        return null;
-    }
-
-    public function __get($name)
-    {
-        return $this->firebaseUser->__get($name);
-    }
-
-    public function __call($method, $parameters)
-    {
-        return $this->firebaseUser->$method(...$parameters);
-    }
-
-    public function __toString(): string
-    {
-        return $this->firebaseUser->email() ?? $this->firebaseUser->uid();
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }

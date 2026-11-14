@@ -45,6 +45,26 @@ class News extends Model
     }
 
     /**
+     * Akses nama penulis berita secara aman (tetap berfungsi jika database MySQL tidak aktif).
+     */
+    public function getAuthorNameAttribute(): string
+    {
+        if (! empty($this->attributes['author_name'])) {
+            return $this->attributes['author_name'];
+        }
+
+        try {
+            if ($this->author_id) {
+                return $this->author?->name ?? 'Admin Desa';
+            }
+        } catch (\Throwable) {
+            return 'Admin Desa';
+        }
+
+        return 'Admin Desa';
+    }
+
+    /**
      * Akses URL publik dari gambar berita (local storage atau remote URL).
      */
     public function getImageUrlAttribute(): ?string
