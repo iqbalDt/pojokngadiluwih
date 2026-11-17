@@ -1,6 +1,17 @@
 #!/usr/bin/env php
 <?php
 
+// Auto-switch to PHP 8.5 if invoked with older PHP version (e.g. PHP 8.2 from XAMPP)
+if (PHP_VERSION_ID < 80400) {
+    $php85 = 'D:\\laragon\\bin\\php\\php-8.5.11-Win32-vs17-x64\\php.exe';
+    if (file_exists($php85)) {
+        $argv = $_SERVER['argv'] ?? [];
+        $args = array_map('escapeshellarg', array_slice($argv, 1));
+        passthru(escapeshellarg($php85).' '.escapeshellarg(__FILE__).' '.implode(' ', $args), $exitCode);
+        exit($exitCode);
+    }
+}
+
 use Illuminate\Foundation\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 

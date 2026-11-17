@@ -11,22 +11,19 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Scripts and Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @viteReactRefresh
+    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     @stack('styles')
 </head>
-<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-emerald-500 selection:text-white">
+<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-[#BD6E37] selection:text-white {{ request()->routeIs('home', 'profile', 'news.index', 'umkm.index') ? 'bg-[#BD6E37]' : 'bg-slate-50' }}">
 
     <!-- Navbar -->
-    @include('layouts.components.navbar')
+    @if(!request()->routeIs('home', 'profile', 'news.index', 'umkm.index'))
+        @include('layouts.components.navbar')
+    @endif
 
     <!-- Flash message notifications -->
     @if(session('success'))
@@ -46,7 +43,9 @@
     </main>
 
     <!-- Footer -->
-    @include('layouts.components.footer')
+    @if(!request()->routeIs('home', 'profile', 'news.index', 'umkm.index'))
+        @include('layouts.components.footer')
+    @endif
 
     <!-- Chatbot Widget -->
     @include('layouts.components.chatbot-widget')

@@ -17,7 +17,7 @@ class UmkmApprovalControllerTest extends TestCase
     {
         $firebase = new class extends FirebaseService
         {
-            public function getAdminUmkmsPaginated(int $perPage = 15): LengthAwarePaginator
+            public function getAdminUmkmsPaginated(int $perPage = 15, ?string $status = 'pending'): LengthAwarePaginator
             {
                 return new LengthAwarePaginator(
                     [

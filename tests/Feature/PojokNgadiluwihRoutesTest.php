@@ -134,7 +134,7 @@ class PojokNgadiluwihRoutesTest extends TestCase
                 ];
             }
 
-            public function getNewsPaginated(int $perPage = 9): LengthAwarePaginator
+            public function getNewsPaginated(?string $search = null, ?string $category = null, int $perPage = 9): LengthAwarePaginator
             {
                 return new LengthAwarePaginator([$this->news], 1, $perPage);
             }
@@ -159,7 +159,7 @@ class PojokNgadiluwihRoutesTest extends TestCase
                 return new LengthAwarePaginator([$this->news], 1, $perPage);
             }
 
-            public function getAdminUmkmsPaginated(int $perPage = 15): LengthAwarePaginator
+            public function getAdminUmkmsPaginated(int $perPage = 15, ?string $status = 'pending'): LengthAwarePaginator
             {
                 return new LengthAwarePaginator([$this->umkm], 1, $perPage);
             }

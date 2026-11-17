@@ -1,100 +1,57 @@
 @extends('layouts.app')
 
-@section('title', 'Kabar & Berita Desa')
+@section('title', 'Berita & Pengumuman Desa')
 
 @section('content')
-<div class="bg-gradient-to-b from-slate-100 to-white py-12 border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Informasi Publik</span>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-1">Berita & Pengumuman Desa Ngadiluwih</h1>
-        <p class="text-sm text-slate-600 mt-2 max-w-2xl">
-            Ikuti informasi terbaru seputar program pembangunan, agenda posyandu, bantuan sosial, dan kegiatan kemasyarakatan.
-        </p>
+@php
+    $newsItems = collect($news->items())->map(function ($item) {
+        return [
+            'id' => $item->id ?? null,
+            'title' => $item->title ?? '',
+            'slug' => $item->slug ?? '',
+            'excerpt' => $item->excerpt ?? '',
+            'category' => $item->category ?? 'Warta',
+            'image_url' => $item->image_url ?? null,
+            'published_at' => $item->published_at ? \Carbon\Carbon::parse($item->published_at)->isoFormat('D MMM Y') : null,
+            'read_time' => $item->read_time ?? '2 menit membaca',
+            'location' => $item->location ?? $item->dusun ?? 'Desa Ngadiluwih',
+            'show_url' => !empty($item->slug) ? route('news.show', $item->slug) : '#',
+        ];
+    })->values()->all();
 
-        <!-- Search and Category Filters -->
-        <form method="GET" action="{{ route('news.index') }}" class="mt-8 flex flex-col sm:flex-row gap-3">
-            @if(request('category'))
-                <input type="hidden" name="category" value="{{ request('category') }}">
-            @endif
-            <div class="relative flex-1">
-                <input
-                    type="text"
-                    name="q"
-                    value="{{ request('q') }}"
-                    placeholder="Cari berita atau pengumuman..."
-                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-white"
-                >
-                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </div>
-            <div class="flex gap-2 overflow-x-auto text-xs pb-1 sm:pb-0">
-                <a href="{{ route('news.index', array_filter(['q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ !request('category') ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Semua</a>
-                <a href="{{ route('news.index', array_filter(['category' => 'Pengumuman', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Pengumuman' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Pengumuman</a>
-                <a href="{{ route('news.index', array_filter(['category' => 'Kegiatan Desa', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Kegiatan Desa' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Kegiatan Desa</a>
-                <a href="{{ route('news.index', array_filter(['category' => 'Pembangunan', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Pembangunan' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Pembangunan</a>
-                <a href="{{ route('news.index', array_filter(['category' => 'Sosial & Budaya', 'q' => request('q')])) }}" class="px-4 py-2.5 rounded-xl {{ request('category') === 'Sosial & Budaya' ? 'bg-emerald-600 text-white font-semibold shadow-sm' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50' }} whitespace-nowrap transition">Sosial & Budaya</a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- LOOPING DATA DARI DATABASE -->
-        @forelse($news as $item)
-        <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
-            <div>
-                @if($item->image_url)
-                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-48 object-cover">
-                @else
-                    <div class="h-48 bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-4xl text-white">
-                        📰
-                    </div>
-                @endif
-                <div class="p-5">
-                    <div class="flex items-center space-x-2 text-[11px] text-slate-400 mb-2">
-                        <!-- Menampilkan Kategori dari Database -->
-                        <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">{{ $item->category ?? 'Umum' }}</span>
-                        <span>•</span>
-                        <!-- Menampilkan Tanggal (format: 12 Okt 2026) -->
-                        <span>{{ \Carbon\Carbon::parse($item->published_at)->format('d M Y') }}</span>
-                    </div>
-                    <h2 class="font-bold text-base text-slate-900 hover:text-emerald-600 transition">
-                        <!-- Link menggunakan slug dari database -->
-                        <a href="{{ route('news.show', $item->slug) }}">
-                            {{ $item->title }}
-                        </a>
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                        <!-- Menampilkan excerpt/ringkasan -->
-                        {{ $item->excerpt }}
-                    </p>
-                </div>
-            </div>
-            <div class="px-5 pb-5">
-                <a href="{{ route('news.show', $item->slug) }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center">
-                    Baca Selengkapnya
-                    <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </article>
-        @empty
-        <!-- Tampilan Jika Database Kosong -->
-        <div class="col-span-3 text-center py-12 bg-white rounded-2xl border border-slate-200">
-            <p class="text-slate-500 text-sm">Belum ada berita atau pengumuman yang dipublikasikan.</p>
+    $initialProps = [
+        'routes' => [
+            'home' => route('home'),
+            'profile' => route('profile'),
+            'newsIndex' => route('news.index'),
+            'umkmIndex' => route('umkm.index'),
+            'servicesGuides' => route('services.guides'),
+            'servicesFeedback' => route('services.feedback'),
+            'demographics' => route('demographics'),
+            'login' => route('login'),
+        ],
+        'currentSearch' => $currentSearch ?? request('q', ''),
+        'currentCategory' => $currentCategory ?? request('category', ''),
+        'news' => $newsItems,
+        'pagination' => [
+            'currentPage' => $news->currentPage(),
+            'lastPage' => $news->lastPage(),
+            'total' => $news->total(),
+            'perPage' => $news->perPage(),
+            'hasMorePages' => $news->hasMorePages(),
+            'nextPageUrl' => $news->nextPageUrl(),
+            'prevPageUrl' => $news->previousPageUrl(),
+        ],
+        'csrfToken' => csrf_token(),
+    ];
+@endphp
+<div id="berita-root" data-props='@json($initialProps)'>
+    {{-- Fallback / Loading state --}}
+    <div class="min-h-screen bg-[#BD6E37] flex items-center justify-center p-8">
+        <div class="flex flex-col items-center gap-3 text-[#2B140B]">
+            <div class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            <p class="font-serif italic text-lg font-bold text-white">Memuat Berita & Pengumuman Desa Ngadiluwih...</p>
         </div>
-        @endforelse
-        <!-- LOOPING SELESAI -->
-
-    </div>
-
-    <!-- Navigasi Halaman (Pagination) -->
-    <div class="mt-10">
-        {{ $news->links() }}
     </div>
 </div>
 @endsection

@@ -19,7 +19,7 @@
     </style>
 
     <!-- Scripts and Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     @stack('styles')
 </head>
 <body class="h-full flex overflow-hidden bg-slate-50 text-slate-800 antialiased">
