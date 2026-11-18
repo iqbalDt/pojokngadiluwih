@@ -11,6 +11,7 @@
             'newsIndex' => route('news.index'),
             'umkmIndex' => route('umkm.index'),
             'servicesGuides' => route('services.guides'),
+            'servicesStoreRegister' => route('services.store-register'),
             'servicesFeedback' => route('services.feedback'),
             'demographics' => route('demographics'),
             'login' => route('login'),

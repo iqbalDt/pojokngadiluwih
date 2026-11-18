@@ -7,17 +7,17 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
     const fallbackUmkm = [
         {
             id: '1',
-            name: 'Kacang Oven Gurih Bu Saumi',
-            description: 'Kacang oven renyah tanpa minyak bertabur daun sledri khas dusun...',
-            price: 'Rp 15.000/ bks',
+            name: 'Kacang Oven Gurih Bu Surni',
+            description: 'kacang kahas renyah tanpa minyak berlebih dan oleh-oleh Favorit',
+            price: 'Rp. 15.000/ bks',
             phone: '6281234567890',
             image_url: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?q=80&w=600&auto=format&fit=crop',
         },
         {
             id: '2',
-            name: 'Kacang Oven Gurih Bu Saumi (Varian Pedas)',
-            description: 'Kacang oven renyah rempah bertabur cabai kering khas desa...',
-            price: 'Rp 15.000/ bks',
+            name: 'Kacang Oven Gurih Bu Surni',
+            description: 'kacang kahas renyah tanpa minyak berlebih dan oleh-oleh Favorit',
+            price: 'Rp. 15.000/ bks',
             phone: '6281234567890',
             image_url: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?q=80&w=600&auto=format&fit=crop',
         },
@@ -36,9 +36,11 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
     const firstNews = latestNews && latestNews.length > 0 ? latestNews[0] : fallbackNews;
 
     const formatPrice = (val) => {
-        if (!val) return 'Rp 15.000/ bks';
-        if (typeof val === 'number') return `Rp ${val.toLocaleString('id-ID')}`;
-        return String(val);
+        if (!val) return 'Rp. 15.000/ bks';
+        if (typeof val === 'number') return `Rp. ${val.toLocaleString('id-ID')}/ bks`;
+        const str = String(val).trim();
+        if (str.startsWith('Rp')) return str.includes('/') ? str : `${str}/ bks`;
+        return `Rp. ${str}/ bks`;
     };
 
     return (
@@ -47,16 +49,16 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
             <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-stretch">
                     
-                    {/* Left Column: KATALOG UMKM (Rata Kiri) */}
+                    {/* Left Column: KATALOG UMKM (Rata Kiri, Sesuai Gambar 1) */}
                     <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-between h-full">
                         <div className="mb-4">
-                            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#3D1E0F] underline decoration-2 underline-offset-8">
+                            <h2 className="font-serif text-2xl sm:text-3xl font-extrabold tracking-wide text-[#3D1E0F] border-b-2 border-[#3D1E0F] inline-block pb-1">
                                 KATALOG UMKM
                             </h2>
                         </div>
 
-                        {/* Tan Container */}
-                        <div className="bg-[#DAB28E]/75 border border-[#CBA07B] rounded-3xl p-5 sm:p-6 xl:p-7 flex flex-col justify-between flex-1 gap-4 shadow-sm">
+                        {/* Tan Container with solid dark border matching Gambar 1 */}
+                        <div className="bg-[#D4A987] border-2 border-[#3D1E0F] rounded-[32px] sm:rounded-[36px] p-4 sm:p-5 xl:p-6 flex flex-col justify-between flex-1 gap-4 shadow-sm">
                             <div className="flex flex-col gap-4 flex-1">
                                 {displayUmkm.map((item, idx) => {
                                     const waUrl = `https://wa.me/${(item.phone || item.whatsapp || '6281234567890').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Halo, saya tertarik memesan produk ${item.name || item.title || 'UMKM'} di PojokNgadiluwih.`)}`;
@@ -65,9 +67,9 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
                                     return (
                                         <div
                                             key={item.id || idx}
-                                            className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#EAE0D3] flex flex-col justify-between gap-3 group hover:shadow-md transition flex-1"
+                                            className="bg-white rounded-[22px] sm:rounded-[26px] p-3 sm:p-3.5 border border-[#3D1E0F]/20 shadow-xs flex flex-col justify-between gap-2.5 group hover:shadow-md transition flex-1"
                                         >
-                                            <div className="w-full h-36 sm:h-40 xl:h-44 rounded-xl overflow-hidden bg-[#F5EFE6]">
+                                            <div className="w-full aspect-[16/10] sm:aspect-[16/11] rounded-[18px] overflow-hidden bg-[#FAF3EA]">
                                                 <img
                                                     src={imgSrc}
                                                     alt={item.name || item.title}
@@ -77,16 +79,16 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
                                             </div>
 
                                             <div>
-                                                <h3 className="font-bold text-[#3D1E0F] text-base sm:text-lg leading-snug group-hover:text-[#BD6E37] transition">
+                                                <h3 className="font-serif font-bold text-[#2A1307] text-base sm:text-lg leading-snug group-hover:text-[#BD6E37] transition">
                                                     {item.name || item.title}
                                                 </h3>
-                                                <p className="text-xs sm:text-sm text-[#7B6152] mt-1 line-clamp-2 leading-relaxed">
-                                                    {item.description || 'Produk UMKM unggulan warga Desa Ngadiluwih.'}
+                                                <p className="text-xs sm:text-[13px] text-[#5C3822] mt-1 line-clamp-2 leading-relaxed">
+                                                    {item.description || 'kacang kahas renyah tanpa minyak berlebih dan oleh-oleh Favorit'}
                                                 </p>
                                             </div>
 
-                                            <div className="flex items-center justify-between pt-2 border-t border-[#F2EAE0]">
-                                                <span className="font-bold text-[#BD6E37] text-sm sm:text-base">
+                                            <div className="flex items-center justify-between pt-1">
+                                                <span className="font-serif font-bold text-[#BD6E37] text-sm sm:text-base">
                                                     {formatPrice(item.price)}
                                                 </span>
 
@@ -94,10 +96,11 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
                                                     href={waUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="w-10 h-10 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition"
+                                                    className="w-8 h-8 rounded-full bg-[#BD6E37] hover:bg-[#9E5220] text-white flex items-center justify-center shadow-xs hover:scale-110 active:scale-95 transition"
                                                     title="Pesan via WhatsApp"
+                                                    aria-label="Pesan via WhatsApp"
                                                 >
-                                                    <Phone className="w-4 h-4 fill-current" />
+                                                    <Phone className="w-3.5 h-3.5 fill-current" />
                                                 </a>
                                             </div>
                                         </div>
@@ -105,14 +108,13 @@ export default function UmkmAndNewsSection({ featuredUmkm = [], latestNews = [],
                                 })}
                             </div>
 
-                            {/* View All UMKM Link */}
-                            <div className="text-center pt-2">
+                            {/* View All UMKM Link: "Lihat semuanya" */}
+                            <div className="text-center pt-1 pb-0.5">
                                 <a
                                     href={routes.umkmIndex || '/umkm'}
-                                    className="text-xs sm:text-sm font-semibold text-[#3D1E0F] hover:text-[#BD6E37] inline-flex items-center gap-1.5 transition underline decoration-1 underline-offset-4"
+                                    className="text-xs sm:text-sm font-serif font-semibold text-[#3D1E0F] hover:text-[#BD6E37] transition cursor-pointer"
                                 >
-                                    <span>Lihat semua produk UMKM</span>
-                                    <ArrowRight className="w-4 h-4" />
+                                    Lihat semuanya
                                 </a>
                             </div>
                         </div>

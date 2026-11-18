@@ -36,8 +36,8 @@ export default function VisiMisiSection() {
                                 Misi desa Ngadiluwih
                             </h2>
 
-                            {/* Inset Numbered List Box */}
-                            <div className="bg-[#FAF1E6] rounded-2xl p-5 sm:p-7 border border-[#EBDBC9] shadow-sm">
+                            {/* Inset Numbered List Box with brown accent bar matching Visi */}
+                            <div className="border-l-4 border-[#4A2411] bg-[#FAF1E6] rounded-r-2xl rounded-l-md p-5 sm:p-7 shadow-sm">
                                 <ol className="font-serif space-y-3 sm:space-y-3.5 text-xs sm:text-sm lg:text-base text-[#38190C] leading-relaxed list-decimal list-outside pl-5 font-normal">
                                     {misiList.map((item, idx) => (
                                         <li key={idx} className="pl-1">

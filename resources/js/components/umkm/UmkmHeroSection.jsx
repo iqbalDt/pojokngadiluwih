@@ -45,27 +45,27 @@ export default function UmkmHeroSection({
                 </h1>
 
                 {/* Subtitle */}
-                <p className="font-serif text-[#38190C] text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
+                <p className="font-serif text-[#38190C] text-sm sm:text-base leading-relaxed mb-6 max-w-2xl">
                     Dukung produk lokal desa Ngadiluwih. Pesan langsung ke penjual<br className="hidden sm:inline" />
                     via WhatsApp tanpa perantara.
                 </p>
 
-                {/* Search Bar – sized proportionally like in the design image */}
-                <form onSubmit={handleSubmit} className="w-full max-w-md sm:max-w-lg mb-6">
-                    <div className="relative flex items-center bg-white rounded-full px-5 py-3 shadow-sm border border-transparent focus-within:border-[#2A1307] transition">
+                {/* Search Bar – elongated across the section as requested */}
+                <form onSubmit={handleSubmit} className="w-full max-w-3xl lg:max-w-4xl mb-6">
+                    <div className="relative flex items-center bg-[#FAF3EA] rounded-full px-5 sm:px-6 py-3.5 sm:py-4 shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-white/80 focus-within:border-[#2A1307] focus-within:shadow-[0_6px_20px_rgba(0,0,0,0.12)] transition">
                         <input
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Cari produk UMKM......"
-                            className="w-full bg-transparent text-xs sm:text-sm text-[#2A1307] placeholder-[#8C6D58] focus:outline-none pr-8"
+                            className="w-full bg-transparent text-xs sm:text-sm text-[#2A1307] placeholder-[#8C6D58] focus:outline-none pr-10"
                         />
                         <button
                             type="submit"
-                            className="absolute right-4 text-[#2A1307] hover:text-[#BD6E37] transition"
+                            className="absolute right-5 text-[#2A1307] hover:text-[#BD6E37] transition"
                             aria-label="Cari"
                         >
-                            <Search className="w-4 h-4 stroke-[2.5]" />
+                            <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
                         </button>
                     </div>
                 </form>

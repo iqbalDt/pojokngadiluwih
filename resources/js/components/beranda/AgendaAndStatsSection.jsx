@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function AgendaAndStatsSection() {
-    const [viewDate, setViewDate] = useState(new Date(2026, 9, 1)); // October 2026 default as in design
+    // Real-time current date initialization
+    const today = new Date();
+    const todayDay = today.getDate();
+    const todayMonth = today.getMonth();
+    const todayYear = today.getFullYear();
+
+    const [viewDate, setViewDate] = useState(new Date());
+    const [touchStartX, setTouchStartX] = useState(null);
 
     const monthNames = [
         'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
     ];
-
-    const currentMonthLabel = `${monthNames[viewDate.getMonth()]} ${viewDate.getFullYear()}`;
 
     const prevMonth = () => {
         setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
@@ -19,9 +24,27 @@ export default function AgendaAndStatsSection() {
         setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
     };
 
+    // Touch swipe handlers to enable sliding/swiping between months & years
+    const handleTouchStart = (e) => {
+        setTouchStartX(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = (e) => {
+        if (touchStartX === null) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const diffX = touchStartX - touchEndX;
+        if (diffX > 45) {
+            nextMonth(); // swipe left -> next month/year
+        } else if (diffX < -45) {
+            prevMonth(); // swipe right -> prev month/year
+        }
+        setTouchStartX(null);
+    };
+
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
 
+    // Day calculations: Sen (Monday = 0) to Min (Sunday = 6)
     const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrevMonth = new Date(year, month, 0).getDate();
@@ -33,41 +56,55 @@ export default function AgendaAndStatsSection() {
         calendarCells.push({
             day: daysInPrevMonth - i,
             currentMonth: false,
+            isToday: false,
+            isHighlighted: false,
             key: `prev-${i}`,
         });
     }
 
     // Current month days
     for (let i = 1; i <= daysInMonth; i++) {
+        const isCurrentToday = i === todayDay && month === todayMonth && year === todayYear;
+        // Village events: e.g. 12th & 28th
+        const isEvent = (i === 12 || i === 28);
+
         calendarCells.push({
             day: i,
             currentMonth: true,
-            isHighlighted: year === 2026 && month === 9 && (i === 28 || i === 12),
+            isToday: isCurrentToday,
+            isHighlighted: isEvent,
             key: `curr-${i}`,
         });
     }
 
-    // Remaining days to complete grid
+    // Remaining days to complete grid (standard 35 or 42 cells)
     const totalCellsTarget = calendarCells.length > 35 ? 42 : 35;
     const remaining = totalCellsTarget - calendarCells.length;
     for (let i = 1; i <= remaining; i++) {
         calendarCells.push({
             day: i,
             currentMonth: false,
+            isToday: false,
+            isHighlighted: false,
             key: `next-${i}`,
         });
     }
 
     const dayHeaders = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    const isCurrentViewToday = month === todayMonth && year === todayYear;
 
     return (
         <section className="py-12 sm:py-16 lg:py-20 bg-[#F5EFE6] w-full">
-            {/* Full-width container: mengisi dari ujung kiri ke ujung kanan */}
+            {/* Full-width container */}
             <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-stretch">
                     
-                    {/* Left Column: Agenda Terkini Calendar Card (Rata Kiri) */}
-                    <div className="lg:col-span-5 xl:col-span-5 bg-white rounded-3xl p-6 sm:p-8 xl:p-9 shadow-sm border border-[#E9DFD3] flex flex-col justify-between h-full">
+                    {/* Left Column: Agenda Terkini Real-Time Calendar Card */}
+                    <div
+                        className="lg:col-span-5 xl:col-span-5 bg-white rounded-3xl p-6 sm:p-8 xl:p-9 shadow-sm border border-[#E9DFD3] flex flex-col justify-between h-full"
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                    >
                         <div>
                             <div className="flex items-center justify-between mb-1">
                                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#BD6E37]">
@@ -76,59 +113,92 @@ export default function AgendaAndStatsSection() {
                                 <CalendarIcon className="w-5 h-5 text-[#BD6E37]/70" />
                             </div>
                             <p className="text-xs sm:text-sm text-[#8C7063] mb-5">
-                                Dapatkan informasi agenda kegiatan warga & kalender desa
+                                Dapatkan informasi agenda kegiatan warga &amp; kalender desa
                             </p>
 
-                            {/* Month Header with navigation */}
-                            <div className="flex items-center justify-between bg-[#F8F3EC] rounded-2xl px-4 py-3 mb-4 border border-[#ECE0D0]">
+                            {/* Month & Year Header with clean navigation (Tinggal klik panah/geser tanpa dropdown) */}
+                            <div className="flex items-center justify-between bg-[#F8F3EC] rounded-2xl px-3 sm:px-4 py-3 mb-4 border border-[#ECE0D0] select-none">
                                 <button
                                     type="button"
                                     onClick={prevMonth}
                                     aria-label="Bulan sebelumnya"
-                                    className="p-1.5 rounded-lg hover:bg-[#EAE0D3] text-[#3D1E0F] transition"
+                                    className="p-1.5 rounded-lg hover:bg-[#EAE0D3] text-[#3D1E0F] transition cursor-pointer"
+                                    title="Bulan Sebelumnya"
                                 >
-                                    <ChevronLeft className="w-4 h-4" />
+                                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </button>
-                                <span className="font-serif font-bold text-[#3D1E0F] text-sm sm:text-base">
-                                    {currentMonthLabel}
+
+                                <span className="font-serif font-bold text-[#3D1E0F] text-sm sm:text-base tracking-wide">
+                                    {monthNames[month]} {year}
                                 </span>
+
                                 <button
                                     type="button"
                                     onClick={nextMonth}
                                     aria-label="Bulan berikutnya"
-                                    className="p-1.5 rounded-lg hover:bg-[#EAE0D3] text-[#3D1E0F] transition"
+                                    className="p-1.5 rounded-lg hover:bg-[#EAE0D3] text-[#3D1E0F] transition cursor-pointer"
+                                    title="Bulan Berikutnya"
                                 >
-                                    <ChevronRight className="w-4 h-4" />
+                                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </button>
                             </div>
 
                             {/* Calendar Grid */}
                             <div className="grid grid-cols-7 gap-1 sm:gap-1.5 text-center mb-6">
+                                {/* Day Headers with Red Sunday (Min) */}
                                 {dayHeaders.map((dh, idx) => (
                                     <div
                                         key={idx}
                                         className={`text-xs font-semibold py-1.5 ${
-                                            idx === 6 ? 'text-red-500 font-bold' : 'text-[#6E5343]'
+                                            idx === 6 ? 'text-red-600 font-bold' : 'text-[#6E5343]'
                                         }`}
                                     >
                                         {dh}
                                     </div>
                                 ))}
 
-                                {calendarCells.map((cell) => (
-                                    <div
-                                        key={cell.key}
-                                        className={`py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-xl flex items-center justify-center transition cursor-default ${
-                                            !cell.currentMonth
-                                                ? 'text-[#D0C2B4]'
-                                                : cell.isHighlighted
-                                                ? 'bg-[#BD6E37] text-white font-bold shadow-md scale-105'
-                                                : 'text-[#3D1E0F] hover:bg-[#F8F3EC]'
-                                        }`}
-                                    >
-                                        {cell.day}
-                                    </div>
-                                ))}
+                                {/* Date Cells with Red Sundays & Real-Time Today Indicator */}
+                                {calendarCells.map((cell, cellIdx) => {
+                                    const isSunday = cellIdx % 7 === 6;
+                                    const isToday = cell.isToday;
+                                    const isHighlighted = cell.isHighlighted;
+
+                                    let cellStyle = 'text-[#3D1E0F]';
+                                    if (!cell.currentMonth) {
+                                        cellStyle = isSunday ? 'text-red-300' : 'text-[#D0C2B4]';
+                                    } else if (isHighlighted) {
+                                        cellStyle = 'bg-[#BD6E37] text-white font-bold shadow-md scale-105';
+                                    } else if (isSunday) {
+                                        cellStyle = 'text-red-600 font-semibold';
+                                    }
+
+                                    return (
+                                        <div
+                                            key={cell.key}
+                                            className={`relative py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-xl flex items-center justify-center transition cursor-default select-none ${cellStyle} ${
+                                                isToday && !isHighlighted
+                                                    ? 'ring-2 ring-[#BD6E37] ring-offset-1 font-bold bg-[#FAF3EA] shadow-xs'
+                                                    : ''
+                                            } ${
+                                                isToday && isHighlighted
+                                                    ? 'ring-2 ring-[#3D1E0F] ring-offset-2'
+                                                    : ''
+                                            } ${
+                                                cell.currentMonth && !isHighlighted ? 'hover:bg-[#F8F3EC]' : ''
+                                            }`}
+                                        >
+                                            <span>{cell.day}</span>
+                                            {/* Real-time Today Bullet Marker */}
+                                            {isToday && (
+                                                <span
+                                                    className={`absolute bottom-0.5 w-1 h-1 rounded-full ${
+                                                        isHighlighted ? 'bg-white' : (isSunday ? 'bg-red-500' : 'bg-[#BD6E37]')
+                                                    }`}
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -143,7 +213,7 @@ export default function AgendaAndStatsSection() {
                                 </p>
                             </div>
                             <span className="shrink-0 px-3 py-1.5 rounded-full bg-[#BD6E37] text-white font-bold text-xs shadow-sm">
-                                28/10
+                                28/{month + 1 < 10 ? `0${month + 1}` : month + 1}
                             </span>
                         </div>
                     </div>

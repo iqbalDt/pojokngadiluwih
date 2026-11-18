@@ -44,7 +44,7 @@ export default function HeroSection({ routes = {} }) {
                             </h1>
 
                             {/* Subtitle Description */}
-                            <p className="text-[#FDF2E9] text-base sm:text-lg lg:text-xl leading-relaxed font-light text-justify sm:text-left max-w-3xl">
+                            <p className="font-serif text-[#38190C] text-sm sm:text-base md:text-lg leading-relaxed max-w-3xl">
                                 Selamat datang di PojokNgadiluwih. Akses layanan administrasi desa, temukan produk UMKM lokal terbaik dengan pesan langsung via WhatsApp, dan manfaatkan asisten AI kami.
                             </p>
 
@@ -115,15 +115,14 @@ export default function HeroSection({ routes = {} }) {
                             <div className="absolute inset-0 bg-gradient-to-t from-[#3D1E0F]/40 via-transparent to-transparent pointer-events-none rounded-2xl" />
                         </div>
 
-                        {/* Office Status Pill */}
-                        <div className="w-full inline-flex items-center justify-between sm:justify-center gap-3 px-5 py-2.5 rounded-full bg-[#994F21]/85 border border-[#B36331] text-[#FFF9F3] text-xs sm:text-sm font-medium shadow-md backdrop-blur-sm">
-                            <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {/* Office Status Pill - Rata Kiri & Kanan */}
+                        <div className="w-full flex items-center justify-between px-6 sm:px-8 py-3 rounded-full bg-[#994F21]/85 border border-[#B36331] text-[#FFF9F3] text-xs sm:text-sm font-medium shadow-md backdrop-blur-sm">
+                            <div className="flex items-center gap-2.5">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                                 <span className="font-semibold text-emerald-100">Pelayanan kantor terbuka</span>
                             </div>
-                            <span className="opacity-40">|</span>
-                            <div className="flex items-center gap-1.5 text-[#FCE6D4]">
-                                <Clock className="w-4 h-4 opacity-80" />
+                            <div className="flex items-center gap-2 text-[#FCE6D4]">
+                                <Clock className="w-4 h-4 opacity-80 shrink-0" />
                                 <span>08.00 - 15.00 WIB</span>
                             </div>
                         </div>
@@ -131,21 +130,6 @@ export default function HeroSection({ routes = {} }) {
 
                 </div>
             </div>
-
-            {/* Floating Chatbot Assistant Trigger */}
-            <button
-                type="button"
-                onClick={handleOpenChatbot}
-                aria-label="Buka Chatbot Asisten AI"
-                className="fixed bottom-6 right-6 z-40 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#3D1E0F] hover:bg-[#2A1307] text-[#F7EFE6] shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-[#D8AB88] group"
-                title="Tanya Asisten AI PojokNgadiluwih"
-            >
-                <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 group-hover:rotate-6 transition-transform" />
-                <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500" />
-                </span>
-            </button>
         </section>
     );
 }

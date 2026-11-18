@@ -4,89 +4,40 @@ import BerandaPage from './components/beranda/BerandaPage';
 import ProfilPage from './components/profil/ProfilPage';
 import BeritaPage from './components/berita/BeritaPage';
 import UmkmPage from './components/umkm/UmkmPage';
+import GuidesPage from './components/layanan/GuidesPage';
+import StoreRegisterPage from './components/layanan/StoreRegisterPage';
+import FeedbackPage from './components/layanan/FeedbackPage';
+import DemografiPage from './components/demografi/DemografiPage';
 
-// Mount Beranda React Page if the root container exists
-const berandaRootEl = document.getElementById('beranda-root');
-if (berandaRootEl) {
+// Helper to mount component safely
+function mountComponent(elementId, Component, displayName) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
     let initialData = {};
     try {
-        const rawProps = berandaRootEl.getAttribute('data-props');
+        const rawProps = el.getAttribute('data-props');
         if (rawProps) {
             initialData = JSON.parse(rawProps);
         }
     } catch (e) {
-        console.error('Failed to parse initial data for Beranda:', e);
+        console.error(`Failed to parse initial data for ${displayName}:`, e);
     }
 
-    const root = createRoot(berandaRootEl);
+    const root = createRoot(el);
     root.render(
         <React.StrictMode>
-            <BerandaPage initialData={initialData} />
+            <Component initialData={initialData} />
         </React.StrictMode>
     );
 }
 
-// Mount Profil React Page if the root container exists
-const profilRootEl = document.getElementById('profil-root');
-if (profilRootEl) {
-    let initialData = {};
-    try {
-        const rawProps = profilRootEl.getAttribute('data-props');
-        if (rawProps) {
-            initialData = JSON.parse(rawProps);
-        }
-    } catch (e) {
-        console.error('Failed to parse initial data for Profil:', e);
-    }
-
-    const root = createRoot(profilRootEl);
-    root.render(
-        <React.StrictMode>
-            <ProfilPage initialData={initialData} />
-        </React.StrictMode>
-    );
-}
-
-// Mount Berita React Page if the root container exists
-const beritaRootEl = document.getElementById('berita-root');
-if (beritaRootEl) {
-    let initialData = {};
-    try {
-        const rawProps = beritaRootEl.getAttribute('data-props');
-        if (rawProps) {
-            initialData = JSON.parse(rawProps);
-        }
-    } catch (e) {
-        console.error('Failed to parse initial data for Berita:', e);
-    }
-
-    const root = createRoot(beritaRootEl);
-    root.render(
-        <React.StrictMode>
-            <BeritaPage initialData={initialData} />
-        </React.StrictMode>
-    );
-}
-
-// Mount UMKM React Page if the root container exists
-const umkmRootEl = document.getElementById('umkm-root');
-if (umkmRootEl) {
-    let initialData = {};
-    try {
-        const rawProps = umkmRootEl.getAttribute('data-props');
-        if (rawProps) {
-            initialData = JSON.parse(rawProps);
-        }
-    } catch (e) {
-        console.error('Failed to parse initial data for UMKM:', e);
-    }
-
-    const root = createRoot(umkmRootEl);
-    root.render(
-        <React.StrictMode>
-            <UmkmPage initialData={initialData} />
-        </React.StrictMode>
-    );
-}
-
-
+// Mount Pages
+mountComponent('beranda-root', BerandaPage, 'Beranda');
+mountComponent('profil-root', ProfilPage, 'Profil');
+mountComponent('berita-root', BeritaPage, 'Berita');
+mountComponent('umkm-root', UmkmPage, 'UMKM');
+mountComponent('guides-root', GuidesPage, 'Panduan Surat');
+mountComponent('store-register-root', StoreRegisterPage, 'Daftar Toko UMKM');
+mountComponent('feedback-root', FeedbackPage, 'Aspirasi & Pengaduan');
+mountComponent('demografi-root', DemografiPage, 'Demografi');

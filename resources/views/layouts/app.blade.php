@@ -13,15 +13,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
     <!-- Scripts and Styles -->
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     @stack('styles')
 </head>
-<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-[#BD6E37] selection:text-white {{ request()->routeIs('home', 'profile', 'news.index', 'umkm.index') ? 'bg-[#BD6E37]' : 'bg-slate-50' }}">
+<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-[#BD6E37] selection:text-white {{ request()->routeIs('home', 'profile', 'news.index', 'umkm.index', 'services.*', 'demographics') ? 'bg-[#BD6E37]' : 'bg-slate-50' }}">
 
     <!-- Navbar -->
-    @if(!request()->routeIs('home', 'profile', 'news.index', 'umkm.index'))
+    @if(!request()->routeIs('home', 'profile', 'news.index', 'umkm.index', 'services.*', 'demographics'))
         @include('layouts.components.navbar')
     @endif
 
@@ -43,7 +51,7 @@
     </main>
 
     <!-- Footer -->
-    @if(!request()->routeIs('home', 'profile', 'news.index', 'umkm.index'))
+    @if(!request()->routeIs('home', 'profile', 'news.index', 'umkm.index', 'services.*', 'demographics'))
         @include('layouts.components.footer')
     @endif
 

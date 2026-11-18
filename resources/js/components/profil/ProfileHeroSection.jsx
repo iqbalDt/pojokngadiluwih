@@ -21,7 +21,7 @@ export default function ProfileHeroSection() {
                 </h1>
 
                 {/* Subtitle Description */}
-                <p className="text-[#FDF2E9] text-sm sm:text-base lg:text-lg leading-relaxed font-light max-w-3xl mx-auto">
+                <p className="font-serif text-[#38190C] text-sm sm:text-base lg:text-lg leading-relaxed max-w-3xl mx-auto">
                     Informasi lengkap visi misi desa, sejarah peta lokasi serta jajaran aparatur Pemerintah di Desa Ngadiluwih, Kecamatan Ngadiluwih, Kabupaten Kediri.
                 </p>
             </div>

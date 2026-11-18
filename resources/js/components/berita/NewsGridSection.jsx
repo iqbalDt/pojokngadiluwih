@@ -51,17 +51,17 @@ export default function NewsGridSection({
         <section className="w-full bg-[#BD6E37] text-[#2A1307] pb-16 sm:pb-24">
             <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
                 {/* Section Header Row */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#D58550]/40 pb-4 mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6 sm:mb-8">
                     <div>
-                        <span className="text-xs uppercase tracking-widest font-serif font-bold text-[#FDEEE0] block">
+                        <span className="text-xs uppercase tracking-widest font-sans font-semibold text-[#F7D6BD] block">
                             KANAL BERITA TERBARU
                         </span>
-                        <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2A1307] mt-1">
+                        <h2 className="font-serif font-bold text-lg sm:text-xl text-[#FAF3EA] mt-0.5">
                             Kabar &amp; Dinamika Dusun
                         </h2>
                     </div>
 
-                    <div className="text-xs sm:text-sm font-medium text-[#FDEEE0]">
+                    <div className="text-xs sm:text-sm font-medium text-[#F7D6BD]">
                         Menampilkan {displayedCount} dari {totalCount} Warta
                     </div>
                 </div>

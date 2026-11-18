@@ -9,3 +9,42 @@
     --font-serif: 'Playfair Display', Georgia, serif;
 }
 
+/* Dark Mode Theme Support */
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    background-color: #1A0D06 !important;
+    color: #FAF1E6 !important;
+}
+
+html.dark main {
+    background-color: #1F0F07 !important;
+}
+
+html.dark .bg-\[\#BD6E37\] {
+    background-color: #723714 !important;
+}
+
+html.dark .bg-\[\#EFE1CF\] {
+    background-color: #2B160C !important;
+    border-color: #422213 !important;
+    color: #FAF1E6 !important;
+}
+
+html.dark .bg-\[\#FAF1E6\],
+html.dark .bg-\[\#FAF3EB\],
+html.dark .bg-\[\#FAF3EA\] {
+    background-color: #381D10 !important;
+    color: #FAF1E6 !important;
+    border-color: #4A2615 !important;
+}
+
+html.dark footer {
+    background-color: #130904 !important;
+    border-color: #2C1408 !important;
+    color: #EBDCCE !important;
+}
+
+
