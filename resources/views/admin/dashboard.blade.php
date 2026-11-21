@@ -9,66 +9,66 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <!-- Card 1: UMKM Terverifikasi -->
-        <div class="bg-[#FBF4EC] rounded-3xl p-5 border border-[#EADBCC] shadow-sm flex flex-col justify-between">
+        <div class="bg-[#FBF4EC] dark:bg-[#1E1712] rounded-3xl p-5 border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-[#38190C] tracking-wide uppercase">UMKM TERVERIFIKASI</span>
-                <span class="text-stone-400">
+                <span class="text-[11px] font-bold text-[#38190C] dark:text-[#FAF3EB] tracking-wide uppercase">UMKM TERVERIFIKASI</span>
+                <span class="text-stone-400 dark:text-stone-500">
                     <svg class="w-4 h-4 text-[#C47247]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                 </span>
             </div>
             <div class="mt-3">
-                <p class="font-serif-title text-3xl font-bold text-[#38190C]">{{ $approvedUmkmCount }}</p>
-                <span class="text-xs text-stone-600 mt-1 block">Toko Aktif di Katalog</span>
+                <p class="font-serif-title text-3xl font-bold text-[#38190C] dark:text-[#FAF3EB]">{{ $approvedUmkmCount }}</p>
+                <span class="text-xs text-stone-600 dark:text-[#D4C3B5] mt-1 block">Toko Aktif di Katalog</span>
             </div>
         </div>
 
         <!-- Card 2: Pengajuan Baru -->
-        <div class="bg-[#FBF4EC] rounded-3xl p-5 border border-[#EADBCC] shadow-sm flex flex-col justify-between">
+        <div class="bg-[#FBF4EC] dark:bg-[#1E1712] rounded-3xl p-5 border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-[#38190C] tracking-wide uppercase">PENGAJUAN BARU</span>
-                <span class="text-stone-400">
+                <span class="text-[11px] font-bold text-[#38190C] dark:text-[#FAF3EB] tracking-wide uppercase">PENGAJUAN BARU</span>
+                <span class="text-stone-400 dark:text-stone-500">
                     <svg class="w-4 h-4 text-[#C47247]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
             </div>
             <div class="mt-3">
-                <p class="font-serif-title text-3xl font-bold text-[#38190C]">{{ $pendingUmkmCount }}</p>
-                <span class="text-xs text-stone-600 mt-1 block">Menunggu Verifikasi</span>
+                <p class="font-serif-title text-3xl font-bold text-[#38190C] dark:text-[#FAF3EB]">{{ $pendingUmkmCount }}</p>
+                <span class="text-xs text-stone-600 dark:text-[#D4C3B5] mt-1 block">Menunggu Verifikasi</span>
             </div>
         </div>
 
         <!-- Card 3: Aspirasi Warga -->
-        <div class="bg-[#FBF4EC] rounded-3xl p-5 border border-[#EADBCC] shadow-sm flex flex-col justify-between">
+        <div class="bg-[#FBF4EC] dark:bg-[#1E1712] rounded-3xl p-5 border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-[#38190C] tracking-wide uppercase">ASPIRASI WARGA</span>
-                <span class="text-stone-400">
+                <span class="text-[11px] font-bold text-[#38190C] dark:text-[#FAF3EB] tracking-wide uppercase">ASPIRASI WARGA</span>
+                <span class="text-stone-400 dark:text-stone-500">
                     <svg class="w-4 h-4 text-[#C47247]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
             </div>
             <div class="mt-3">
-                <p class="font-serif-title text-3xl font-bold text-[#38190C]">{{ $aspirationCount }}</p>
-                <span class="text-xs text-stone-600 mt-1 block">Total pesan masuk</span>
+                <p class="font-serif-title text-3xl font-bold text-[#38190C] dark:text-[#FAF3EB]">{{ $aspirationCount }}</p>
+                <span class="text-xs text-stone-600 dark:text-[#D4C3B5] mt-1 block">Total pesan masuk</span>
             </div>
         </div>
 
         <!-- Card 4: Berita dan Publikasi -->
-        <div class="bg-[#FBF4EC] rounded-3xl p-5 border border-[#EADBCC] shadow-sm flex flex-col justify-between">
+        <div class="bg-[#FBF4EC] dark:bg-[#1E1712] rounded-3xl p-5 border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-[#38190C] tracking-wide uppercase">BERITA DAN PUBLIKASI</span>
-                <span class="text-stone-400">
+                <span class="text-[11px] font-bold text-[#38190C] dark:text-[#FAF3EB] tracking-wide uppercase">BERITA DAN PUBLIKASI</span>
+                <span class="text-stone-400 dark:text-stone-500">
                     <svg class="w-4 h-4 text-[#C47247]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
             </div>
             <div class="mt-3">
-                <p class="font-serif-title text-3xl font-bold text-[#38190C]">{{ $newsCount }}</p>
-                <span class="text-xs text-stone-600 mt-1 block">Total Berita di CMS</span>
+                <p class="font-serif-title text-3xl font-bold text-[#38190C] dark:text-[#FAF3EB]">{{ $newsCount }}</p>
+                <span class="text-xs text-stone-600 dark:text-[#D4C3B5] mt-1 block">Total Berita di CMS</span>
             </div>
         </div>
 
@@ -78,9 +78,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <!-- Kolom Kiri: Tabel Pengajuan UMKM Masuk Terbaru -->
-        <div class="lg:col-span-2 bg-[#FDF8F3] rounded-3xl border border-[#EADBCC] shadow-sm p-5 sm:p-6">
-            <div class="border-b border-[#EADBCC]/80 pb-3 mb-4">
-                <h3 class="font-serif-title text-sm sm:text-base font-bold text-[#38190C] uppercase tracking-wide">
+        <div class="lg:col-span-2 bg-[#FDF8F3] dark:bg-[#18120D] rounded-3xl border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm p-5 sm:p-6">
+            <div class="border-b border-[#EADBCC]/80 dark:border-[#2A1E17] pb-3 mb-4">
+                <h3 class="font-serif-title text-sm sm:text-base font-bold text-[#38190C] dark:text-[#FAF3EB] uppercase tracking-wide">
                     PENGAJUAN UMKM MASUK TERBARU
                 </h3>
             </div>
@@ -88,20 +88,20 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>
-                        <tr class="border-b border-[#EADBCC] text-[#38190C]/80 font-semibold">
-                            <th class="pb-3 pr-3">Nama Toko</th>
-                            <th class="pb-3 px-3">Pemilik</th>
-                            <th class="pb-3 px-3">Kategori</th>
-                            <th class="pb-3 px-3 text-center">Status</th>
-                            <th class="pb-3 pl-3 text-right">Aksi</th>
+                        <tr class="border-b border-[#EADBCC] dark:border-[#3E2E23] text-[#38190C] dark:text-[#FAF3EB] font-semibold">
+                            <th class="pb-3 pr-3 text-[#38190C] dark:text-[#FAF3EB]">Nama Toko</th>
+                            <th class="pb-3 px-3 text-[#38190C] dark:text-[#FAF3EB]">Pemilik</th>
+                            <th class="pb-3 px-3 text-[#38190C] dark:text-[#FAF3EB]">Kategori</th>
+                            <th class="pb-3 px-3 text-center text-[#38190C] dark:text-[#FAF3EB]">Status</th>
+                            <th class="pb-3 pl-3 text-right text-[#38190C] dark:text-[#FAF3EB]">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#EADBCC]/60 text-stone-700">
+                    <tbody class="divide-y divide-[#EADBCC]/60 dark:divide-[#3E2E23] text-stone-700 dark:text-[#D4C3B5]">
                         @forelse($recentUmkms as $umkm)
-                        <tr class="hover:bg-white/40 transition">
-                            <td class="py-3.5 pr-3 font-semibold text-[#38190C] whitespace-nowrap">{{ $umkm->name }}</td>
-                            <td class="py-3.5 px-3 whitespace-nowrap">{{ $umkm->owner_name }}</td>
-                            <td class="py-3.5 px-3 whitespace-nowrap">{{ $umkm->category }}</td>
+                        <tr class="hover:bg-white/40 dark:hover:bg-[#251D17]/60 transition">
+                            <td class="py-3.5 pr-3 font-semibold text-[#38190C] dark:text-[#FAF3EB] whitespace-nowrap">{{ $umkm->name }}</td>
+                            <td class="py-3.5 px-3 whitespace-nowrap text-stone-700 dark:text-[#D4C3B5]">{{ $umkm->owner_name }}</td>
+                            <td class="py-3.5 px-3 whitespace-nowrap text-stone-700 dark:text-[#D4C3B5]">{{ $umkm->category }}</td>
                             <td class="py-3.5 px-3 text-center whitespace-nowrap">
                                 @if($umkm->status === 'approved')
                                     <span class="px-2.5 py-1 rounded-md text-[11px] bg-[#D1FAE5] text-[#065F46] border border-[#A7F3D0] font-semibold">
@@ -125,7 +125,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="py-8 text-center text-stone-400 text-xs">
+                            <td colspan="5" class="py-8 text-center text-stone-400 dark:text-stone-500 text-xs">
                                 Belum ada pengajuan UMKM masuk saat ini.
                             </td>
                         </tr>
@@ -139,8 +139,8 @@
         <div class="space-y-6">
             
             <!-- Card Aksi Pintas -->
-            <div class="bg-[#FDF8F3] rounded-3xl border border-[#EADBCC] shadow-sm p-5 sm:p-6">
-                <h3 class="font-serif-title text-base font-bold text-[#38190C] mb-4">
+            <div class="bg-[#FDF8F3] dark:bg-[#18120D] rounded-3xl border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm p-5 sm:p-6">
+                <h3 class="font-serif-title text-base font-bold text-[#38190C] dark:text-[#FAF3EB] mb-4">
                     Aksi Pintas
                 </h3>
 

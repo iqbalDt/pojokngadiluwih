@@ -62,7 +62,11 @@
 
         <div class="mt-10 pt-6 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center">
             <p>&copy; {{ date('Y') }} Pemerintah Desa Ngadiluwih. Hak cipta dilindungi.</p>
-            <p class="mt-2 sm:mt-0">Didukung oleh PojokNgadiluwih AI & Data Science Portal</p>
+            <div class="mt-2 sm:mt-0 flex items-center space-x-3">
+                <a href="{{ route('privacy') }}" class="hover:text-emerald-400 transition">Kebijakan Privasi</a>
+                <span>•</span>
+                <p>Didukung oleh PojokNgadiluwih AI & Data Science Portal</p>
+            </div>
         </div>
     </div>
 </footer>

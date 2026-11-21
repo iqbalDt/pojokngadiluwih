@@ -29,13 +29,16 @@ class PojokNgadiluwihRoutesTest extends TestCase
             '/layanan/daftar-toko',
             '/layanan/aspirasi',
             '/demografi',
-            '/firebase/ping',
+            '/kebijakan-privasi',
         ];
 
         foreach ($routes as $url) {
             $response = $this->get($url);
             $response->assertStatus(200);
         }
+
+        // /firebase/ping harus dilindungi autentikasi
+        $this->get('/firebase/ping')->assertRedirect('/login');
     }
 
     /**
@@ -77,6 +80,7 @@ class PojokNgadiluwihRoutesTest extends TestCase
             '/admin/layanan',
             '/admin/insights',
             '/admin/ai-knowledge',
+            '/admin/akun',
         ];
 
         foreach ($adminUrls as $url) {
@@ -177,6 +181,19 @@ class PojokNgadiluwihRoutesTest extends TestCase
                     'aspirationCount' => 0,
                     'newsCount' => 1,
                     'recentUmkms' => collect([$this->umkm]),
+                ];
+            }
+
+            public function getInsightsSummary(): array
+            {
+                return [
+                    'totalAspirations' => 2,
+                    'pendingAspirations' => 1,
+                    'processedAspirations' => 0,
+                    'completedAspirations' => 1,
+                    'handledAspirations' => 1,
+                    'resolutionRate' => 50.0,
+                    'approvedUmkmCount' => 1,
                 ];
             }
         };

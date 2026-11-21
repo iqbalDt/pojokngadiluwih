@@ -227,6 +227,7 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                 <Moon className={`w-3.5 h-3.5 transition-opacity duration-200 ${darkMode ? 'opacity-0' : 'text-[#7C5F4D] opacity-80'}`} />
                             </span>
                             <span
+                                data-theme-knob="true"
                                 className={`absolute top-1 left-1 w-6 h-6 rounded-full shadow-md transform transition-all duration-300 ease-out flex items-center justify-center z-10 ${
                                     darkMode
                                         ? 'translate-x-8 bg-[#FAF1E6] text-[#2A1307]'

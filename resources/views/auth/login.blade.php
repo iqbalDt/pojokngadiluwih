@@ -15,6 +15,14 @@
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -103,7 +111,7 @@
                             id="email" 
                             name="email" 
                             type="email" 
-                            value="{{ old('email', 'admin@ngadiluwih.desa.id') }}" 
+                            value="{{ old('email') }}" 
                             autocomplete="username" 
                             required 
                             placeholder="admin@ngadiluwih.desa.id"
@@ -121,7 +129,6 @@
                                 id="password" 
                                 name="password" 
                                 type="password" 
-                                value="password123"
                                 autocomplete="current-password" 
                                 required 
                                 placeholder="••••••••"
@@ -149,13 +156,7 @@
                     <!-- Ingatkan Saya Checkbox -->
                     <div class="flex items-center text-xs text-stone-600 pt-0.5">
                         <label class="flex items-center cursor-pointer select-none">
-                            <input 
-                                type="checkbox" 
-                                name="remember" 
-                                value="1" 
-                                checked
-                                class="w-4 h-4 rounded border-stone-300 text-[#B8683B] focus:ring-[#B8683B]"
-                            >
+                            <input type="checkbox" name="remember" value="1" class="w-4 h-4 rounded border-stone-300 text-[#B8683B] focus:ring-[#B8683B]">
                             <span class="ml-2 text-stone-700 text-xs">Ingatkan saya</span>
                         </label>
                     </div>

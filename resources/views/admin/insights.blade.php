@@ -19,22 +19,22 @@
     <!-- Executive Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- Card 1: Coklat Tua Eksklusif (Kontras Tinggi seperti Jam Real-Time Dashboard) -->
+        <!-- Card 1: Coklat Tua Eksklusif — Tingkat Tindak Lanjut Aspirasi Real-Time -->
         <div class="bg-[#38190C] text-[#FFF8F0] rounded-3xl p-6 border border-[#251007] shadow-md flex flex-col justify-between relative overflow-hidden">
             <div class="relative z-10">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-2">
                     <span class="text-[11px] font-bold text-amber-200/90 uppercase tracking-widest block font-serif-title">
-                        Indeks Kepuasan Layanan
+                        Tindak Lanjut Aspirasi
                     </span>
-                    <span class="text-xs font-semibold text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">
-                        +2.3% Naik
+                    <span class="text-xs font-semibold text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+                        {{ $insights['handledAspirations'] }}/{{ $insights['totalAspirations'] }} Laporan
                     </span>
                 </div>
                 <div class="mt-4">
-                    <p class="font-serif-title text-3xl sm:text-4xl font-extrabold text-[#FFF8F0]">89.4%</p>
+                    <p class="font-serif-title text-3xl sm:text-4xl font-extrabold text-[#FFF8F0]">{{ number_format($insights['resolutionRate'], 1) }}%</p>
                 </div>
                 <p class="text-xs text-stone-300 mt-3 leading-relaxed">
-                    Berdasarkan rekap umpan balik warga dan kecepatan penyelesaian proses surat pengantar desa.
+                    Persentase laporan dan aspirasi warga di Firestore yang telah diproses atau tuntas ditangani perangkat desa.
                 </p>
             </div>
             <!-- Subtle accent bubble -->
@@ -96,7 +96,7 @@
                     <span class="px-3 py-1 rounded-full bg-[#38190C] text-white text-[11px] font-bold">
                         Pelayanan Administrasi
                     </span>
-                    <span class="text-xs font-semibold text-[#059669]">Skor Dampak: 9.4/10</span>
+                    <span class="text-xs font-semibold text-[#059669]">Prioritas Utama</span>
                 </div>
                 <h4 class="font-serif-title font-bold text-sm sm:text-base text-[#38190C] dark:text-[#F8F1EB]">
                     Optimalisasi Layanan Surat Menyurat Terpadu (Online &amp; Offline)
@@ -112,7 +112,7 @@
                     <span class="px-3 py-1 rounded-full bg-[#C07044] text-white text-[11px] font-bold">
                         Ekonomi &amp; UMKM
                     </span>
-                    <span class="text-xs font-semibold text-[#059669]">Skor Dampak: 8.9/10</span>
+                    <span class="text-xs font-semibold text-[#059669]">Fokus Ekonomi Desa</span>
                 </div>
                 <h4 class="font-serif-title font-bold text-sm sm:text-base text-[#38190C] dark:text-[#F8F1EB]">
                     Penguatan UMKM Berbasis Hasil Tani &amp; Digitalisasi Pemasaran
@@ -124,32 +124,42 @@
         </div>
     </div>
 
-    <!-- Sentimen Analisis Warga -->
+    <!-- Rekap Status Penanganan Aspirasi Warga (Real-Time Firestore) -->
     <div class="bg-[#FBF4EC] dark:bg-[#18120D] rounded-3xl border border-[#EADBCC] dark:border-[#2A1E17] shadow-sm p-6 sm:p-8">
-        <h3 class="font-serif-title text-base sm:text-lg font-bold text-[#38190C] dark:text-[#F8F1EB] mb-4">
-            Distribusi Sentimen Aspirasi Warga (Natural Language Processing)
-        </h3>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+            <div>
+                <h3 class="font-serif-title text-base sm:text-lg font-bold text-[#38190C] dark:text-[#F8F1EB]">
+                    Rekap Status Penanganan Aspirasi Warga
+                </h3>
+                <p class="text-xs text-[#765F50] dark:text-[#BCAAA0] mt-0.5">
+                    Data dihitung langsung secara real-time dari total {{ $insights['totalAspirations'] }} aspirasi masuk di Firestore.
+                </p>
+            </div>
+            <a href="{{ route('admin.services.index') }}" class="text-xs font-semibold text-[#C07044] hover:underline self-start sm:self-auto">
+                Kelola Arsip Aspirasi &rarr;
+            </a>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             
-            <!-- Positif -->
-            <div class="p-5 rounded-2xl bg-[#059669]/10 dark:bg-[#059669]/20 border border-[#059669]/30 shadow-sm">
-                <span class="text-xs font-semibold text-[#065F46] dark:text-[#34D399] font-serif-title">Sentimen Positif / Apresiasi</span>
-                <p class="font-serif-title text-3xl font-extrabold text-[#059669] mt-2">68%</p>
-                <span class="text-[11px] text-[#047857] dark:text-[#6EE7B7] mt-1 block">Pelayanan surat & respons cepat</span>
+            <!-- Menunggu Tindak Lanjut -->
+            <div class="p-5 rounded-2xl bg-[#FEF9EE] dark:bg-amber-950/25 border border-[#FDE68A] dark:border-amber-800/50 shadow-sm">
+                <span class="text-xs font-semibold text-[#B45309] dark:text-amber-300 font-serif-title">Menunggu Tindak Lanjut</span>
+                <p class="font-serif-title text-3xl font-extrabold text-[#B45309] dark:text-amber-300 mt-2">{{ $insights['pendingAspirations'] }}</p>
+                <span class="text-[11px] text-[#765F50] dark:text-[#D1C2B8] mt-1 block">Perlu peninjauan &amp; respons awal petugas</span>
             </div>
 
-            <!-- Netral (Coklat Keorenan Terracotta Tint Kontras) -->
+            <!-- Sedang Diproses -->
             <div class="p-5 rounded-2xl bg-[#C07044]/15 dark:bg-[#C07044]/25 border border-[#C07044]/35 shadow-sm">
-                <span class="text-xs font-semibold text-[#38190C] dark:text-[#F8F1EB] font-serif-title">Sentimen Netral / Usulan Umum</span>
-                <p class="font-serif-title text-3xl font-extrabold text-[#C07044] dark:text-[#E08A58] mt-2">22%</p>
-                <span class="text-[11px] text-[#765F50] dark:text-[#D1C2B8] mt-1 block">Pertanyaan jadwal & prosedur desa</span>
+                <span class="text-xs font-semibold text-[#38190C] dark:text-[#F8F1EB] font-serif-title">Sedang Diproses</span>
+                <p class="font-serif-title text-3xl font-extrabold text-[#C07044] dark:text-[#E08A58] mt-2">{{ $insights['processedAspirations'] }}</p>
+                <span class="text-[11px] text-[#765F50] dark:text-[#D1C2B8] mt-1 block">Dalam penanganan perangkat desa</span>
             </div>
 
-            <!-- Mendesak (Coklat Tua Solid Kontras) -->
-            <div class="p-5 rounded-2xl bg-[#38190C] text-[#FFF8F0] border border-[#251007] shadow-sm">
-                <span class="text-xs font-semibold text-amber-200/90 font-serif-title">Sentimen Mendesak / Keluhan</span>
-                <p class="font-serif-title text-3xl font-extrabold text-[#E08A58] mt-2">10%</p>
-                <span class="text-[11px] text-stone-300 mt-1 block">Percepatan layanan surat &amp; infrastruktur</span>
+            <!-- Selesai Ditangani -->
+            <div class="p-5 rounded-2xl bg-[#059669]/10 dark:bg-[#059669]/20 border border-[#059669]/30 shadow-sm">
+                <span class="text-xs font-semibold text-[#065F46] dark:text-[#34D399] font-serif-title">Selesai Ditangani</span>
+                <p class="font-serif-title text-3xl font-extrabold text-[#059669] dark:text-[#34D399] mt-2">{{ $insights['completedAspirations'] }}</p>
+                <span class="text-[11px] text-[#047857] dark:text-[#6EE7B7] mt-1 block">Aspirasi warga telah tuntas diselesaikan</span>
             </div>
 
         </div>

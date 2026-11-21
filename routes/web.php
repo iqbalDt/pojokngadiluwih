@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AiKnowledgeController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -13,10 +14,13 @@ use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\ProfileController;
 use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\UmkmController;
+use App\Http\Middleware\EnsureAdminPasswordChanged;
 use App\Services\FirebaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,13 +59,18 @@ Route::prefix('layanan')->name('services.')->group(function (): void {
 // Visualisasi Demografi & Data Sosial Publik
 Route::get('/demografi', [DemographicsController::class, 'index'])->name('demographics');
 
+// Kebijakan Privasi & Perlindungan Data Warga
+Route::get('/kebijakan-privasi', function () {
+    return view('public.privacy');
+})->name('privacy');
+
 // API Bridge ke Python AI Service
 Route::post('/api/chatbot/message', [ChatbotController::class, 'sendMessage'])->name('chatbot.send');
 
-// Firebase Diagnostic & Health Check Route
+// Firebase Diagnostic & Health Check Route (Khusus Admin Terautentikasi)
 Route::get('/firebase/ping', function (FirebaseService $firebase) {
     return response()->json($firebase->testConnection());
-})->name('firebase.ping');
+})->middleware('auth')->name('firebase.ping');
 
 /*
 |--------------------------------------------------------------------------
@@ -83,17 +92,37 @@ Route::post('/login', function (Request $request, FirebaseService $firebase) {
         'remember' => ['sometimes', 'boolean'],
     ]);
 
+    $throttleKey = 'login:'.Str::lower($credentials['email']).'|'.$request->ip();
+
+    if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+        $seconds = RateLimiter::availableIn($throttleKey);
+
+        return back()
+            ->withErrors(['email' => "Terlalu banyak percobaan masuk. Silakan coba lagi dalam {$seconds} detik."])
+            ->onlyInput('email');
+    }
+
     $user = $firebase->authenticateAdmin($credentials['email'], $credentials['password']);
 
     if (! $user) {
+        RateLimiter::hit($throttleKey, 60);
+
         return back()
             ->withErrors(['email' => 'Email atau kata sandi tidak sesuai.'])
             ->onlyInput('email');
     }
 
+    RateLimiter::clear($throttleKey);
+
     Auth::login($user, $request->boolean('remember'));
 
     $request->session()->regenerate();
+
+    if ((bool) ($user->must_change_password ?? false)) {
+        return redirect()
+            ->route('admin.account.index')
+            ->with('warning', 'Demi keamanan, silakan ganti kata sandi sementara Anda terlebih dahulu.');
+    }
 
     return redirect()->intended(route('admin.dashboard'));
 })->name('login.perform');
@@ -111,10 +140,17 @@ Route::post('/logout', function (Request $request) {
 | Admin Routes (Dilindungi Middleware Auth)
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): void {
+Route::prefix('admin')->name('admin.')->middleware(['auth', EnsureAdminPasswordChanged::class])->group(function (): void {
     // Overview Dashboard
     Route::get('/', [DashboardController::class, 'index']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Akun Saya & Pengaturan Keamanan
+    Route::prefix('akun')->name('account.')->group(function (): void {
+        Route::get('/', [AccountController::class, 'index'])->name('index');
+        Route::put('/profil', [AccountController::class, 'updateProfile'])->name('profile');
+        Route::put('/sandi', [AccountController::class, 'updatePassword'])->name('password');
+    });
 
     // CMS Berita & Pengumuman
     Route::prefix('berita')->name('news.')->group(function (): void {

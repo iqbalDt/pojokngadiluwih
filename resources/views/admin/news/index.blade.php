@@ -59,7 +59,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs min-w-[640px]">
                 <thead>
-                    <tr class="border-b border-[#EADBCC] text-[#38190C] font-serif-title font-bold text-xs sm:text-sm">
+                    <tr class="border-b border-[#EADBCC] dark:border-[#3E2E23] text-[#38190C] dark:text-[#FAF3EB] font-serif-title font-bold text-xs sm:text-sm">
                         <th class="pb-4 pr-4 pl-1 w-[38%]">Judul Berita</th>
                         <th class="pb-4 px-4 w-[20%]">Kategori</th>
                         <th class="pb-4 px-4 w-[18%]">Tanggal Rilis</th>
@@ -67,7 +67,7 @@
                         <th class="pb-4 pl-4 pr-1 w-[12%] text-right sm:text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="news-table-body" class="divide-y divide-[#EADBCC]/70 text-stone-700">
+                <tbody id="news-table-body" class="divide-y divide-[#EADBCC]/70 dark:divide-[#3E2E23] text-stone-700 dark:text-[#D4C3B5]">
                     @php $renderedRows = 0; @endphp
                     @forelse($news as $item)
                         @php 
@@ -81,22 +81,22 @@
                         @endphp
                         <tr class="news-row hover:bg-[#F5ECE1]/60 dark:hover:bg-[#251D17]/60 transition" data-category="{{ $cat }}" data-title="{{ strtolower($item->title) }}">
                             <!-- Judul Berita -->
-                            <td class="py-4 pr-4 pl-1 text-[#38190C] font-normal leading-relaxed">
+                            <td class="py-4 pr-4 pl-1 text-[#38190C] dark:text-[#FAF3EB] font-normal leading-relaxed">
                                 {{ $item->title }}
                             </td>
 
                             <!-- Kategori -->
-                            <td class="py-4 px-4 text-stone-600 font-normal">
+                            <td class="py-4 px-4 text-stone-600 dark:text-[#D4C3B5] font-normal">
                                 {{ str_contains(strtolower($cat), 'kegiatan') ? 'Kegiatan Desa' : $cat }}
                             </td>
 
                             <!-- Tanggal Rilis -->
-                            <td class="py-4 px-4 text-stone-600 font-normal whitespace-nowrap">
+                            <td class="py-4 px-4 text-stone-600 dark:text-[#D4C3B5] font-normal whitespace-nowrap">
                                 {{ $item->published_at ? $item->published_at->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
                             </td>
 
                             <!-- Status -->
-                            <td class="py-4 px-4 text-stone-600 font-normal">
+                            <td class="py-4 px-4 text-stone-600 dark:text-[#D4C3B5] font-normal">
                                 {{ $statusLabel }}
                             </td>
 

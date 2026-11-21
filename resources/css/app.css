@@ -12,81 +12,95 @@
 }
 
 /* ==========================================================================
-   TRUE DARK MODE STYLING (MENYELURUH, KONTRAS TINGGI & ELEGAN)
+   TRUE DARK MODE STYLING — 5-TIER WARM ESPRESSO & LUMINOUS TERRACOTTA SYSTEM
+   Hierarki elevasi jelas (Canvas -> Section -> Card -> Sub-Card -> Accent)
    ========================================================================== */
 html.dark {
     color-scheme: dark;
 }
 
-/* Base Body & Layouts */
+/* ---------- TIER 0: Deep Canvas & Full-Page Wrappers ---------- */
 html.dark,
 html.dark body {
     background-color: #0F0B08 !important;
-    color: #F8F1EB !important;
+    color: #FAF3EB !important;
 }
 
 html.dark main {
-    background-color: #0F0B08 !important;
-    color: #F8F1EB !important;
+    background-color: #120D0A !important;
+    color: #FAF3EB !important;
 }
 
-/* Hero Section & Section Backgrounds yang sebelumnya Coklat Terang */
-html.dark .bg-\[\#BD6E37\],
-html.dark .bg-\[\#BD6E44\],
-html.dark .bg-\[\#C47247\] {
-    background-color: #140E0A !important;
+/* Hanya wrapper halaman/section penuh yang menggunakan #BD6E37 menjadi gelap (BUKAN tombol/pill/badge!) */
+html.dark body.bg-\[\#BD6E37\],
+html.dark main.bg-\[\#BD6E37\],
+html.dark section.bg-\[\#BD6E37\],
+html.dark div.min-h-screen.bg-\[\#BD6E37\],
+html.dark section.bg-\[\#BD6E44\],
+html.dark main.bg-\[\#BD6E44\] {
+    background-color: #120D0A !important;
     background-image: none !important;
 }
 
-/* Sub-container terracotta (seperti Langkah Surat & Filter Box Berita) */
-html.dark .bg-\[\#B5632E\]\/80,
-html.dark .bg-\[\#A85822\]\/65,
-html.dark .bg-\[\#994F21\]\/80,
-html.dark .bg-\[\#994F21\]\/85 {
-    background-color: #21160F !important;
-    border-color: #3D281B !important;
+/* Admin Main Background Shell (Kontras jelas dengan kartu admin) */
+html.dark .bg-\[\#FAF7F2\] {
+    background-color: #110C09 !important;
+    color: #FAF3EB !important;
 }
 
-/* Header & Navbar Publik */
+/* ---------- TIER 1: Alternating Public Sections ---------- */
+html.dark section.bg-\[\#F5EFE6\] {
+    background-color: #16100C !important;
+    border-top: 1px solid #2A1F18 !important;
+    color: #FAF3EB !important;
+}
+
+/* ---------- Header & Navbar Publik ---------- */
 html.dark header.sticky,
-html.dark nav {
-    background-color: rgba(17, 12, 9, 0.96) !important;
-    border-color: #2B1D15 !important;
+html.dark nav:not(#admin-sidebar nav) {
+    background-color: rgba(18, 13, 10, 0.96) !important;
+    border-color: #33241A !important;
 }
 
-/* Container, Card & Box Krem/Putih Utama -> Dark Espresso Card */
-html.dark .bg-white,
+/* ---------- TIER 2: Primary Elevated Cards (#201813 + Border Tegas #3E2E23) ---------- */
+html.dark .bg-white:not(#theme-toggle-dot):not(.w-1):not(.w-2),
 html.dark .bg-white\/70,
+html.dark .bg-white\/80,
+html.dark .bg-white\/90,
 html.dark .bg-slate-50,
 html.dark .bg-stone-50,
 html.dark .bg-\[\#FFFDF9\],
 html.dark .bg-\[\#FFFBF5\],
-html.dark .bg-\[\#FAF1E6\],
+html.dark .bg-\[\#EFE1CF\],
+html.dark .bg-\[\#FBF4EC\],
+html.dark .bg-\[\#FBF6F0\],
+html.dark .bg-\[\#FDF8F3\],
+html.dark .bg-\[\#FDF7F0\],
+html.dark .bg-\[\#FDFBF7\],
+html.dark .bg-\[\#FAF4ED\],
+html.dark div.bg-\[\#F5EFE6\],
+html.dark .bg-\[\#D4A987\] {
+    background-color: #201813 !important;
+    border-color: #3E2E23 !important;
+    color: #FAF3EB !important;
+}
+
+/* ---------- TIER 3: Nested Sub-Cards, Inset Boxes, Pills & Inner Containers (#2B211A) ---------- */
+html.dark .bg-\[\#FAF1E6\]:not([data-theme-knob]),
 html.dark .bg-\[\#FAF1E6\]\/80,
 html.dark .bg-\[\#FAF1E6\]\/95,
 html.dark .bg-\[\#FAF1E6\]\/40,
 html.dark .bg-\[\#FAF2E8\],
 html.dark .bg-\[\#FAF3EB\],
 html.dark .bg-\[\#FAF3EA\],
-html.dark .bg-\[\#FAF4ED\],
-html.dark .bg-\[\#FAF7F2\],
-html.dark .bg-\[\#F5EFE6\],
-html.dark .bg-\[\#EFE1CF\],
-html.dark .bg-\[\#FBF4EC\],
-html.dark .bg-\[\#FBF6F0\],
-html.dark .bg-\[\#FDF8F3\],
-html.dark .bg-\[\#FDF7F0\] {
-    background-color: #18120D !important;
-    border-color: #2E2017 !important;
-    color: #F8F1EB !important;
-}
-
-/* Sub-Cards, Inner Bars, Kalender Header, Quick Pills & Box Sekunder */
 html.dark .bg-\[\#F8F3EC\],
 html.dark .bg-\[\#F5ECE1\],
 html.dark .bg-\[\#F3E7DA\],
 html.dark .bg-\[\#F0E4D5\],
+html.dark .bg-\[\#F0E4D5\]\/60,
 html.dark .bg-\[\#EDE0D1\],
+html.dark .bg-\[\#EDE0D1\]\/60,
+html.dark .bg-\[\#EDE0D1\]\/70,
 html.dark .bg-\[\#EAE0D3\],
 html.dark .bg-\[\#EADBCE\],
 html.dark .bg-\[\#EADBCC\],
@@ -94,47 +108,189 @@ html.dark .bg-\[\#E7D6C5\],
 html.dark .bg-\[\#E5D5C3\],
 html.dark .bg-\[\#E4D5C3\],
 html.dark .bg-\[\#E2D2BE\],
-html.dark .bg-\[\#D4A987\],
 html.dark .bg-\[\#DECBB5\]\/50,
+html.dark .bg-\[\#D7A376\],
 html.dark .bg-stone-100,
 html.dark .bg-stone-100\/90,
 html.dark .bg-slate-100,
 html.dark .bg-slate-100\/80 {
-    background-color: #231A13 !important;
-    border-color: #3A2A1E !important;
-    color: #F8F1EB !important;
+    background-color: #2B211A !important;
+    border-color: #4D3A2C !important;
+    color: #FAF3EB !important;
 }
 
-/* Hover state pada sub-card dan tombol di Dark Mode */
+/* Elevasi otomatis untuk kartu yang berada DI DALAM kartu lain agar tidak menyatu/nyaru */
+html.dark .bg-\[\#D4A987\] .bg-white,
+html.dark .bg-\[\#EFE1CF\] .bg-white\/70,
+html.dark .bg-\[\#F5EFE6\] .bg-\[\#FAF4ED\],
+html.dark .bg-white .bg-\[\#FAF4ED\],
+html.dark .bg-\[\#FBF4EC\] .bg-\[\#FAF4ED\],
+html.dark .bg-\[\#FDF8F3\] .bg-\[\#FAF4ED\],
+html.dark .bg-\[\#EDE0D1\]\/60 .bg-white\/90,
+html.dark .bg-\[\#EDE0D1\]\/70 .bg-white\/90 {
+    background-color: #1C1510 !important;
+    border-color: #4D3A2C !important;
+    color: #FAF3EB !important;
+}
+
+/* Ring offset pada kalender agar tidak bergaris putih menyilaukan di dark mode */
+html.dark .ring-offset-1,
+html.dark .ring-offset-2 {
+    --tw-ring-offset-color: #201813 !important;
+}
+
+/* Modal Header & Footer sedikit lebih terangkat daripada bodi modal */
+html.dark footer .fixed div.bg-\[\#F5EFE6\] {
+    background-color: #281F18 !important;
+    border-color: #443326 !important;
+}
+
+/* Translucent Terracotta Sub-Containers (Langkah Surat, Filter Box Berita, Hero Quote & Status) */
+html.dark .bg-\[\#B5632E\]\/80,
+html.dark .bg-\[\#A85822\]\/65,
+html.dark .bg-\[\#994F21\]\/80,
+html.dark .bg-\[\#994F21\]\/85 {
+    background-color: #261911 !important;
+    border-color: #543624 !important;
+}
+
+/* Tag Pills di Hero Section */
+html.dark .bg-\[\#8E4A1E\]\/80,
+html.dark .bg-\[\#A55622\]\/70 {
+    background-color: #3A2113 !important;
+    border-color: #7A4626 !important;
+    color: #FDEEE0 !important;
+}
+
+/* Badge Transparan Putih di Hero (Demografi & Tombol Kembali Kebijakan Privasi) */
+html.dark .bg-white\/20 {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
+    color: #FAF3EB !important;
+}
+
+/* Pagination Disabled Button */
+html.dark .bg-white\/40 {
+    background-color: rgba(43, 33, 26, 0.65) !important;
+    border-color: #3A2B20 !important;
+    color: #7D6A5B !important;
+}
+
+/* ---------- TIER 4: Featured Rich Mahogany Cards (AI Hero, Jam Real-Time, Insight Card 1, Langkah Surat) ---------- */
+html.dark div.bg-\[\#38190C\] {
+    background-color: #2D170C !important;
+    border-color: #6B3C21 !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark .from-\[\#562912\] {
+    --tw-gradient-from: #381C0E !important;
+    --tw-gradient-to: #241108 !important;
+    background-image: linear-gradient(to bottom, #381C0E, #241108) !important;
+    border-color: #6E3F23 !important;
+}
+
+/* Gradient Cards (4 Stats Beranda, Fallback Card Hero/Berita) */
+html.dark .from-\[\#E2B992\],
+html.dark .from-\[\#EBD9C7\],
+html.dark .from-\[\#DECBBA\] {
+    --tw-gradient-from: #2E2016 !important;
+    --tw-gradient-to: #1F1610 !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+    background-image: linear-gradient(to bottom right, #2E2016, #1F1610) !important;
+    border-color: #593E2C !important;
+    color: #FAF3EB !important;
+}
+
+/* Pill Header 3D Panduan Surat & Lingkaran Nomor Langkah 1-2-3 */
+html.dark .from-white.to-\[\#F5EBE0\] {
+    background-image: linear-gradient(to bottom, #3A271B, #281B12) !important;
+    border-color: #6E462B !important;
+    color: #FAF3EB !important;
+}
+
+html.dark .from-white.to-\[\#F2E8DC\] {
+    background-image: linear-gradient(to bottom, #D67F45, #B5602B) !important;
+    border-color: #E8A070 !important;
+    color: #FFFFFF !important;
+}
+
+/* ---------- ACCENT BUTTONS, PILLS, BADGES & ACTIVE FILTERS (SELALU KONTRAS & MENYALA) ---------- */
+html.dark button.bg-\[\#BD6E37\],
+html.dark a.bg-\[\#BD6E37\],
+html.dark span.bg-\[\#BD6E37\],
+html.dark div.bg-\[\#BD6E37\]:not(.min-h-screen),
+html.dark button.bg-\[\#C07044\],
+html.dark a.bg-\[\#C07044\],
+html.dark span.bg-\[\#C07044\],
+html.dark button.bg-\[\#C47247\] {
+    background-color: #C8753E !important;
+    color: #FFFFFF !important;
+}
+
+html.dark button.bg-\[\#BD6E37\]:hover,
+html.dark a.bg-\[\#BD6E37\]:hover,
+html.dark button.bg-\[\#C07044\]:hover,
+html.dark a.bg-\[\#C07044\]:hover {
+    background-color: #DC854C !important;
+    color: #FFFFFF !important;
+}
+
+/* Tombol & Pill Aktif Coklat Gelap -> Terracotta Terang agar tidak tenggelam di dark mode */
+html.dark button.bg-\[\#38190C\],
+html.dark button.bg-\[\#3D1E0F\],
+html.dark button.bg-\[\#2B140B\],
+html.dark button.bg-\[\#2A1408\],
+html.dark a.bg-\[\#2A1307\],
+html.dark span.bg-\[\#2A1307\],
+html.dark span.bg-\[\#38190C\] {
+    background-color: #C8753E !important;
+    border-color: #E0925D !important;
+    color: #FFFFFF !important;
+}
+
+html.dark button.bg-\[\#38190C\]:hover,
+html.dark button.bg-\[\#3D1E0F\]:hover,
+html.dark button.bg-\[\#2B140B\]:hover,
+html.dark button.bg-\[\#2A1408\]:hover,
+html.dark a.bg-\[\#2A1307\]:hover {
+    background-color: #DC854C !important;
+    color: #FFFFFF !important;
+}
+
+/* Pastikan teks di dalam tombol terracotta selalu putih bersih */
+html.dark button.bg-\[\#C07044\] *,
+html.dark button.bg-\[\#BD6E37\] *,
+html.dark a.bg-\[\#C07044\] *,
+html.dark a.bg-\[\#BD6E37\] *,
+html.dark button.bg-\[\#38190C\] *,
+html.dark button.bg-\[\#3D1E0F\] *,
+html.dark a.bg-\[\#2A1307\] * {
+    color: #FFFFFF !important;
+}
+
+/* Hover States pada Sub-Card & Tombol Sekunder */
 html.dark .hover\:bg-\[\#F8F3EC\]:hover,
 html.dark .hover\:bg-\[\#F5ECE1\]:hover,
 html.dark .hover\:bg-\[\#F3E7DA\]:hover,
 html.dark .hover\:bg-\[\#EAE0D3\]:hover,
 html.dark .hover\:bg-\[\#DCBEA5\]:hover,
+html.dark .hover\:bg-\[\#F5EFE6\]:hover,
+html.dark .hover\:bg-white:hover,
 html.dark .hover\:bg-white\/40:hover {
-    background-color: #2E2219 !important;
+    background-color: #36291F !important;
 }
 
-/* Gradient Cards (4 Stats Beranda, Fallback Card Hero/Berita, Badge Timbul Panduan Surat) */
-html.dark .from-\[\#E2B992\],
-html.dark .from-\[\#EBD9C7\],
-html.dark .from-\[\#DECBBA\],
-html.dark .from-white {
-    --tw-gradient-from: #281B12 !important;
-    --tw-gradient-to: #1B120C !important;
-    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
-    background-image: linear-gradient(to bottom right, #281B12, #1B120C) !important;
-    border-color: #3E2A1D !important;
-    color: #F8F1EB !important;
-}
-
-/* Card Border & Dividers */
+/* ---------- BORDERS & DIVIDERS (TEGAS & RAPIH) ---------- */
 html.dark .border-\[\#DECBB8\],
 html.dark .border-\[\#DFCEB9\],
+html.dark .border-\[\#DFCBB8\],
+html.dark .border-\[\#E0D0C0\],
 html.dark .border-\[\#E2CEB9\],
 html.dark .border-\[\#E4D5C5\],
 html.dark .border-\[\#E5D3BF\],
 html.dark .border-\[\#E7DAC9\],
+html.dark .border-\[\#E8DACB\],
 html.dark .border-\[\#E9DFD3\],
 html.dark .border-\[\#EADBCC\],
 html.dark .border-\[\#ECDCCB\],
@@ -142,24 +298,42 @@ html.dark .border-\[\#ECE0D0\],
 html.dark .border-\[\#E2D2BE\],
 html.dark .border-\[\#D5C0AC\],
 html.dark .border-\[\#D5C0AD\],
+html.dark .border-\[\#D5C2AF\],
+html.dark .border-\[\#D5C2B0\],
 html.dark .border-\[\#DCCBB8\],
 html.dark .border-\[\#DDB088\],
 html.dark .border-\[\#CBB39C\],
 html.dark .border-\[\#3D1E0F\],
+html.dark .border-\[\#3D1E0F\]\/20,
+html.dark .border-\[\#38190C\]\/20,
+html.dark .border-white\/80,
 html.dark .border-slate-100,
 html.dark .border-slate-200,
 html.dark .border-stone-200,
-html.dark .border-stone-300,
-html.dark .divide-slate-100,
-html.dark .divide-stone-200 {
-    border-color: #332419 !important;
+html.dark .border-stone-300 {
+    border-color: #443326 !important;
 }
 
-/* Headings & Teks Coklat Tua -> Putih Gading Kontras Tinggi */
-html.dark .text-\[\#38190C\],
-html.dark .text-\[\#3D1E0F\],
-html.dark .text-\[\#2A1307\],
+html.dark .divide-\[\#EADBCC\] > :not(:last-child),
+html.dark .divide-\[\#EADBCC\]\/60 > :not(:last-child),
+html.dark .divide-\[\#EADBCC\]\/70 > :not(:last-child),
+html.dark .divide-slate-100 > :not(:last-child),
+html.dark .divide-stone-200 > :not(:last-child) {
+    border-color: #3A2B20 !important;
+}
+
+/* Garis Aksen Kiri Visi Misi & Border Kartu Struktur Organisasi */
+html.dark .border-\[\#4A2411\] {
+    border-color: #C8753E !important;
+}
+
+/* ---------- HIGH-CONTRAST TEXT HIERARCHY ---------- */
+/* Headings & Primary Text -> Warm Ivory (#FAF3EB) */
+html.dark .text-\[\#38190C\]:not([data-theme-knob]),
+html.dark .text-\[\#3D1E0F\]:not([data-theme-knob]),
+html.dark .text-\[\#2A1307\]:not([data-theme-knob]),
 html.dark .text-\[\#2B140B\],
+html.dark .text-\[\#461F0B\],
 html.dark .text-\[\#4A2411\],
 html.dark .text-\[\#4E2713\],
 html.dark .text-\[\#4E3120\],
@@ -170,113 +344,228 @@ html.dark .text-\[\#5C3822\],
 html.dark .text-\[\#5C3925\],
 html.dark .text-slate-900,
 html.dark .text-slate-800,
-html.dark .text-slate-700,
 html.dark .text-stone-900,
 html.dark .text-stone-800,
-html.dark .text-stone-700,
 html.dark h1,
 html.dark h2,
 html.dark h3,
 html.dark h4 {
-    color: #F8F1EB !important;
+    color: #FAF3EB !important;
 }
 
-/* Muted & Secondary Text */
+/* Secondary & Body Text -> Warm Light Taupe (#D4C3B5) */
+html.dark .text-\[\#543828\],
+html.dark .text-\[\#5C4233\],
 html.dark .text-\[\#6E5343\],
 html.dark .text-\[\#6E4F3E\],
-html.dark .text-\[\#5C4233\],
 html.dark .text-\[\#765F50\],
+html.dark .text-\[\#7A5B49\],
 html.dark .text-\[\#7B5B49\],
 html.dark .text-\[\#7C5F4D\],
 html.dark .text-\[\#8C6D58\],
 html.dark .text-\[\#8C7063\],
-html.dark .text-\[\#8E4A1E\],
-html.dark .text-slate-500,
+html.dark .text-slate-700,
 html.dark .text-slate-600,
-html.dark .text-stone-500,
+html.dark .text-slate-500,
+html.dark .text-stone-700,
 html.dark .text-stone-600,
-html.dark .text-stone-400 {
-    color: #C7B6A8 !important;
+html.dark .text-stone-500 {
+    color: #D4C3B5 !important;
 }
 
-/* Tanggal Kalender Bulan Lain (Non-Current Month) di Dark Mode */
+/* Muted / Metadata Text (#A89485) */
+html.dark .text-stone-400,
+html.dark .text-slate-400,
+html.dark .text-\[\#9E8270\] {
+    color: #A89485 !important;
+}
+
+/* Brand Terracotta Accent Text -> Luminous Apricot (#EB9A62) */
+html.dark .text-\[\#BD6E37\],
+html.dark .text-\[\#C07044\],
+html.dark .text-\[\#C47247\],
+html.dark .text-\[\#B8683B\],
+html.dark .text-\[\#8E4A1E\] {
+    color: #EB9A62 !important;
+}
+
+html.dark .hover\:text-\[\#BD6E37\]:hover,
+html.dark .hover\:text-\[\#8E4A1E\]:hover,
+html.dark .hover\:text-\[\#C07044\]:hover,
+html.dark .group:hover .group-hover\:text-\[\#8E4A1E\],
+html.dark .group:hover .group-hover\:text-\[\#BD6E37\] {
+    color: #F7B485 !important;
+}
+
+/* Tanggal Kalender Bulan Lain (Non-Current Month) & Hari Minggu */
 html.dark .text-\[\#D0C2B4\] {
-    color: #5C4B3E !important;
+    color: #665446 !important;
 }
 
-/* Bagan Struktur Organisasi Desa di Dark Mode */
-html.dark .bg-\[\#DE9D6D\] {
-    background-color: #2E1F15 !important;
-    color: #F8F1EB !important;
+html.dark .text-red-300 {
+    color: #8C4A4A !important;
 }
 
-html.dark svg line[stroke="#4A2411"] {
-    stroke: #C07044 !important;
+/* ---------- SEMANTIC STATUS COLORS & BADGES ---------- */
+/* Green / Success */
+html.dark .text-\[\#2E7D32\],
+html.dark .text-\[\#065F46\],
+html.dark .text-\[\#059669\],
+html.dark .text-\[\#047857\],
+html.dark .text-emerald-700,
+html.dark .text-emerald-800,
+html.dark .text-emerald-900 {
+    color: #6EE7B7 !important;
 }
 
-/* Status Badges (Approved, Pending, Rejected, Logout Button) di Dark Mode */
-html.dark .bg-rose-50,
-html.dark .bg-\[\#FEE2E2\] {
-    background-color: rgba(159, 18, 57, 0.28) !important;
-    border-color: rgba(244, 63, 94, 0.4) !important;
-    color: #FDA4AF !important;
+html.dark .bg-\[\#2E7D32\] {
+    background-color: #4ADE80 !important;
 }
 
 html.dark .bg-\[\#D1FAE5\],
 html.dark .bg-\[\#ECFDF5\],
-html.dark .bg-\[\#E8F5E9\] {
-    background-color: rgba(6, 95, 70, 0.32) !important;
-    border-color: rgba(16, 185, 129, 0.4) !important;
+html.dark .bg-\[\#E8F5E9\],
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-100\/80 {
+    background-color: rgba(16, 185, 129, 0.18) !important;
+    border-color: rgba(52, 211, 153, 0.42) !important;
     color: #6EE7B7 !important;
+}
+
+/* Red / Danger / Sunday */
+html.dark .text-red-600,
+html.dark .text-rose-600,
+html.dark .text-rose-700,
+html.dark .text-rose-800,
+html.dark .text-rose-900,
+html.dark .text-\[\#991B1B\],
+html.dark .text-\[\#B91C1C\] {
+    color: #FB7185 !important;
+}
+
+html.dark .bg-rose-50,
+html.dark .bg-rose-100\/80,
+html.dark .bg-\[\#FEE2E2\] {
+    background-color: rgba(225, 29, 72, 0.22) !important;
+    border-color: rgba(251, 113, 133, 0.42) !important;
+    color: #FDA4AF !important;
+}
+
+/* Amber / Pending / Warning */
+html.dark .text-\[\#B45309\],
+html.dark .text-\[\#92400E\],
+html.dark .text-\[\#D97706\] {
+    color: #FBBF24 !important;
 }
 
 html.dark .bg-\[\#FCE8D3\],
 html.dark .bg-\[\#FDE8D3\],
-html.dark .bg-\[\#FEF9EE\] {
-    background-color: rgba(180, 83, 9, 0.28) !important;
-    border-color: rgba(245, 158, 11, 0.4) !important;
+html.dark .bg-\[\#FEF9EE\],
+html.dark .bg-\[\#FEF3C7\] {
+    background-color: rgba(217, 119, 6, 0.22) !important;
+    border-color: rgba(251, 191, 36, 0.42) !important;
     color: #FCD34D !important;
 }
 
-/* Input Fields & Search Bars di Dark Mode */
-html.dark input,
+/* Indigo / Completed */
+html.dark .text-\[\#3730A3\] {
+    color: #C7D2FE !important;
+}
+
+html.dark .bg-\[\#E0E7FF\] {
+    background-color: rgba(99, 102, 241, 0.22) !important;
+    border-color: rgba(165, 180, 252, 0.42) !important;
+    color: #C7D2FE !important;
+}
+
+/* Cyan / Aspirasi Warga */
+html.dark .text-cyan-600 {
+    color: #38BDF8 !important;
+}
+
+/* ---------- BAGAN STRUKTUR ORGANISASI DESA ---------- */
+html.dark .bg-\[\#4A2411\] {
+    background-color: #9E5124 !important;
+    color: #FFFFFF !important;
+}
+
+html.dark .bg-\[\#DE9D6D\] {
+    background-color: #2C2119 !important;
+    color: #FAF3EB !important;
+}
+
+html.dark svg line[stroke="#4A2411"] {
+    stroke: #D4824B !important;
+}
+
+/* ---------- INPUTS, TEXTAREAS, SELECTS & FOCUS STATES ---------- */
+html.dark input:not([type="checkbox"]):not([type="radio"]),
 html.dark textarea,
 html.dark select {
-    background-color: #211914 !important;
-    border-color: #3A2B20 !important;
-    color: #F8F1EB !important;
+    background-color: #2B211A !important;
+    border-color: #523E2F !important;
+    color: #FAF3EB !important;
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+html.dark textarea:focus,
+html.dark select:focus {
+    background-color: #30251D !important;
+    border-color: #EB9A62 !important;
+    box-shadow: 0 0 0 2px rgba(235, 154, 98, 0.25) !important;
+}
+
+html.dark select option {
+    background-color: #201813 !important;
+    color: #FAF3EB !important;
 }
 
 html.dark input::placeholder,
 html.dark textarea::placeholder {
-    color: #8A7668 !important;
+    color: #9A8575 !important;
 }
 
-/* Input di dalam wrapper kapsul (seperti Search Berita, UMKM, Panduan Surat) */
-html.dark .rounded-full > input.bg-transparent {
+/* Input di dalam wrapper kapsul (Search Berita, UMKM, Panduan Surat) */
+html.dark .rounded-full > input.bg-transparent,
+html.dark .rounded-full > input.bg-transparent:focus {
     background-color: transparent !important;
     border-color: transparent !important;
+    box-shadow: none !important;
 }
 
-/* Footer di Dark Mode */
+/* ---------- THEME TOGGLE KNOB PROTECTION ---------- */
+html.dark [data-theme-knob] {
+    background-color: #FAF1E6 !important;
+    color: #2A1307 !important;
+}
+
+html.dark [data-theme-knob] svg {
+    color: #2A1307 !important;
+}
+
+html.dark #theme-toggle-dot {
+    background-color: #FFFFFF !important;
+}
+
+/* ---------- FOOTER & MODAL DI DARK MODE ---------- */
 html.dark footer {
     background-color: #0B0806 !important;
-    border-color: #241912 !important;
-    color: #C7B6A8 !important;
+    border-color: #2E2017 !important;
+    color: #D4C3B5 !important;
 }
 
-html.dark footer a {
-    color: #C7B6A8 !important;
+html.dark footer a:not(.text-\[\#BD6E37\]) {
+    color: #D4C3B5 !important;
 }
 
 html.dark footer a:hover {
-    color: #E89E6C !important;
+    color: #F7B485 !important;
 }
 
-/* Admin Panel Khusus di Dark Mode */
+/* ---------- ADMIN PANEL KHUSUS DI DARK MODE ---------- */
 html.dark #admin-sidebar {
-    background-color: #150F0B !important;
-    border-right: 1px solid #2A1E17 !important;
+    background-color: #16100C !important;
+    border-right: 1px solid #33241A !important;
 }
 
 html.dark #admin-sidebar a {
@@ -288,24 +577,163 @@ html.dark #admin-sidebar a:hover {
     color: #FFFFFF !important;
 }
 
-/* Active menu item di Admin Sidebar saat Dark Mode */
+/* Active menu item di Admin Sidebar */
 html.dark #admin-sidebar a.bg-\[\#FFFBF5\] {
-    background-color: #C07044 !important;
+    background-color: #C8753E !important;
     color: #FFFFFF !important;
-    border-color: #D58550 !important;
+    border-color: #E0925D !important;
 }
 
 html.dark #admin-sidebar a.bg-\[\#FFFBF5\] svg {
     color: #FFFFFF !important;
 }
 
-/* Chatbot Floating Widget di Dark Mode */
+/* Tombol "Kembali ke Web Publik" di Admin Sidebar */
+html.dark #admin-sidebar a.bg-\[\#38190C\] {
+    background-color: #2B211A !important;
+    border: 1px solid #4D3A2C !important;
+    color: #FAF3EB !important;
+}
+
+html.dark #admin-sidebar a.bg-\[\#38190C\]:hover {
+    background-color: #C8753E !important;
+    border-color: #E0925D !important;
+    color: #FFFFFF !important;
+}
+
+/* ---------- CHATBOT FLOATING WIDGET DI DARK MODE ---------- */
 html.dark #chatbot-window {
-    background-color: #17110C !important;
-    border-color: #2E221A !important;
-    color: #F8F1EB !important;
+    background-color: #1C1510 !important;
+    border-color: #443326 !important;
+    color: #FAF3EB !important;
 }
 
 html.dark #chatbot-messages {
-    background-color: #120D09 !important;
+    background-color: #130E0B !important;
+}
+
+html.dark #chatbot-messages .bg-white {
+    background-color: #292019 !important;
+    border-color: #473629 !important;
+    color: #FAF3EB !important;
+}
+
+html.dark #chatbot-messages .bg-\[\#3D1E0F\] {
+    background-color: #C8753E !important;
+    color: #FFFFFF !important;
+}
+
+html.dark #chatbot-form {
+    background-color: #1C1510 !important;
+    border-color: #3E2E23 !important;
+}
+
+html.dark #chatbot-window button.bg-white {
+    background-color: #2B211A !important;
+    border-color: #4D3A2C !important;
+    color: #FAF3EB !important;
+}
+
+html.dark #chatbot-window button.bg-white:hover {
+    background-color: #3A2C22 !important;
+    border-color: #EB9A62 !important;
+}
+
+/* ---------- PETA EMBEDDED DI DARK MODE (TIDAK MENYILAUKAN) ---------- */
+html.dark iframe[title*="Peta"] {
+    filter: brightness(0.86) contrast(1.06) saturate(0.92);
+}
+
+/* ---------- UNIVERSAL DARK MODE TABLE VISIBILITY ---------- */
+html.dark table thead tr,
+html.dark table thead th,
+html.dark thead tr th {
+    color: #FAF3EB !important;
+    border-color: #3E2E23 !important;
+}
+
+html.dark table tbody td {
+    color: #D4C3B5 !important;
+    border-color: #3E2E23 !important;
+}
+
+html.dark table tbody td.font-semibold,
+html.dark table tbody td strong,
+html.dark table tbody td.text-\[\#38190C\],
+html.dark table tbody td .text-\[\#38190C\] {
+    color: #FAF3EB !important;
+}
+
+html.dark .text-\[\#38190C\]\/80,
+html.dark .text-\[\#38190C\]\/90,
+html.dark .text-\[\#2A1307\]\/80,
+html.dark .text-\[\#2A1307\]\/90 {
+    color: #FAF3EB !important;
+}
+
+/* Admin Navigation Subheadings & Search Placeholder */
+html.dark #admin-sidebar div.text-amber-100\/75,
+html.dark #admin-sidebar .text-amber-100\/75 {
+    color: #F6D0A1 !important;
+}
+
+html.dark input#admin-search-input::placeholder {
+    color: #A89485 !important;
+}
+
+/* ---------- KEBIJAKAN PRIVASI PAGE & MODAL DARK MODE ---------- */
+html.dark #privacy-root .bg-\[\#F5EFE6\] {
+    background-color: #18120D !important;
+    border-color: #2E2017 !important;
+}
+
+html.dark #privacy-root .bg-\[\#EDE0D1\],
+html.dark #privacy-root .bg-\[\#EDE0D1\]\/60 {
+    background-color: #231A13 !important;
+    border-color: #3A2A1E !important;
+}
+
+html.dark #privacy-root .bg-\[\#FAF4ED\] {
+    background-color: #201812 !important;
+    border-color: #2E2017 !important;
+    color: #D4C3B5 !important;
+}
+
+html.dark #privacy-root .bg-\[\#FAF4ED\] h3,
+html.dark #privacy-root .bg-\[\#FAF4ED\] strong {
+    color: #FAF3EB !important;
+}
+
+html.dark #privacy-root .bg-\[\#FAF4ED\] p,
+html.dark #privacy-root .bg-\[\#FAF4ED\] span,
+html.dark #privacy-root .bg-\[\#FAF4ED\] li {
+    color: #D4C3B5 !important;
+}
+
+/* Modal Kebijakan Privasi di Footer */
+html.dark footer .fixed .max-w-2xl {
+    background-color: #18120D !important;
+    border-color: #2E2017 !important;
+}
+
+html.dark footer .fixed .overflow-y-auto {
+    background-color: #18120D !important;
+    color: #D4C3B5 !important;
+}
+
+html.dark footer .fixed .overflow-y-auto .rounded-xl {
+    background-color: #231A13 !important;
+    border-color: #3A2A1E !important;
+}
+
+html.dark footer .fixed .overflow-y-auto .rounded-xl p {
+    color: #FAF3EB !important;
+}
+
+html.dark footer .fixed .overflow-y-auto h4 {
+    color: #FAF3EB !important;
+}
+
+html.dark footer .fixed .overflow-y-auto p {
+    color: #D4C3B5 !important;
 }

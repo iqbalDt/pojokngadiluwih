@@ -34,8 +34,6 @@ class CloudinaryService
     /**
      * Upload an image to Cloudinary (or fallback to local disk storage if unconfigured or error).
      *
-     * @param  UploadedFile  $file
-     * @param  string  $folder
      * @return string Cloudinary secure_url OR local relative path
      */
     public function upload(UploadedFile $file, string $folder = 'pojokngadiluwih'): string
@@ -174,4 +172,3 @@ class CloudinaryService
         return null;
     }
 }
-

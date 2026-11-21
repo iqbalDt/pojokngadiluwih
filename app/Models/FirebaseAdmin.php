@@ -6,4 +6,11 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 #[Hidden(['password', 'remember_token'])]
-class FirebaseAdmin extends Authenticatable {}
+class FirebaseAdmin extends Authenticatable
+{
+    /** @var string */
+    protected $keyType = 'string';
+
+    /** @var bool */
+    public $incrementing = false;
+}

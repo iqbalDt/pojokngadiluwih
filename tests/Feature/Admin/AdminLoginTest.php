@@ -83,21 +83,38 @@ class AdminLoginTest extends TestCase
             ->assertRedirect(route('login'));
     }
 
-    public function test_login_does_not_apply_a_five_attempt_rate_limit(): void
+    public function test_login_applies_a_five_attempt_rate_limit(): void
     {
         $user = User::factory()->create([
             'email' => 'petugas@example.test',
             'password' => 'correct-password',
         ]);
 
-        for ($attempt = 0; $attempt < 6; $attempt++) {
+        for ($attempt = 0; $attempt < 5; $attempt++) {
             $this->from(route('login'))
                 ->post(route('login.perform'), [
                     'email' => $user->email,
                     'password' => 'incorrect-password',
                 ])
-                ->assertRedirect(route('login'));
+                ->assertRedirect(route('login'))
+                ->assertSessionHasErrors([
+                    'email' => 'Email atau kata sandi tidak sesuai.',
+                ]);
         }
+
+        // Attempt 6 should be rate limited
+        $this->from(route('login'))
+            ->post(route('login.perform'), [
+                'email' => $user->email,
+                'password' => 'incorrect-password',
+            ])
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('email');
+
+        $this->assertStringContainsString(
+            'Terlalu banyak percobaan masuk',
+            session('errors')->first('email')
+        );
 
         $this->assertGuest();
     }

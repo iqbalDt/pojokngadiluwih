@@ -14,6 +14,7 @@
             'servicesStoreRegister' => route('services.store-register'),
             'servicesFeedback' => route('services.feedback'),
             'demographics' => route('demographics'),
+            'privacy' => route('privacy'),
             'login' => route('login'),
         ],
         'csrfToken' => csrf_token(),

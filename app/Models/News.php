@@ -77,6 +77,6 @@ class News extends Model
             return $this->image_path;
         }
 
-        return asset('storage/' . ltrim($this->image_path, '/'));
+        return asset('storage/'.ltrim($this->image_path, '/'));
     }
 }

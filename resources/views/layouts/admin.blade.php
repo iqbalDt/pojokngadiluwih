@@ -63,7 +63,7 @@
 
         <!-- Navigation Links -->
         <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto text-xs font-medium">
-            <div class="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-amber-100/75">
+            <div class="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-amber-100/75 dark:text-amber-200/90">
                 Menu Utama
             </div>
 
@@ -99,7 +99,7 @@
                 <span>Arsip Layanan & Aspirasi</span>
             </a>
 
-            <div class="pt-5 px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-amber-100/75">
+            <div class="pt-5 px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-amber-100/75 dark:text-amber-200/90">
                 Data Science
             </div>
 
@@ -117,6 +117,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 <span>Knowledge Base AI</span>
+            </a>
+
+            <div class="pt-5 px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-amber-100/75 dark:text-amber-200/90">
+                Pengaturan
+            </div>
+
+            <!-- Akun Saya -->
+            <a href="{{ route('admin.account.index') }}" class="flex items-center px-3.5 py-3 rounded-2xl transition {{ request()->routeIs('admin.account.*') ? 'bg-[#FFFBF5] text-[#38190C] font-semibold shadow-sm' : 'text-white/90 hover:bg-white/15 hover:text-white' }}">
+                <svg class="w-4 h-4 mr-3 shrink-0 {{ request()->routeIs('admin.account.*') ? 'text-[#C47247]' : 'text-amber-100' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span>Akun Saya</span>
             </a>
         </nav>
 
@@ -155,7 +167,7 @@
                     @else
                         <!-- Search Input Pill -->
                         <div class="relative w-full sm:w-80 lg:w-96">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400 dark:text-stone-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -164,7 +176,7 @@
                                 id="admin-search-input"
                                 type="text" 
                                 placeholder="@yield('search_placeholder', 'Cari judul berita yang diinginkan')" 
-                                class="w-full pl-10 pr-4 py-2.5 rounded-full bg-[#FAF4ED] dark:bg-[#221A14] border border-[#EADBCC] dark:border-[#2A1E17] text-xs text-stone-800 dark:text-[#F8F1EB] placeholder-stone-400 focus:outline-none focus:border-[#C47247] focus:ring-1 focus:ring-[#C47247] transition"
+                                class="w-full pl-10 pr-4 py-2.5 rounded-full bg-[#FAF4ED] dark:bg-[#221A14] border border-[#EADBCC] dark:border-[#2A1E17] text-xs text-stone-800 dark:text-[#FAF3EB] placeholder-stone-400 dark:placeholder-stone-400 focus:outline-none focus:border-[#C47247] focus:ring-1 focus:ring-[#C47247] transition"
                             >
                         </div>
                     @endif
@@ -184,12 +196,12 @@
                         <span id="theme-toggle-dot" class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
                     </button>
 
-                    <!-- User Avatar -->
-                    <div class="w-8 h-8 rounded-full bg-[#FDF7F0] border border-[#EADBCC] text-[#38190C] flex items-center justify-center font-bold text-xs" title="{{ Auth::user()?->email }}">
-                        <svg class="w-4 h-4 text-[#38190C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- User Avatar (klik untuk ke Akun Saya) -->
+                    <a href="{{ route('admin.account.index') }}" class="w-8 h-8 rounded-full bg-[#FDF7F0] dark:bg-[#201813] border border-[#EADBCC] dark:border-[#3E2E23] text-[#38190C] dark:text-[#FAF3EB] flex items-center justify-center font-bold text-xs hover:border-[#C47247] transition" title="{{ Auth::user()?->email }} — Kelola Akun">
+                        <svg class="w-4 h-4 text-[#38190C] dark:text-[#FAF3EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                    </div>
+                    </a>
 
                     <!-- Tombol Keluar (Merah / Terracotta) -->
                     <form action="{{ route('logout') }}" method="POST" class="inline">
