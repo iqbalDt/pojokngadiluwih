@@ -48,11 +48,11 @@
                     Aspirasi Terbanyak Warga
                 </span>
                 <div class="mt-4">
-                    <p class="font-serif-title text-2xl font-bold text-[#38190C] dark:text-[#F8F1EB]">Irigasi Pertanian</p>
+                    <p class="font-serif-title text-2xl font-bold text-[#38190C] dark:text-[#F8F1EB]">Layanan Surat Menyurat</p>
                 </div>
             </div>
             <p class="text-xs text-[#765F50] dark:text-[#D1C2B8] mt-3 leading-relaxed">
-                42% topik aduan masyarakat berkaitan dengan ketersediaan pasokan air sawah menjelang musim tanam.
+                Mayoritas kebutuhan warga berfokus pada kemudahan pengurusan surat administrasi desa, baik secara online melalui portal maupun offline di balai desa.
             </p>
         </div>
 
@@ -63,11 +63,11 @@
                     Potensi UMKM Berkembang
                 </span>
                 <div class="mt-4">
-                    <p class="font-serif-title text-2xl font-bold text-[#C07044] dark:text-[#E08A58]">Kuliner Kering & Madu</p>
+                    <p class="font-serif-title text-2xl font-bold text-[#C07044] dark:text-[#E08A58]">Hasil Tani &amp; Olahan Lokal</p>
                 </div>
             </div>
             <p class="text-xs text-[#765F50] dark:text-[#D1C2B8] mt-3 leading-relaxed">
-                Mencatat rasio pemesanan WhatsApp tertinggi di katalog UMKM (64% dari total klik transaksi warga).
+                Selaras dengan mata pencaharian utama warga sebagai petani serta dukungan SDM dominan lulusan SLTA ke atas di 3 dusun (Ngadiluwih, Ngadiloyo, Kandang Sapi).
             </p>
         </div>
 
@@ -94,15 +94,15 @@
             <div class="p-6 rounded-2xl bg-[#C07044]/10 dark:bg-[#C07044]/20 border border-[#C07044]/30 dark:border-[#C07044]/40 space-y-3 shadow-sm hover:border-[#C07044] hover:bg-[#C07044]/15 dark:hover:bg-[#C07044]/25 transition">
                 <div class="flex items-center justify-between">
                     <span class="px-3 py-1 rounded-full bg-[#38190C] text-white text-[11px] font-bold">
-                        Infrastruktur Tani
+                        Pelayanan Administrasi
                     </span>
-                    <span class="text-xs font-semibold text-[#059669]">Skor Dampak: 9.2/10</span>
+                    <span class="text-xs font-semibold text-[#059669]">Skor Dampak: 9.4/10</span>
                 </div>
                 <h4 class="font-serif-title font-bold text-sm sm:text-base text-[#38190C] dark:text-[#F8F1EB]">
-                    Alokasi Dana Desa untuk Normalisasi Saluran Sekunder Dusun Sukorejo
+                    Optimalisasi Layanan Surat Menyurat Terpadu (Online &amp; Offline)
                 </h4>
                 <p class="text-xs text-stone-700 dark:text-[#D1C2B8] leading-relaxed">
-                    Data histori pengaduan menunjukkan frekuensi keluhan irigasi meningkat setiap menjelang musim tanam II. Rekomendasi: memasukkan agenda pengerukan sedimen pada APBDes perubahan.
+                    Aspirasi terbanyak warga menyoroti kemudahan akses pengurusan surat. Rekomendasi: sinkronisasi loket tatap muka di Balai Desa (Dusun Ngadiluwih) dengan panduan syarat surat dan pengajuan online melalui portal.
                 </p>
             </div>
 
@@ -110,15 +110,15 @@
             <div class="p-6 rounded-2xl bg-[#38190C]/[0.08] dark:bg-[#38190C]/[0.30] border border-[#38190C]/25 dark:border-[#2A1E17] space-y-3 shadow-sm hover:border-[#C07044] hover:bg-[#38190C]/[0.12] dark:hover:bg-[#38190C]/[0.38] transition">
                 <div class="flex items-center justify-between">
                     <span class="px-3 py-1 rounded-full bg-[#C07044] text-white text-[11px] font-bold">
-                        Ekonomi & UMKM
+                        Ekonomi &amp; UMKM
                     </span>
-                    <span class="text-xs font-semibold text-[#059669]">Skor Dampak: 8.8/10</span>
+                    <span class="text-xs font-semibold text-[#059669]">Skor Dampak: 8.9/10</span>
                 </div>
                 <h4 class="font-serif-title font-bold text-sm sm:text-base text-[#38190C] dark:text-[#F8F1EB]">
-                    Fasilitasi Sertifikasi Halal & P-IRT Kolektif bagi Pelaku UMKM
+                    Penguatan UMKM Berbasis Hasil Tani &amp; Digitalisasi Pemasaran
                 </h4>
                 <p class="text-xs text-stone-700 dark:text-[#D1C2B8] leading-relaxed">
-                    Lebih dari 60% UMKM olahan pangan di desa belum memiliki izin P-IRT resmi. Rekomendasi: Pemdes menjalin kerja sama pendampingan dengan Kemenag dan Dinas Kesehatan Kabupaten Kediri.
+                    Mayoritas warga bermata pencaharian petani dengan tingkat pendidikan dominan SLTA ke atas. Rekomendasi: fasilitasi pemasaran digital produk hasil tani, olahan pangan, dan kerajinan warga dari Dusun Ngadiluwih, Ngadiloyo, dan Kandang Sapi.
                 </p>
             </div>
         </div>
@@ -149,7 +149,7 @@
             <div class="p-5 rounded-2xl bg-[#38190C] text-[#FFF8F0] border border-[#251007] shadow-sm">
                 <span class="text-xs font-semibold text-amber-200/90 font-serif-title">Sentimen Mendesak / Keluhan</span>
                 <p class="font-serif-title text-3xl font-extrabold text-[#E08A58] mt-2">10%</p>
-                <span class="text-[11px] text-stone-300 mt-1 block">Fasilitas lampu jalan & irigasi</span>
+                <span class="text-[11px] text-stone-300 mt-1 block">Percepatan layanan surat &amp; infrastruktur</span>
             </div>
 
         </div>

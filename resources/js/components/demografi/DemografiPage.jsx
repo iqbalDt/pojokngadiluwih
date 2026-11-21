@@ -6,18 +6,36 @@ import { BadgeCheck, RotateCcw, MapPin } from 'lucide-react';
 export default function DemografiPage({ initialData = {} }) {
     const { routes = {} } = initialData;
 
-    // Sebaran penduduk per dusun
-    const dusunStats = [
-        { name: 'Dusun Ngadiluwih', count: 2450, percentage: 39 },
-        { name: 'Dusun Ngadiloyo', count: 2110, percentage: 33.5 },
-        { name: 'Dusun Kandang Sapi', count: 1728, percentage: 27.5 },
+    // Pembagian wilayah administratif dusun resmi Desa Ngadiluwih (3 Dusun)
+    const dusunList = [
+        {
+            name: 'Dusun Ngadiluwih',
+            description: 'Wilayah utama di pusat desa.',
+        },
+        {
+            name: 'Dusun Ngadiloyo',
+            description: 'Dusun yang dikenal dengan keberadaan Sumber Ngadiloyo.',
+        },
+        {
+            name: 'Dusun Kandang Sapi',
+            description: 'Salah satu bagian wilayah administratif Desa Ngadiluwih.',
+        },
     ];
 
-    // Mata pencaharian utama
-    const jobStats = [
-        { name: 'Petani dan Buruh Tani', percentage: 42, count: '2.640 jiwa' },
-        { name: 'Pertanian', percentage: 28, count: '1.760 jiwa' },
-        { name: 'Wiraswasta dan Pedagang', percentage: 30, count: '1.888 jiwa' },
+    // Ringkasan struktur keluarga resmi
+    const familyBreakdown = [
+        {
+            label: 'Kepala Keluarga (KK)',
+            total: '2.136',
+            male: '1.601',
+            female: '535',
+        },
+        {
+            label: 'Anggota Keluarga',
+            total: '3.890',
+            male: '1.390',
+            female: '2.500',
+        },
     ];
 
     return (
@@ -80,10 +98,10 @@ export default function DemografiPage({ initialData = {} }) {
                                     TOTAL PENDUDUK
                                 </span>
                                 <div className="font-serif font-extrabold text-3xl sm:text-4xl text-[#2A1307] my-2 tracking-tight">
-                                    6.288
+                                    6.026
                                 </div>
                                 <span className="text-xs font-serif text-[#6E4F3E]">
-                                    Jiwa (Semester 2026)
+                                    Jiwa Terdata (KK + Anggota)
                                 </span>
                             </div>
 
@@ -93,10 +111,10 @@ export default function DemografiPage({ initialData = {} }) {
                                     KEPALA KELUARGA
                                 </span>
                                 <div className="font-serif font-extrabold text-3xl sm:text-4xl text-[#2A1307] my-2 tracking-tight">
-                                    2.112
+                                    2.136
                                 </div>
                                 <span className="text-xs font-serif text-[#6E4F3E]">
-                                    KK (Kartu Keluarga)
+                                    1.601 Laki-laki · 535 Perempuan
                                 </span>
                             </div>
 
@@ -106,10 +124,10 @@ export default function DemografiPage({ initialData = {} }) {
                                     LAKI-LAKI
                                 </span>
                                 <div className="font-serif font-extrabold text-3xl sm:text-4xl text-[#2A1307] my-2 tracking-tight">
-                                    3.134
+                                    2.991
                                 </div>
                                 <span className="text-xs font-serif text-[#6E4F3E]">
-                                    49,8% Proporsi
+                                    49,6% Proporsi
                                 </span>
                             </div>
 
@@ -119,10 +137,10 @@ export default function DemografiPage({ initialData = {} }) {
                                     PEREMPUAN
                                 </span>
                                 <div className="font-serif font-extrabold text-3xl sm:text-4xl text-[#2A1307] my-2 tracking-tight">
-                                    3.154
+                                    3.035
                                 </div>
                                 <span className="text-xs font-serif text-[#6E4F3E]">
-                                    50,2% Proporsi
+                                    50,4% Proporsi
                                 </span>
                             </div>
                         </div>
@@ -152,58 +170,67 @@ export default function DemografiPage({ initialData = {} }) {
                                 </div>
 
                                 {/* Right Column: Demographics Breakdown */}
-                                <div className="lg:col-span-5 flex flex-col justify-between space-y-8">
-                                    {/* Sebaran Penduduk per Dusun */}
+                                <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+                                    {/* Wilayah Administratif Dusun */}
                                     <div>
-                                        <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2A1307] mb-4">
-                                            Sebaran Penduduk per Dusun
+                                        <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2A1307] mb-3">
+                                            Pembagian Wilayah Dusun (3 Dusun)
                                         </h3>
 
-                                        <div className="space-y-4">
-                                            {dusunStats.map((dusun) => (
-                                                <div key={dusun.name}>
-                                                    <div className="flex items-center justify-between text-xs sm:text-sm font-serif text-[#2A1307] mb-1.5">
-                                                        <span>{dusun.name}</span>
-                                                        <span className="text-[#6E4F3E] text-xs">
-                                                            {dusun.percentage}%
-                                                        </span>
+                                        <div className="space-y-3">
+                                            {dusunList.map((dusun) => (
+                                                <div key={dusun.name} className="bg-[#FAF1E6]/80 border border-[#DFCEB9] rounded-2xl px-4 py-3">
+                                                    <div className="font-serif font-bold text-sm text-[#2A1307]">
+                                                        {dusun.name}
                                                     </div>
-                                                    {/* Progress bar light blue #BFD9EC matching the design */}
-                                                    <div className="w-full h-2 rounded-full bg-[#DCCBB8]/60 overflow-hidden">
-                                                        <div
-                                                            className="h-full rounded-full bg-[#BFD9EC]"
-                                                            style={{ width: `${dusun.percentage}%` }}
-                                                        />
-                                                    </div>
+                                                    <p className="font-serif text-xs text-[#6E4F3E] mt-0.5 leading-relaxed">
+                                                        {dusun.description}
+                                                    </p>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
 
-                                    {/* Mata Pencaharian Utama */}
+                                    {/* Rincian Kepala & Anggota Keluarga */}
                                     <div>
-                                        <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2A1307] mb-4">
-                                            Mata Pencaharian Utama
+                                        <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2A1307] mb-3">
+                                            Komposisi Keluarga
                                         </h3>
 
-                                        <div className="space-y-4">
-                                            {jobStats.map((job) => (
-                                                <div key={job.name}>
-                                                    <div className="flex items-center justify-between text-xs sm:text-sm font-serif text-[#2A1307] mb-1.5">
-                                                        <span>{job.name}</span>
-                                                        <span className="text-[#6E4F3E] text-xs">
-                                                            {job.percentage}%
-                                                        </span>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            {familyBreakdown.map((item) => (
+                                                <div key={item.label} className="bg-[#FAF1E6]/80 border border-[#DFCEB9] rounded-2xl px-4 py-3">
+                                                    <span className="block text-[11px] font-serif font-semibold text-[#6E4F3E]">
+                                                        {item.label}
+                                                    </span>
+                                                    <div className="font-serif font-extrabold text-xl text-[#2A1307] mt-0.5">
+                                                        {item.total}
                                                     </div>
-                                                    {/* Progress bar light blue #BFD9EC matching the design */}
-                                                    <div className="w-full h-2 rounded-full bg-[#DCCBB8]/60 overflow-hidden">
-                                                        <div
-                                                            className="h-full rounded-full bg-[#BFD9EC]"
-                                                            style={{ width: `${job.percentage}%` }}
-                                                        />
-                                                    </div>
+                                                    <span className="text-[11px] font-serif text-[#6E4F3E]">
+                                                        L: {item.male} · P: {item.female}
+                                                    </span>
                                                 </div>
                                             ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Mata Pencaharian & Pendidikan Dominan */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div className="bg-[#FAF1E6]/80 border border-[#DFCEB9] rounded-2xl px-4 py-3">
+                                            <span className="block text-[11px] font-serif font-semibold text-[#6E4F3E]">
+                                                Mata Pencaharian Terbanyak
+                                            </span>
+                                            <div className="font-serif font-bold text-base text-[#2A1307] mt-1">
+                                                Petani
+                                            </div>
+                                        </div>
+                                        <div className="bg-[#FAF1E6]/80 border border-[#DFCEB9] rounded-2xl px-4 py-3">
+                                            <span className="block text-[11px] font-serif font-semibold text-[#6E4F3E]">
+                                                Pendidikan Dominan
+                                            </span>
+                                            <div className="font-serif font-bold text-base text-[#2A1307] mt-1">
+                                                SLTA ke Atas
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

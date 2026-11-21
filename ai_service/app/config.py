@@ -20,7 +20,7 @@ KNOWLEDGE_BASE_DIR = os.getenv("KNOWLEDGE_BASE_DIR", str(BASE_DIR / "data" / "kn
 
 # Server Config
 HOST = os.getenv("HOST", "0.0.0.0")
-PORT = int(os.getenv("PORT", "8001"))
+PORT = int(os.getenv("PORT", "8100"))
 
 # Pastikan direktori data selalu ada
 os.makedirs(CHROMA_DB_DIR, exist_ok=True)

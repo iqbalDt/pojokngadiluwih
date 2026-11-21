@@ -65,18 +65,30 @@ export default function Footer({ routes = {} }) {
                             Kontak Balai Desa
                         </h4>
                         <div className="space-y-3 text-xs sm:text-sm text-[#6E4F3E]">
-                            <div className="flex items-start gap-2.5">
-                                <MapPin className="w-4 h-4 text-[#BD6E37] shrink-0 mt-0.5" />
-                                <span>Jl. Raya Ngadiluwih No. 12, Kec. Ngadiluwih, Kab. Kediri, Jawa Timur 64171</span>
-                            </div>
+                            <a
+                                href="https://www.google.com/maps/search/?api=1&query=Balai+Desa+Ngadiluwih,+Kecamatan+Ngadiluwih,+Kabupaten+Kediri,+Jawa+Timur+64171"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-start gap-2.5 hover:text-[#BD6E37] transition group"
+                                title="Buka lokasi di Google Maps"
+                            >
+                                <MapPin className="w-4 h-4 text-[#BD6E37] shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                                <span className="underline-offset-2 group-hover:underline">Jl. Raya Ngadiluwih No. 12, Kec. Ngadiluwih, Kab. Kediri, Jawa Timur 64171</span>
+                            </a>
                             <div className="flex items-center gap-2.5">
                                 <Clock className="w-4 h-4 text-[#BD6E37] shrink-0" />
-                                <span>Senin - Jumat: 08.00 - 15.00 WIB</span>
+                                <span>Senin - Jumat: 08.00 - 16.00 WIB</span>
                             </div>
-                            <div className="flex items-center gap-2.5">
-                                <Phone className="w-4 h-4 text-[#BD6E37] shrink-0" />
-                                <span>(0354) 741-2010 | WhatsApp Layanan Desa</span>
-                            </div>
+                            <a
+                                href="https://wa.me/6282131135556"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2.5 hover:text-[#BD6E37] transition group"
+                                title="Hubungi via WhatsApp"
+                            >
+                                <Phone className="w-4 h-4 text-[#BD6E37] shrink-0 group-hover:scale-110 transition-transform" />
+                                <span className="underline-offset-2 group-hover:underline">+62 821-3113-5556 | WhatsApp Layanan Desa</span>
+                            </a>
                         </div>
                     </div>
 

@@ -101,7 +101,7 @@ export default function UmkmGridSection({
 
                                         <span className="inline-flex items-center gap-1 text-[11px] font-serif text-[#6E4F3E]">
                                             <User className="w-3 h-3 text-[#8C6D58]" />
-                                            <span>{item.dusun || 'Dusun Sukorejo'}</span>
+                                            <span>{item.dusun || 'Dusun Ngadiluwih'}</span>
                                         </span>
                                     </div>
 

@@ -117,7 +117,7 @@ def load_knowledge_documents(directory: str = KNOWLEDGE_BASE_DIR) -> List[Docume
                 "PojokNgadiluwih adalah portal digital resmi Desa Ngadiluwih, Kecamatan Ngadiluwih, "
                 "Kabupaten Kediri, Jawa Timur. Melayani permohonan surat keterangan usaha (SKU), "
                 "pengantar SKCK, domisili, direktori UMKM lokal warga, dan kanal aspirasi desa. "
-                "Jam pelayanan balai desa: Senin sampai Jumat pukul 08.00 - 15.00 WIB."
+                "Jam pelayanan balai desa: Senin sampai Jumat pukul 08.00 - 16.00 WIB."
             ),
             metadata={"source": "system_default.txt"},
         )

@@ -62,7 +62,7 @@ class AiKnowledgeController extends Controller
      */
     protected function triggerAiReindex(FirebaseService $firebase): void
     {
-        $pythonServiceUrl = (string) config('services.ai_service.url', 'http://127.0.0.1:8001/api/chat');
+        $pythonServiceUrl = (string) config('services.ai_service.url', 'http://127.0.0.1:8100/api/chat');
         $reindexUrl = str_replace('/api/chat', '/api/reindex', $pythonServiceUrl);
 
         try {

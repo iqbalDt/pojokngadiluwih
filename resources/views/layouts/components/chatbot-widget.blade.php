@@ -108,9 +108,23 @@
         }
     }
 
+    function openChatbot() {
+        const windowEl = document.getElementById('chatbot-window');
+        const iconOpen = document.getElementById('chat-icon-open');
+        const iconClose = document.getElementById('chat-icon-close');
+
+        if (windowEl && windowEl.classList.contains('hidden')) {
+            windowEl.classList.remove('hidden');
+            if (iconOpen) iconOpen.classList.add('hidden');
+            if (iconClose) iconClose.classList.remove('hidden');
+        }
+    }
+
     function sendQuickPrompt(promptText) {
+        openChatbot();
         if (isChatLoading) return; // Jangan kirim kalau masih loading
-        document.getElementById('chatbot-input').value = promptText;
+        const inputEl = document.getElementById('chatbot-input');
+        inputEl.value = promptText;
         handleChatSubmit(new Event('submit'));
     }
 

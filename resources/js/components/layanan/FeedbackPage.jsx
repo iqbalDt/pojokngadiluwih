@@ -132,10 +132,9 @@ export default function FeedbackPage({ initialData = {} }) {
                                         className="w-full px-4 py-2.5 rounded-xl bg-[#DECBB5]/50 border border-[#CBB39C] text-xs text-[#2A1307] focus:bg-white focus:outline-none focus:border-[#2A1307] transition"
                                     >
                                         <option value="">Pilih dusun domisili</option>
-                                        <option value="Krajan">Dusun Krajan</option>
-                                        <option value="Wonorejo">Dusun Wonorejo</option>
-                                        <option value="Sukorejo">Dusun Sukorejo</option>
-                                        <option value="Karangrejo">Dusun Karangrejo</option>
+                                        <option value="Ngadiluwih">Dusun Ngadiluwih</option>
+                                        <option value="Ngadiloyo">Dusun Ngadiloyo</option>
+                                        <option value="Kandang Sapi">Dusun Kandang Sapi</option>
                                     </select>
                                 </div>
 

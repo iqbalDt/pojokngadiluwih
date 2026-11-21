@@ -26,7 +26,7 @@ class ChatbotController extends Controller
             ], 422);
         }
 
-        $pythonServiceUrl = (string) config('services.ai_service.url', 'http://127.0.0.1:8001/api/chat');
+        $pythonServiceUrl = (string) config('services.ai_service.url', 'http://127.0.0.1:8100/api/chat');
         $timeout = (int) config('services.ai_service.timeout', 120);
 
         try {

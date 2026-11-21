@@ -30,6 +30,7 @@
     </script>
 
     <!-- Vite Assets -->
+    @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     @stack('styles')
 </head>

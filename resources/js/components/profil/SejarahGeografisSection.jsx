@@ -63,7 +63,7 @@ export default function SejarahGeografisSection() {
                                     <p>Utara: Desa Rembang &amp; Desa Banjarejo</p>
                                     <p>Timur: Desa Slumbung</p>
                                     <p>Selatan: Desa Dukuh &amp; Sungai Brantas</p>
-                                    <p>Brat: Kecamatan Mojo</p>
+                                    <p>Barat: Kecamatan Mojo</p>
                                 </div>
                             </div>
 

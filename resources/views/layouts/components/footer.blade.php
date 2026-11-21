@@ -44,11 +44,18 @@
                 <div class="space-y-2 text-xs text-slate-400">
                     <p class="flex items-start">
                         <span class="font-semibold text-slate-300 mr-2">Alamat:</span>
-                        Jl. Raya Ngadiluwih, Kec. Ngadiluwih, Kab. Kediri, Jawa Timur 64171
+                        <a href="https://www.google.com/maps/search/?api=1&query=Balai+Desa+Ngadiluwih,+Kecamatan+Ngadiluwih,+Kabupaten+Kediri,+Jawa+Timur+64171" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 underline-offset-2 hover:underline transition">
+                            Jl. Raya Ngadiluwih, Kec. Ngadiluwih, Kab. Kediri, Jawa Timur 64171
+                        </a>
                     </p>
-                    <p><span class="font-semibold text-slate-300">Jam Layanan:</span> Senin - Jumat (08.00 - 15.00 WIB)</p>
+                    <p><span class="font-semibold text-slate-300">Jam Layanan:</span> Senin - Jumat (08.00 - 16.00 WIB)</p>
                     <p><span class="font-semibold text-slate-300">Email:</span> pemdes@ngadiluwih.desa.id</p>
-                    <p><span class="font-semibold text-slate-300">WhatsApp:</span> +62 812-3456-7890</p>
+                    <p>
+                        <span class="font-semibold text-slate-300">WhatsApp:</span>
+                        <a href="https://wa.me/6282131135556" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 underline-offset-2 hover:underline transition">
+                            +62 821-3113-5556
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>

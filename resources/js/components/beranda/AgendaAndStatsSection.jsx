@@ -244,7 +244,7 @@ export default function AgendaAndStatsSection() {
                                 </span>
                                 <div className="my-1.5">
                                     <p className="font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-[#2A1307] tracking-tight">
-                                        6.420+
+                                        6.026
                                     </p>
                                 </div>
                                 <span className="text-xs sm:text-sm text-[#3D1E0F] font-medium">
@@ -289,7 +289,7 @@ export default function AgendaAndStatsSection() {
                                 </span>
                                 <div className="my-1.5">
                                     <p className="font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-[#2A1307] tracking-tight">
-                                        4 Dusun
+                                        3 Dusun
                                     </p>
                                 </div>
                                 <span className="text-xs sm:text-sm text-[#3D1E0F] font-medium">

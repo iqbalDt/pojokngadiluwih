@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../views/**/*.blade.php';
 @source '../js/**/*.{js,jsx,ts,tsx}';
@@ -10,7 +12,7 @@
 }
 
 /* ==========================================================================
-   TRUE DARK MODE STYLING (MENYELURUH, SOLID & SANGAT ELEGAN)
+   TRUE DARK MODE STYLING (MENYELURUH, KONTRAS TINGGI & ELEGAN)
    ========================================================================== */
 html.dark {
     color-scheme: dark;
@@ -28,94 +30,150 @@ html.dark main {
     color: #F8F1EB !important;
 }
 
-/* Hero Section & Backgrounds yang sebelumnya Coklat Terang */
+/* Hero Section & Section Backgrounds yang sebelumnya Coklat Terang */
 html.dark .bg-\[\#BD6E37\],
 html.dark .bg-\[\#BD6E44\],
-html.dark .bg-\[\#C47247\],
-html.dark [class*="bg-[#BD6E37]"],
-html.dark [class*="bg-[#BD6E44]"] {
-    background-color: #17110D !important;
+html.dark .bg-\[\#C47247\] {
+    background-color: #140E0A !important;
     background-image: none !important;
 }
 
-/* Header & Navbar */
-html.dark header,
-html.dark nav,
-html.dark .sticky {
+/* Sub-container terracotta (seperti Langkah Surat & Filter Box Berita) */
+html.dark .bg-\[\#B5632E\]\/80,
+html.dark .bg-\[\#A85822\]\/65,
+html.dark .bg-\[\#994F21\]\/80,
+html.dark .bg-\[\#994F21\]\/85 {
+    background-color: #21160F !important;
+    border-color: #3D281B !important;
+}
+
+/* Header & Navbar Publik */
+html.dark header.sticky,
+html.dark nav {
     background-color: rgba(17, 12, 9, 0.96) !important;
     border-color: #2B1D15 !important;
 }
 
-/* Link Teks di Navbar & Menu */
-html.dark header a,
-html.dark nav a,
-html.dark header button,
-html.dark nav button {
-    color: #F8F1EB !important;
-}
-
-html.dark header a:hover,
-html.dark nav a:hover,
-html.dark header button:hover,
-html.dark nav button:hover {
-    color: #E89E6C !important;
-}
-
-/* Dropdown Menu & Mobile Menu */
-html.dark .absolute.top-full > div,
-html.dark #mobile-menu,
-html.dark header .lg\:hidden {
-    background-color: #1A140F !important;
-    border-color: #2E221A !important;
-}
-
-/* Container, Card & Box Krem/Putih (Semua diubah jadi Dark Cards Mewah) */
+/* Container, Card & Box Krem/Putih Utama -> Dark Espresso Card */
 html.dark .bg-white,
+html.dark .bg-white\/70,
 html.dark .bg-slate-50,
+html.dark .bg-stone-50,
+html.dark .bg-\[\#FFFDF9\],
+html.dark .bg-\[\#FFFBF5\],
 html.dark .bg-\[\#FAF1E6\],
+html.dark .bg-\[\#FAF1E6\]\/80,
+html.dark .bg-\[\#FAF1E6\]\/95,
+html.dark .bg-\[\#FAF1E6\]\/40,
+html.dark .bg-\[\#FAF2E8\],
 html.dark .bg-\[\#FAF3EB\],
 html.dark .bg-\[\#FAF3EA\],
+html.dark .bg-\[\#FAF4ED\],
+html.dark .bg-\[\#FAF7F2\],
 html.dark .bg-\[\#F5EFE6\],
 html.dark .bg-\[\#EFE1CF\],
 html.dark .bg-\[\#FBF4EC\],
+html.dark .bg-\[\#FBF6F0\],
 html.dark .bg-\[\#FDF8F3\],
-html.dark .bg-\[\#FDF7F0\],
-html.dark .bg-\[\#FAF7F2\],
-html.dark [class*="bg-[#FAF1E6]"],
-html.dark [class*="bg-[#FAF3EB]"],
-html.dark [class*="bg-[#F5EFE6]"],
-html.dark [class*="bg-[#EFE1CF]"],
-html.dark [class*="bg-[#FBF4EC]"],
-html.dark [class*="bg-[#FDF8F3]"],
-html.dark [class*="bg-[#FAF7F2]"] {
+html.dark .bg-\[\#FDF7F0\] {
     background-color: #18120D !important;
-    border-color: #2B1E16 !important;
+    border-color: #2E2017 !important;
+    color: #F8F1EB !important;
+}
+
+/* Sub-Cards, Inner Bars, Kalender Header, Quick Pills & Box Sekunder */
+html.dark .bg-\[\#F8F3EC\],
+html.dark .bg-\[\#F5ECE1\],
+html.dark .bg-\[\#F3E7DA\],
+html.dark .bg-\[\#F0E4D5\],
+html.dark .bg-\[\#EDE0D1\],
+html.dark .bg-\[\#EAE0D3\],
+html.dark .bg-\[\#EADBCE\],
+html.dark .bg-\[\#EADBCC\],
+html.dark .bg-\[\#E7D6C5\],
+html.dark .bg-\[\#E5D5C3\],
+html.dark .bg-\[\#E4D5C3\],
+html.dark .bg-\[\#E2D2BE\],
+html.dark .bg-\[\#D4A987\],
+html.dark .bg-\[\#DECBB5\]\/50,
+html.dark .bg-stone-100,
+html.dark .bg-stone-100\/90,
+html.dark .bg-slate-100,
+html.dark .bg-slate-100\/80 {
+    background-color: #231A13 !important;
+    border-color: #3A2A1E !important;
+    color: #F8F1EB !important;
+}
+
+/* Hover state pada sub-card dan tombol di Dark Mode */
+html.dark .hover\:bg-\[\#F8F3EC\]:hover,
+html.dark .hover\:bg-\[\#F5ECE1\]:hover,
+html.dark .hover\:bg-\[\#F3E7DA\]:hover,
+html.dark .hover\:bg-\[\#EAE0D3\]:hover,
+html.dark .hover\:bg-\[\#DCBEA5\]:hover,
+html.dark .hover\:bg-white\/40:hover {
+    background-color: #2E2219 !important;
+}
+
+/* Gradient Cards (4 Stats Beranda, Fallback Card Hero/Berita, Badge Timbul Panduan Surat) */
+html.dark .from-\[\#E2B992\],
+html.dark .from-\[\#EBD9C7\],
+html.dark .from-\[\#DECBBA\],
+html.dark .from-white {
+    --tw-gradient-from: #281B12 !important;
+    --tw-gradient-to: #1B120C !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+    background-image: linear-gradient(to bottom right, #281B12, #1B120C) !important;
+    border-color: #3E2A1D !important;
     color: #F8F1EB !important;
 }
 
 /* Card Border & Dividers */
 html.dark .border-\[\#DECBB8\],
+html.dark .border-\[\#DFCEB9\],
+html.dark .border-\[\#E2CEB9\],
+html.dark .border-\[\#E4D5C5\],
+html.dark .border-\[\#E5D3BF\],
 html.dark .border-\[\#E7DAC9\],
+html.dark .border-\[\#E9DFD3\],
 html.dark .border-\[\#EADBCC\],
+html.dark .border-\[\#ECDCCB\],
+html.dark .border-\[\#ECE0D0\],
 html.dark .border-\[\#E2D2BE\],
+html.dark .border-\[\#D5C0AC\],
+html.dark .border-\[\#D5C0AD\],
+html.dark .border-\[\#DCCBB8\],
+html.dark .border-\[\#DDB088\],
+html.dark .border-\[\#CBB39C\],
+html.dark .border-\[\#3D1E0F\],
 html.dark .border-slate-100,
 html.dark .border-slate-200,
 html.dark .border-stone-200,
 html.dark .border-stone-300,
 html.dark .divide-slate-100,
 html.dark .divide-stone-200 {
-    border-color: #2B1E16 !important;
+    border-color: #332419 !important;
 }
 
-/* Headings & Teks Coklat Tua -> Berubah Jadi Putih Gading Kontras Tinggi */
+/* Headings & Teks Coklat Tua -> Putih Gading Kontras Tinggi */
 html.dark .text-\[\#38190C\],
 html.dark .text-\[\#3D1E0F\],
 html.dark .text-\[\#2A1307\],
+html.dark .text-\[\#2B140B\],
 html.dark .text-\[\#4A2411\],
+html.dark .text-\[\#4E2713\],
+html.dark .text-\[\#4E3120\],
+html.dark .text-\[\#4D2E1E\],
+html.dark .text-\[\#5A331E\],
+html.dark .text-\[\#5C341F\],
+html.dark .text-\[\#5C3822\],
+html.dark .text-\[\#5C3925\],
 html.dark .text-slate-900,
 html.dark .text-slate-800,
+html.dark .text-slate-700,
 html.dark .text-stone-900,
 html.dark .text-stone-800,
+html.dark .text-stone-700,
 html.dark h1,
 html.dark h2,
 html.dark h3,
@@ -127,11 +185,57 @@ html.dark h4 {
 html.dark .text-\[\#6E5343\],
 html.dark .text-\[\#6E4F3E\],
 html.dark .text-\[\#5C4233\],
+html.dark .text-\[\#765F50\],
+html.dark .text-\[\#7B5B49\],
+html.dark .text-\[\#7C5F4D\],
+html.dark .text-\[\#8C6D58\],
+html.dark .text-\[\#8C7063\],
+html.dark .text-\[\#8E4A1E\],
 html.dark .text-slate-500,
 html.dark .text-slate-600,
 html.dark .text-stone-500,
-html.dark .text-stone-600 {
-    color: #B5A496 !important;
+html.dark .text-stone-600,
+html.dark .text-stone-400 {
+    color: #C7B6A8 !important;
+}
+
+/* Tanggal Kalender Bulan Lain (Non-Current Month) di Dark Mode */
+html.dark .text-\[\#D0C2B4\] {
+    color: #5C4B3E !important;
+}
+
+/* Bagan Struktur Organisasi Desa di Dark Mode */
+html.dark .bg-\[\#DE9D6D\] {
+    background-color: #2E1F15 !important;
+    color: #F8F1EB !important;
+}
+
+html.dark svg line[stroke="#4A2411"] {
+    stroke: #C07044 !important;
+}
+
+/* Status Badges (Approved, Pending, Rejected, Logout Button) di Dark Mode */
+html.dark .bg-rose-50,
+html.dark .bg-\[\#FEE2E2\] {
+    background-color: rgba(159, 18, 57, 0.28) !important;
+    border-color: rgba(244, 63, 94, 0.4) !important;
+    color: #FDA4AF !important;
+}
+
+html.dark .bg-\[\#D1FAE5\],
+html.dark .bg-\[\#ECFDF5\],
+html.dark .bg-\[\#E8F5E9\] {
+    background-color: rgba(6, 95, 70, 0.32) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    color: #6EE7B7 !important;
+}
+
+html.dark .bg-\[\#FCE8D3\],
+html.dark .bg-\[\#FDE8D3\],
+html.dark .bg-\[\#FEF9EE\] {
+    background-color: rgba(180, 83, 9, 0.28) !important;
+    border-color: rgba(245, 158, 11, 0.4) !important;
+    color: #FCD34D !important;
 }
 
 /* Input Fields & Search Bars di Dark Mode */
@@ -139,33 +243,30 @@ html.dark input,
 html.dark textarea,
 html.dark select {
     background-color: #211914 !important;
-    border-color: #382A20 !important;
+    border-color: #3A2B20 !important;
     color: #F8F1EB !important;
 }
 
 html.dark input::placeholder,
 html.dark textarea::placeholder {
-    color: #7D6B5F !important;
+    color: #8A7668 !important;
 }
 
-/* Sub-pills, Badges & Filter Buttons */
-html.dark .bg-\[\#E2D2BE\],
-html.dark .bg-\[\#EADBCE\],
-html.dark .bg-\[\#FDF7F0\] {
-    background-color: #261D17 !important;
-    border-color: #382A20 !important;
-    color: #F8F1EB !important;
+/* Input di dalam wrapper kapsul (seperti Search Berita, UMKM, Panduan Surat) */
+html.dark .rounded-full > input.bg-transparent {
+    background-color: transparent !important;
+    border-color: transparent !important;
 }
 
 /* Footer di Dark Mode */
 html.dark footer {
-    background-color: #0A0705 !important;
-    border-color: #1F150F !important;
-    color: #B5A496 !important;
+    background-color: #0B0806 !important;
+    border-color: #241912 !important;
+    color: #C7B6A8 !important;
 }
 
 html.dark footer a {
-    color: #B5A496 !important;
+    color: #C7B6A8 !important;
 }
 
 html.dark footer a:hover {
@@ -174,8 +275,8 @@ html.dark footer a:hover {
 
 /* Admin Panel Khusus di Dark Mode */
 html.dark #admin-sidebar {
-    background-color: #160F0A !important;
-    border-right-color: #261911 !important;
+    background-color: #150F0B !important;
+    border-right: 1px solid #2A1E17 !important;
 }
 
 html.dark #admin-sidebar a {
@@ -184,6 +285,17 @@ html.dark #admin-sidebar a {
 
 html.dark #admin-sidebar a:hover {
     background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #FFFFFF !important;
+}
+
+/* Active menu item di Admin Sidebar saat Dark Mode */
+html.dark #admin-sidebar a.bg-\[\#FFFBF5\] {
+    background-color: #C07044 !important;
+    color: #FFFFFF !important;
+    border-color: #D58550 !important;
+}
+
+html.dark #admin-sidebar a.bg-\[\#FFFBF5\] svg {
     color: #FFFFFF !important;
 }
 

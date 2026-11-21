@@ -45,6 +45,6 @@ class AppServiceProvider extends ServiceProvider
             ? base_path('ai_service/.venv/Scripts/uvicorn.exe')
             : base_path('ai_service/.venv/bin/uvicorn');
 
-        return "\"{$uvicorn}\" app.main:app --host 0.0.0.0 --port 8001 --reload --app-dir \"".base_path('ai_service').'"';
+        return "\"{$uvicorn}\" app.main:app --host 127.0.0.1 --port 8100 --reload --app-dir \"".base_path('ai_service').'"';
     }
 }

@@ -84,7 +84,7 @@ export default function HeroSection({ routes = {} }) {
                         <div className="w-full flex-1 rounded-3xl bg-[#FAF1E6] p-2.5 sm:p-3 shadow-xl border border-[#D59E75]/40 relative overflow-hidden group min-h-[280px] sm:min-h-[360px] lg:min-h-[440px] flex flex-col justify-between">
                             {!imgError ? (
                                 <img
-                                    src="https://images.unsplash.com/photo-1596405835955-e65fa8c73b0f?q=80&w=1200&auto=format&fit=crop"
+                                    src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop"
                                     alt="Kantor dan Suasana Desa Ngadiluwih"
                                     onError={() => setImgError(true)}
                                     className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500 flex-1"
@@ -93,7 +93,7 @@ export default function HeroSection({ routes = {} }) {
                             ) : (
                                 /* High-quality offline architectural & village illustration fallback */
                                 <div className="w-full h-full min-h-[260px] rounded-2xl bg-gradient-to-br from-[#EBD9C7] via-[#DFCAAF] to-[#CCA885] p-6 flex flex-col justify-between relative overflow-hidden">
-                                    <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-[#F5EFE6]/30 blur-2xl pointer-events-none" />
+                                    <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
                                     <div className="flex items-center justify-between text-[#5C3925]">
                                         <div className="flex items-center gap-2">
                                             <Building2 className="w-6 h-6 text-[#8E4A1E]" />
@@ -123,7 +123,7 @@ export default function HeroSection({ routes = {} }) {
                             </div>
                             <div className="flex items-center gap-2 text-[#FCE6D4]">
                                 <Clock className="w-4 h-4 opacity-80 shrink-0" />
-                                <span>08.00 - 15.00 WIB</span>
+                                <span>08.00 - 16.00 WIB</span>
                             </div>
                         </div>
                     </div>
