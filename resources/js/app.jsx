@@ -8,6 +8,8 @@ import GuidesPage from './components/layanan/GuidesPage';
 import StoreRegisterPage from './components/layanan/StoreRegisterPage';
 import FeedbackPage from './components/layanan/FeedbackPage';
 import DemografiPage from './components/demografi/DemografiPage';
+import AdminUmkmPage from './components/admin/AdminUmkmPage';
+import AdminServicesPage from './components/admin/AdminServicesPage';
 
 // Helper to mount component safely
 function mountComponent(elementId, Component, displayName) {
@@ -41,3 +43,5 @@ mountComponent('guides-root', GuidesPage, 'Panduan Surat');
 mountComponent('store-register-root', StoreRegisterPage, 'Daftar Toko UMKM');
 mountComponent('feedback-root', FeedbackPage, 'Aspirasi & Pengaduan');
 mountComponent('demografi-root', DemografiPage, 'Demografi');
+mountComponent('admin-umkm-root', AdminUmkmPage, 'Admin UMKM');
+mountComponent('admin-services-root', AdminServicesPage, 'Admin Layanan & Aspirasi');

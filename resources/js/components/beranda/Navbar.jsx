@@ -115,14 +115,18 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                             aria-expanded={servicesDropdownOpen}
                                             className={`flex items-center gap-1.5 text-sm lg:text-base font-medium transition-all py-2 cursor-pointer ${
                                                 isServicesActive
-                                                    ? 'text-[#3D1E0F] font-bold border-b-2 border-[#3D1E0F] pb-1'
-                                                    : 'text-[#6E5343] hover:text-[#BD6E37]'
+                                                    ? darkMode
+                                                        ? 'text-[#FAF1E6] font-bold border-b-2 border-[#E89E6C] pb-1'
+                                                        : 'text-[#3D1E0F] font-bold border-b-2 border-[#3D1E0F] pb-1'
+                                                    : darkMode
+                                                        ? 'text-[#CDBBB0] hover:text-[#E89E6C]'
+                                                        : 'text-[#6E5343] hover:text-[#BD6E37]'
                                             }`}
                                         >
                                             <span>{item.label}</span>
                                             <ChevronDown
                                                 className={`w-4 h-4 transition-transform duration-200 ${
-                                                    servicesDropdownOpen ? 'rotate-180 text-[#BD6E37]' : ''
+                                                    servicesDropdownOpen ? 'rotate-180 text-[#E89E6C]' : ''
                                                 }`}
                                             />
                                         </button>
@@ -130,7 +134,9 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                         {/* Dropdown Menu Container */}
                                         {servicesDropdownOpen && (
                                             <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-72 z-50 animate-fadeIn">
-                                                <div className="bg-[#FAF1E6] rounded-2xl shadow-xl border border-[#DECBB8] p-2 space-y-1">
+                                                <div className={`rounded-2xl shadow-xl border p-2 space-y-1 ${
+                                                    darkMode ? 'bg-[#18120D] border-[#382A20]' : 'bg-[#FAF1E6] border-[#DECBB8]'
+                                                }`}>
                                                     {serviceSubLinks.map((sub) => {
                                                         const isSubActive = isServicesActive && activeSubpage === sub.key;
                                                         const IconComp = sub.icon;
@@ -140,18 +146,32 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                                                 href={sub.href}
                                                                 className={`flex items-start gap-3 p-3 rounded-xl transition group ${
                                                                     isSubActive
-                                                                        ? 'bg-[#EFE1CF] text-[#2A1307]'
-                                                                        : 'hover:bg-[#EFE1CF]/80 text-[#3D1E0F]'
+                                                                        ? darkMode
+                                                                            ? 'bg-[#2A1E16] text-[#E89E6C]'
+                                                                            : 'bg-[#EFE1CF] text-[#2A1307]'
+                                                                        : darkMode
+                                                                            ? 'hover:bg-[#221811] text-[#FAF1E6]'
+                                                                            : 'hover:bg-[#EFE1CF]/80 text-[#3D1E0F]'
                                                                 }`}
                                                             >
-                                                                <div className="w-8 h-8 rounded-lg bg-[#E2D2BE] flex items-center justify-center text-[#2A1307] group-hover:bg-[#BD6E37] group-hover:text-white transition shrink-0 mt-0.5">
+                                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition ${
+                                                                    darkMode
+                                                                        ? 'bg-[#281D16] text-[#FAF1E6] group-hover:bg-[#BD6E37] group-hover:text-white'
+                                                                        : 'bg-[#E2D2BE] text-[#2A1307] group-hover:bg-[#BD6E37] group-hover:text-white'
+                                                                }`}>
                                                                     <IconComp className="w-4 h-4" />
                                                                 </div>
                                                                 <div>
-                                                                    <div className="font-serif font-bold text-sm text-[#2A1307] group-hover:text-[#BD6E37] transition">
+                                                                    <div className={`font-serif font-bold text-sm transition ${
+                                                                        darkMode
+                                                                            ? 'text-[#FAF1E6] group-hover:text-[#E89E6C]'
+                                                                            : 'text-[#2A1307] group-hover:text-[#BD6E37]'
+                                                                    }`}>
                                                                         {sub.label}
                                                                     </div>
-                                                                    <div className="text-[11px] text-[#6E4F3E] leading-snug">
+                                                                    <div className={`text-[11px] leading-snug ${
+                                                                        darkMode ? 'text-[#A8988C]' : 'text-[#6E4F3E]'
+                                                                    }`}>
                                                                         {sub.desc}
                                                                     </div>
                                                                 </div>
@@ -172,8 +192,12 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                     href={item.href}
                                     className={`text-sm lg:text-base font-medium transition-all ${
                                         isActive
-                                            ? 'text-[#3D1E0F] font-bold border-b-2 border-[#3D1E0F] pb-1'
-                                            : 'text-[#6E5343] hover:text-[#BD6E37]'
+                                            ? darkMode
+                                                ? 'text-[#FAF1E6] font-bold border-b-2 border-[#E89E6C] pb-1'
+                                                : 'text-[#3D1E0F] font-bold border-b-2 border-[#3D1E0F] pb-1'
+                                            : darkMode
+                                                ? 'text-[#CDBBB0] hover:text-[#E89E6C]'
+                                                : 'text-[#6E5343] hover:text-[#BD6E37]'
                                     }`}
                                 >
                                     {item.label}
@@ -221,7 +245,9 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                         <button
                             type="button"
                             onClick={() => setMobileOpen(!mobileOpen)}
-                            className="lg:hidden p-2 rounded-xl text-[#3D1E0F] hover:bg-[#EADBCE] transition"
+                            className={`lg:hidden p-2 rounded-xl transition ${
+                                darkMode ? 'text-[#FAF1E6] hover:bg-[#251A12]' : 'text-[#3D1E0F] hover:bg-[#EADBCE]'
+                            }`}
                             aria-label="Toggle Navigation Menu"
                         >
                             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -232,7 +258,9 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
 
             {/* Mobile Dropdown */}
             {mobileOpen && (
-                <div className="lg:hidden bg-[#F5EFE6] border-b border-[#E7DAC9] px-4 sm:px-8 pt-2 pb-6 space-y-2">
+                <div className={`lg:hidden border-b px-4 sm:px-8 pt-2 pb-6 space-y-2 ${
+                    darkMode ? 'bg-[#140E0A] border-[#2A1C14]' : 'bg-[#F5EFE6] border-[#E7DAC9]'
+                }`}>
                     {navLinks.map((item) => {
                         if (item.hasDropdown) {
                             const isServicesActive = activePage === 'services';
@@ -241,10 +269,14 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                     <button
                                         type="button"
                                         onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium ${
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition ${
                                             isServicesActive
-                                                ? 'bg-[#3D1E0F] text-white font-bold'
-                                                : 'text-[#5C4233] hover:bg-[#EADBCE]'
+                                                ? darkMode
+                                                    ? 'bg-[#BD6E37] text-white font-bold'
+                                                    : 'bg-[#3D1E0F] text-white font-bold'
+                                                : darkMode
+                                                    ? 'text-[#FAF1E6] hover:bg-[#251A12]'
+                                                    : 'text-[#5C4233] hover:bg-[#EADBCE]'
                                         }`}
                                     >
                                         <span>{item.label}</span>
@@ -257,7 +289,9 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
 
                                     {/* Mobile Submenu Accordion */}
                                     {mobileServicesOpen && (
-                                        <div className="pl-4 pr-1 py-1 space-y-1 bg-[#EFE1CF]/50 rounded-xl">
+                                        <div className={`pl-4 pr-1 py-1 space-y-1 rounded-xl ${
+                                            darkMode ? 'bg-[#1C130D]' : 'bg-[#EFE1CF]/50'
+                                        }`}>
                                             {serviceSubLinks.map((sub) => {
                                                 const isSubActive = isServicesActive && activeSubpage === sub.key;
                                                 return (
@@ -268,7 +302,9 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                                         className={`block px-3 py-2 rounded-lg text-xs font-medium transition ${
                                                             isSubActive
                                                                 ? 'text-[#BD6E37] font-bold bg-white/70'
-                                                                : 'text-[#4D2E1E] hover:bg-white/50'
+                                                                : darkMode
+                                                                    ? 'text-[#FAF1E6] hover:bg-white/10'
+                                                                    : 'text-[#4D2E1E] hover:bg-white/50'
                                                         }`}
                                                     >
                                                         {sub.label}
@@ -287,10 +323,14 @@ export default function Navbar({ routes = {}, activePage = 'home', activeSubpage
                                 key={item.key}
                                 href={item.href}
                                 onClick={() => setMobileOpen(false)}
-                                className={`block px-4 py-2.5 rounded-xl text-sm font-medium ${
+                                className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition ${
                                     isActive
-                                        ? 'bg-[#3D1E0F] text-white font-bold'
-                                        : 'text-[#5C4233] hover:bg-[#EADBCE]'
+                                        ? darkMode
+                                            ? 'bg-[#BD6E37] text-white font-bold'
+                                            : 'bg-[#3D1E0F] text-white font-bold'
+                                        : darkMode
+                                            ? 'text-[#FAF1E6] hover:bg-[#251A12]'
+                                            : 'text-[#5C4233] hover:bg-[#EADBCE]'
                                 }`}
                             >
                                 {item.label}

@@ -9,42 +9,191 @@
     --font-serif: 'Playfair Display', Georgia, serif;
 }
 
-/* Dark Mode Theme Support */
+/* ==========================================================================
+   TRUE DARK MODE STYLING (MENYELURUH, SOLID & SANGAT ELEGAN)
+   ========================================================================== */
 html.dark {
     color-scheme: dark;
 }
 
+/* Base Body & Layouts */
+html.dark,
 html.dark body {
-    background-color: #1A0D06 !important;
-    color: #FAF1E6 !important;
+    background-color: #0F0B08 !important;
+    color: #F8F1EB !important;
 }
 
 html.dark main {
-    background-color: #1F0F07 !important;
+    background-color: #0F0B08 !important;
+    color: #F8F1EB !important;
 }
 
-html.dark .bg-\[\#BD6E37\] {
-    background-color: #723714 !important;
+/* Hero Section & Backgrounds yang sebelumnya Coklat Terang */
+html.dark .bg-\[\#BD6E37\],
+html.dark .bg-\[\#BD6E44\],
+html.dark .bg-\[\#C47247\],
+html.dark [class*="bg-[#BD6E37]"],
+html.dark [class*="bg-[#BD6E44]"] {
+    background-color: #17110D !important;
+    background-image: none !important;
 }
 
-html.dark .bg-\[\#EFE1CF\] {
-    background-color: #2B160C !important;
-    border-color: #422213 !important;
-    color: #FAF1E6 !important;
+/* Header & Navbar */
+html.dark header,
+html.dark nav,
+html.dark .sticky {
+    background-color: rgba(17, 12, 9, 0.96) !important;
+    border-color: #2B1D15 !important;
 }
 
+/* Link Teks di Navbar & Menu */
+html.dark header a,
+html.dark nav a,
+html.dark header button,
+html.dark nav button {
+    color: #F8F1EB !important;
+}
+
+html.dark header a:hover,
+html.dark nav a:hover,
+html.dark header button:hover,
+html.dark nav button:hover {
+    color: #E89E6C !important;
+}
+
+/* Dropdown Menu & Mobile Menu */
+html.dark .absolute.top-full > div,
+html.dark #mobile-menu,
+html.dark header .lg\:hidden {
+    background-color: #1A140F !important;
+    border-color: #2E221A !important;
+}
+
+/* Container, Card & Box Krem/Putih (Semua diubah jadi Dark Cards Mewah) */
+html.dark .bg-white,
+html.dark .bg-slate-50,
 html.dark .bg-\[\#FAF1E6\],
 html.dark .bg-\[\#FAF3EB\],
-html.dark .bg-\[\#FAF3EA\] {
-    background-color: #381D10 !important;
-    color: #FAF1E6 !important;
-    border-color: #4A2615 !important;
+html.dark .bg-\[\#FAF3EA\],
+html.dark .bg-\[\#F5EFE6\],
+html.dark .bg-\[\#EFE1CF\],
+html.dark .bg-\[\#FBF4EC\],
+html.dark .bg-\[\#FDF8F3\],
+html.dark .bg-\[\#FDF7F0\],
+html.dark .bg-\[\#FAF7F2\],
+html.dark [class*="bg-[#FAF1E6]"],
+html.dark [class*="bg-[#FAF3EB]"],
+html.dark [class*="bg-[#F5EFE6]"],
+html.dark [class*="bg-[#EFE1CF]"],
+html.dark [class*="bg-[#FBF4EC]"],
+html.dark [class*="bg-[#FDF8F3]"],
+html.dark [class*="bg-[#FAF7F2]"] {
+    background-color: #18120D !important;
+    border-color: #2B1E16 !important;
+    color: #F8F1EB !important;
 }
 
+/* Card Border & Dividers */
+html.dark .border-\[\#DECBB8\],
+html.dark .border-\[\#E7DAC9\],
+html.dark .border-\[\#EADBCC\],
+html.dark .border-\[\#E2D2BE\],
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-stone-200,
+html.dark .border-stone-300,
+html.dark .divide-slate-100,
+html.dark .divide-stone-200 {
+    border-color: #2B1E16 !important;
+}
+
+/* Headings & Teks Coklat Tua -> Berubah Jadi Putih Gading Kontras Tinggi */
+html.dark .text-\[\#38190C\],
+html.dark .text-\[\#3D1E0F\],
+html.dark .text-\[\#2A1307\],
+html.dark .text-\[\#4A2411\],
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-stone-900,
+html.dark .text-stone-800,
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4 {
+    color: #F8F1EB !important;
+}
+
+/* Muted & Secondary Text */
+html.dark .text-\[\#6E5343\],
+html.dark .text-\[\#6E4F3E\],
+html.dark .text-\[\#5C4233\],
+html.dark .text-slate-500,
+html.dark .text-slate-600,
+html.dark .text-stone-500,
+html.dark .text-stone-600 {
+    color: #B5A496 !important;
+}
+
+/* Input Fields & Search Bars di Dark Mode */
+html.dark input,
+html.dark textarea,
+html.dark select {
+    background-color: #211914 !important;
+    border-color: #382A20 !important;
+    color: #F8F1EB !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #7D6B5F !important;
+}
+
+/* Sub-pills, Badges & Filter Buttons */
+html.dark .bg-\[\#E2D2BE\],
+html.dark .bg-\[\#EADBCE\],
+html.dark .bg-\[\#FDF7F0\] {
+    background-color: #261D17 !important;
+    border-color: #382A20 !important;
+    color: #F8F1EB !important;
+}
+
+/* Footer di Dark Mode */
 html.dark footer {
-    background-color: #130904 !important;
-    border-color: #2C1408 !important;
-    color: #EBDCCE !important;
+    background-color: #0A0705 !important;
+    border-color: #1F150F !important;
+    color: #B5A496 !important;
 }
 
+html.dark footer a {
+    color: #B5A496 !important;
+}
 
+html.dark footer a:hover {
+    color: #E89E6C !important;
+}
+
+/* Admin Panel Khusus di Dark Mode */
+html.dark #admin-sidebar {
+    background-color: #160F0A !important;
+    border-right-color: #261911 !important;
+}
+
+html.dark #admin-sidebar a {
+    color: #E8D8CC !important;
+}
+
+html.dark #admin-sidebar a:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #FFFFFF !important;
+}
+
+/* Chatbot Floating Widget di Dark Mode */
+html.dark #chatbot-window {
+    background-color: #17110C !important;
+    border-color: #2E221A !important;
+    color: #F8F1EB !important;
+}
+
+html.dark #chatbot-messages {
+    background-color: #120D09 !important;
+}
