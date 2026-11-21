@@ -3,61 +3,34 @@
 @section('title', $news->title)
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Breadcrumbs -->
-    <nav class="flex items-center space-x-2 text-xs text-slate-500 mb-6">
-        <a href="{{ route('home') }}" class="hover:text-emerald-600">Beranda</a>
-        <span>/</span>
-        <a href="{{ route('news.index') }}" class="hover:text-emerald-600">Berita</a>
-        <span>/</span>
-        <!-- Mengambil judul dari database -->
-        <span class="text-slate-800 font-semibold truncate">{{ $news->title }}</span>
-    </nav>
+@php
+    $newsData = [
+        'id' => $news->id ?? null,
+        'title' => $news->title ?? '',
+        'slug' => $news->slug ?? '',
+        'category' => $news->category ?? 'Warta Desa',
+        'published_at' => $news->published_at ? \Carbon\Carbon::parse($news->published_at)->translatedFormat('d F Y') : null,
+        'author_name' => $news->author_name ?? 'Pemerintah Desa Ngadiluwih',
+        'read_time' => $news->read_time ?? '2 menit membaca',
+        'content' => $news->content ?? '',
+        'image_url' => $news->image_url ?? null,
+    ];
 
-    <article class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
-        <div class="flex items-center space-x-3 text-xs text-slate-400 mb-4">
-            <!-- Mengambil Kategori dari database -->
-            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">{{ $news->category }}</span>
-            <span>•</span>
-            <!-- Mengambil Tanggal dari database (format tanggal Indonesia) -->
-            <span>Dipublikasikan: {{ \Carbon\Carbon::parse($news->published_at)->translatedFormat('d F Y') }}</span>
-            <span>•</span>
-            <!-- Mengambil Nama Penulis -->
-            <span>Oleh: {{ $news->author_name }}</span>
-        </div>
+    $initialProps = [
+        'routes' => [
+            'home' => route('home'),
+            'profile' => route('profile'),
+            'newsIndex' => route('news.index'),
+            'umkmIndex' => route('umkm.index'),
+            'servicesGuides' => route('services.guides'),
+            'servicesStoreRegister' => route('services.store-register'),
+            'servicesFeedback' => route('services.feedback'),
+            'demographics' => route('demographics'),
+            'login' => route('login'),
+        ],
+        'news' => $newsData,
+    ];
+@endphp
 
-        <!-- Mengambil Judul dari database -->
-        <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
-            {{ $news->title }}
-        </h1>
-
-        @if($news->image_url)
-            <div class="my-8 w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                <img src="{{ $news->image_url }}" alt="{{ $news->title }}" class="w-full max-h-[500px] object-cover">
-            </div>
-        @else
-            <div class="my-8 w-full h-72 sm:h-96 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-6xl shadow-inner">
-                📰
-            </div>
-        @endif
-
-        <!-- Mengambil Isi Berita dari database. -->
-        <div class="prose max-w-none text-slate-700 text-sm leading-relaxed space-y-4">
-            {!! nl2br(e($news->content)) !!}
-        </div>
-
-        <div class="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <a href="{{ route('news.index') }}" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition inline-flex items-center">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Kembali ke Daftar Berita
-            </a>
-            <div class="flex items-center space-x-2 text-xs text-slate-500">
-                <span>Bagikan:</span>
-                <button type="button" onclick="navigator.clipboard.writeText(window.location.href); const el = this; const old = el.innerText; el.innerText = 'Tersalin!'; setTimeout(() => el.innerText = old, 2000);" class="px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition font-medium">Salin Tautan</button>
-            </div>
-        </div>
-    </article>
-</div>
+<div id="news-detail-root" data-props='@json($initialProps)'></div>
 @endsection

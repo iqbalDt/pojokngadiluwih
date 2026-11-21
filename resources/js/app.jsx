@@ -8,6 +8,8 @@ import GuidesPage from './components/layanan/GuidesPage';
 import StoreRegisterPage from './components/layanan/StoreRegisterPage';
 import FeedbackPage from './components/layanan/FeedbackPage';
 import DemografiPage from './components/demografi/DemografiPage';
+import UmkmDetailPage from './components/umkm/UmkmDetailPage';
+import NewsDetailPage from './components/berita/NewsDetailPage';
 import AdminUmkmPage from './components/admin/AdminUmkmPage';
 import AdminServicesPage from './components/admin/AdminServicesPage';
 
@@ -43,5 +45,7 @@ mountComponent('guides-root', GuidesPage, 'Panduan Surat');
 mountComponent('store-register-root', StoreRegisterPage, 'Daftar Toko UMKM');
 mountComponent('feedback-root', FeedbackPage, 'Aspirasi & Pengaduan');
 mountComponent('demografi-root', DemografiPage, 'Demografi');
+mountComponent('umkm-detail-root', UmkmDetailPage, 'Detail UMKM');
+mountComponent('news-detail-root', NewsDetailPage, 'Detail Berita');
 mountComponent('admin-umkm-root', AdminUmkmPage, 'Admin UMKM');
 mountComponent('admin-services-root', AdminServicesPage, 'Admin Layanan & Aspirasi');
