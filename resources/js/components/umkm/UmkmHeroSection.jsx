@@ -11,9 +11,10 @@ export default function UmkmHeroSection({
 
     const categories = [
         { label: 'Semua Kategori', value: '' },
-        { label: 'Kuliner', value: 'Kuliner' },
-        { label: 'Pertanian & Bibit', value: 'Pertanian' },
-        { label: 'Kerajinan tangan', value: 'Kerajinan Tangan' },
+        { label: 'Kuliner & Camilan', value: 'Kuliner' },
+        { label: 'Pertanian & Hasil Alam', value: 'Pertanian' },
+        { label: 'Kerajinan Tangan', value: 'Kerajinan' },
+        { label: 'Jasa & Servis', value: 'Jasa' },
     ];
 
     const handleSubmit = (e) => {

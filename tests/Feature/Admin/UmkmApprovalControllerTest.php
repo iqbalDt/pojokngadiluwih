@@ -50,7 +50,7 @@ class UmkmApprovalControllerTest extends TestCase
         $this->actingAs(User::factory()->make())
             ->get(route('admin.umkm.index'))
             ->assertOk()
-            ->assertSee('/admin/umkm/3e23ace109ba4d699091/approve', false);
+            ->assertSee('3e23ace109ba4d699091');
     }
 
     public function test_admin_umkm_page_shows_pending_applications_only(): void
@@ -79,7 +79,7 @@ class UmkmApprovalControllerTest extends TestCase
             ->assertOk()
             ->assertSee('Toko Menunggu')
             ->assertDontSee('Toko Disetujui')
-            ->assertSee('Setujui');
+            ->assertViewHas('currentStatus', 'pending');
     }
 
     public function test_admin_can_approve_a_pending_umkm_application(): void
@@ -91,7 +91,7 @@ class UmkmApprovalControllerTest extends TestCase
 
         $this->actingAs(User::factory()->make())
             ->post(route('admin.umkm.approve', 'pending-doc'))
-            ->assertRedirect(route('admin.umkm.index'))
+            ->assertRedirect(route('admin.umkm.index', ['status' => 'approved']))
             ->assertSessionHas('success');
 
         $this->assertSame('approved', $firebase->documents['pending-doc']['status']);
@@ -106,7 +106,7 @@ class UmkmApprovalControllerTest extends TestCase
 
         $this->actingAs(User::factory()->make())
             ->post(route('admin.umkm.reject', 'pending-doc'))
-            ->assertRedirect(route('admin.umkm.index'))
+            ->assertRedirect(route('admin.umkm.index', ['status' => 'rejected']))
             ->assertSessionHas('success');
 
         $this->assertSame('rejected', $firebase->documents['pending-doc']['status']);
@@ -152,6 +152,49 @@ class UmkmApprovalControllerTest extends TestCase
             ->assertSee('Toko Tatakan')
             ->assertDontSee('Toko Menunggu')
             ->assertSee('Rp 15.000');
+    }
+
+    public function test_admin_can_view_rejected_umkm_list(): void
+    {
+        $firebase = new FakeUmkmApprovalFirebaseService([
+            'pending-doc' => ['name' => 'Toko Menunggu', 'status' => 'pending'],
+            'approved-doc' => ['name' => 'Toko Aktif', 'status' => 'approved'],
+            'rejected-doc' => ['name' => 'Toko Ditolak', 'status' => 'rejected'],
+        ]);
+        $this->app->instance(FirebaseService::class, $firebase);
+
+        $this->actingAs(User::factory()->make())
+            ->get(route('admin.umkm.index', ['status' => 'rejected']))
+            ->assertOk()
+            ->assertSee('Toko Ditolak')
+            ->assertDontSee('Toko Menunggu')
+            ->assertDontSee('Toko Aktif');
+    }
+
+    public function test_admin_can_view_all_umkm_statuses(): void
+    {
+        $firebase = new FakeUmkmApprovalFirebaseService([
+            'pending-doc' => ['name' => 'Toko Menunggu', 'status' => 'pending'],
+            'approved-doc' => ['name' => 'Toko Aktif', 'status' => 'approved'],
+            'rejected-doc' => ['name' => 'Toko Ditolak', 'status' => 'rejected'],
+        ]);
+        $this->app->instance(FirebaseService::class, $firebase);
+
+        $this->actingAs(User::factory()->make())
+            ->get(route('admin.umkm.index', ['status' => 'all']))
+            ->assertOk()
+            ->assertSee('Toko Menunggu')
+            ->assertSee('Toko Aktif')
+            ->assertSee('Toko Ditolak');
+    }
+
+    public function test_admin_umkm_list_rejects_unknown_status_filters(): void
+    {
+        $this->app->instance(FirebaseService::class, new FakeUmkmApprovalFirebaseService);
+
+        $this->actingAs(User::factory()->make())
+            ->get(route('admin.umkm.index', ['status' => 'unknown']))
+            ->assertNotFound();
     }
 
     public function test_admin_can_view_edit_umkm_page(): void

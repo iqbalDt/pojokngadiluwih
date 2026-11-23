@@ -104,8 +104,8 @@
                         Dusun <span class="text-rose-500">*</span>
                     </label>
                     <select id="dusun" name="dusun" required class="w-full px-4 py-3 rounded-2xl border border-[#EADBCC] dark:border-[#2A1E17] text-xs sm:text-sm text-stone-800 dark:text-[#F8F1EB] focus:outline-none focus:border-[#C07044] bg-[#FAF4ED] dark:bg-[#221A14] transition">
-                        @foreach(['Krajan', 'Wonorejo', 'Sukorejo', 'Karangrejo'] as $ds)
-                            <option value="{{ $ds }}" {{ old('dusun', $umkm->dusun) === $ds ? 'selected' : '' }}>
+                        @foreach(['Ngadiluwih', 'Ngadiloyo', 'Kandang Sapi'] as $ds)
+                            <option value="{{ $ds }}" {{ old('dusun', str_replace('Dusun ', '', $umkm->dusun)) === $ds ? 'selected' : '' }}>
                                 Dusun {{ $ds }}
                             </option>
                         @endforeach

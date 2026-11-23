@@ -479,16 +479,10 @@ class FirebaseService
     public function getApprovedUmkmsPaginated(?string $search = null, ?string $category = null, int $perPage = 12): LengthAwarePaginator
     {
         $client = $this->firestoreOrFail();
-        $cacheKey = 'approved_umkms_'.md5((string) $category);
+        $cacheKey = 'approved_umkms_all';
 
-        $rows = $this->rememberFirestore($cacheKey, function () use ($client, $category) {
-            $query = $client->collection('umkms')->where('status', '=', 'approved');
-
-            if ($category) {
-                $query = $query->where('category', '=', $category);
-            }
-
-            $docs = $query->documents();
+        $rows = $this->rememberFirestore($cacheKey, function () use ($client) {
+            $docs = $client->collection('umkms')->where('status', '=', 'approved')->documents();
             $list = [];
 
             foreach ($docs as $doc) {
@@ -502,12 +496,24 @@ class FirebaseService
 
         $collection = collect($rows)->map(fn (array $row) => $this->hydrateUmkm($row['id'], $row['data']));
 
-        if ($search) {
+        if ($category && trim($category) !== '') {
+            $catNeedle = mb_strtolower(trim($category));
+            $collection = $collection->filter(function ($umkm) use ($catNeedle) {
+                $itemCat = mb_strtolower(trim((string) ($umkm->category ?? '')));
+
+                return $itemCat === $catNeedle
+                    || str_contains($itemCat, $catNeedle)
+                    || str_contains($catNeedle, $itemCat);
+            });
+        }
+
+        if ($search && trim($search) !== '') {
             $needle = mb_strtolower(trim($search));
             $collection = $collection->filter(function ($umkm) use ($needle) {
                 return str_contains(mb_strtolower($umkm->name ?? ''), $needle)
                     || str_contains(mb_strtolower($umkm->description ?? ''), $needle)
-                    || str_contains(mb_strtolower($umkm->dusun ?? ''), $needle);
+                    || str_contains(mb_strtolower($umkm->dusun ?? ''), $needle)
+                    || str_contains(mb_strtolower($umkm->category ?? ''), $needle);
             });
         }
 

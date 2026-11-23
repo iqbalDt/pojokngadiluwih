@@ -18,6 +18,8 @@ class UmkmApprovalController extends Controller
     public function index(Request $request, FirebaseService $firebase): View
     {
         $status = $request->query('status', 'pending');
+        abort_unless(is_string($status) && in_array($status, ['pending', 'approved', 'rejected', 'all'], true), 404);
+
         $umkms = $firebase->getAdminUmkmsPaginated(15, $status);
         $metrics = $firebase->getDashboardMetrics();
 
@@ -107,7 +109,8 @@ class UmkmApprovalController extends Controller
     {
         abort_unless($firebase->updateUmkmStatus($id, 'approved'), 404);
 
-        return redirect()->route('admin.umkm.index')->with('success', 'Pengajuan usaha berhasil disetujui dan kini tayang di katalog publik.');
+        return redirect()->route('admin.umkm.index', ['status' => 'approved'])
+            ->with('success', 'Pengajuan usaha berhasil disetujui dan kini tayang di katalog publik.');
     }
 
     /**
@@ -117,6 +120,7 @@ class UmkmApprovalController extends Controller
     {
         abort_unless($firebase->updateUmkmStatus($id, 'rejected'), 404);
 
-        return redirect()->route('admin.umkm.index')->with('success', 'Pengajuan usaha telah ditolak.');
+        return redirect()->route('admin.umkm.index', ['status' => 'rejected'])
+            ->with('success', 'Pengajuan usaha telah ditolak.');
     }
 }

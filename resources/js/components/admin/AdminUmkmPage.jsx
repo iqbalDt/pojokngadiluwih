@@ -9,8 +9,15 @@ export default function AdminUmkmPage({ initialData = {} }) {
     const csrfToken = initialData.csrfToken || (typeof document !== 'undefined' ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') : '') || '';
     const routes = initialData.routes || {};
 
-    const [statusFilter, setStatusFilter] = useState(initialStatus);
+    const statusFilter = initialStatus;
     const [searchQuery, setSearchQuery] = useState('');
+    const statusUrl = (status) => {
+        const url = new URL(routes.index || window.location.href, window.location.origin);
+        url.searchParams.set('status', status);
+        url.searchParams.delete('page');
+
+        return `${url.pathname}${url.search}`;
+    };
 
     // Filter daftar UMKM berdasarkan status tab dan search query secara realtime
     const filteredUmkms = useMemo(() => {
@@ -24,14 +31,20 @@ export default function AdminUmkmPage({ initialData = {} }) {
 
             // Search Query
             const q = searchQuery.toLowerCase().trim();
-            const matchesSearch =
-                q === '' ||
-                (item.name && item.name.toLowerCase().includes(q)) ||
-                (item.owner_name && item.owner_name.toLowerCase().includes(q)) ||
-                (item.category && item.category.toLowerCase().includes(q)) ||
-                (item.dusun && item.dusun.toLowerCase().includes(q)) ||
-                (item.products && item.products.toLowerCase().includes(q)) ||
-                (item.whatsapp && item.whatsapp.toLowerCase().includes(q));
+            const searchableText = [
+                item.name,
+                item.owner_name,
+                item.category,
+                item.dusun,
+                item.products,
+                item.products_list,
+                item.whatsapp,
+            ]
+                .flatMap((value) => Array.isArray(value) ? value : [value])
+                .filter((value) => value !== null && value !== undefined)
+                .join(' ')
+                .toLowerCase();
+            const matchesSearch = q === '' || searchableText.includes(q);
 
             return matchesStatus && matchesSearch;
         });
@@ -101,9 +114,9 @@ export default function AdminUmkmPage({ initialData = {} }) {
                 {/* Baris Bawah: Pills Filter Status Sesuai Gambar 1 */}
                 <div className="flex flex-wrap items-center gap-2.5 pt-1">
                     {/* Menunggu Verifikasi */}
-                    <button
-                        type="button"
-                        onClick={() => setStatusFilter('pending')}
+                    <a
+                        href={statusUrl('pending')}
+                        aria-current={statusFilter === 'pending' ? 'page' : undefined}
                         className={`px-5 py-2.5 rounded-2xl text-xs font-semibold transition duration-150 cursor-pointer ${
                             statusFilter === 'pending'
                                 ? 'bg-[#FCE8D3] text-[#B45309] border border-[#FCD34D] shadow-sm'
@@ -111,12 +124,12 @@ export default function AdminUmkmPage({ initialData = {} }) {
                         }`}
                     >
                         Menunggu Verifikasi ({pendingCount})
-                    </button>
+                    </a>
 
                     {/* Aktif di Publik */}
-                    <button
-                        type="button"
-                        onClick={() => setStatusFilter('approved')}
+                    <a
+                        href={statusUrl('approved')}
+                        aria-current={statusFilter === 'approved' ? 'page' : undefined}
                         className={`px-5 py-2.5 rounded-2xl text-xs font-semibold transition duration-150 cursor-pointer ${
                             statusFilter === 'approved'
                                 ? 'bg-[#D1FAE5] text-[#065F46] border border-[#A7F3D0] shadow-sm'
@@ -124,12 +137,12 @@ export default function AdminUmkmPage({ initialData = {} }) {
                         }`}
                     >
                         Aktif di Publik ({approvedCount})
-                    </button>
+                    </a>
 
                     {/* Ditolak */}
-                    <button
-                        type="button"
-                        onClick={() => setStatusFilter('rejected')}
+                    <a
+                        href={statusUrl('rejected')}
+                        aria-current={statusFilter === 'rejected' ? 'page' : undefined}
                         className={`px-5 py-2.5 rounded-2xl text-xs font-semibold transition duration-150 cursor-pointer ${
                             statusFilter === 'rejected'
                                 ? 'bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA] shadow-sm'
@@ -137,12 +150,12 @@ export default function AdminUmkmPage({ initialData = {} }) {
                         }`}
                     >
                         Ditolak
-                    </button>
+                    </a>
 
                     {/* Semua Toko */}
-                    <button
-                        type="button"
-                        onClick={() => setStatusFilter('all')}
+                    <a
+                        href={statusUrl('all')}
+                        aria-current={statusFilter === 'all' ? 'page' : undefined}
                         className={`px-5 py-2.5 rounded-2xl text-xs font-semibold transition duration-150 cursor-pointer ${
                             statusFilter === 'all'
                                 ? 'bg-[#38190C] text-white shadow-sm'
@@ -150,7 +163,7 @@ export default function AdminUmkmPage({ initialData = {} }) {
                         }`}
                     >
                         Semua Toko
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -275,13 +288,14 @@ export default function AdminUmkmPage({ initialData = {} }) {
                                                 </form>
                                             )}
 
-                                            {/* Tombol Edit */}
-                                            <a
-                                                href={routes.edit ? routes.edit.replace(':id', item.id) : `/admin/umkm/${item.id}/edit`}
-                                                className="px-3 py-1.5 rounded-xl bg-[#FAF4ED] dark:bg-[#1E1712] hover:bg-[#F3E7DA] dark:hover:bg-[#281F18] border border-[#EADBCC] dark:border-[#2A1E17] text-[#38190C] dark:text-[#F8F1EB] font-semibold text-xs transition inline-block shadow-sm"
-                                            >
-                                                Edit
-                                            </a>
+                                            {item.status === 'approved' && (
+                                                <a
+                                                    href={routes.edit ? routes.edit.replace(':id', item.id) : `/admin/umkm/${item.id}/edit`}
+                                                    className="px-3 py-1.5 rounded-xl bg-[#FAF4ED] dark:bg-[#1E1712] hover:bg-[#F3E7DA] dark:hover:bg-[#281F18] border border-[#EADBCC] dark:border-[#2A1E17] text-[#38190C] dark:text-[#F8F1EB] font-semibold text-xs transition inline-block shadow-sm"
+                                                >
+                                                    Edit
+                                                </a>
+                                            )}
 
                                             {/* Tombol Hapus (Teks Merah Tegas dari Gambar 2) */}
                                             <form

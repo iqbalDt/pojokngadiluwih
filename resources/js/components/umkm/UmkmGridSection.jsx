@@ -1,14 +1,13 @@
 import React from 'react';
-import { User, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { User, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const FALLBACK_UMKM = [
     {
         id: 'fb-1',
         name: 'Sambal Pecel Khas Kediri',
         category: 'Kuliner',
-        dusun: 'Dusun Sukorejo',
+        dusun: 'Dusun Ngadiluwih',
         description: 'Bumbu pecel otentik, gurih pedas siap seduh air hangat. Awet di simpan hingga 3 bulan di dalam freezer.',
-        price: 'Rp. 25.000 / 500gr',
         image_url: null,
         slug: 'sambal-pecel-khas-kediri-1',
         show_url: '#',
@@ -18,9 +17,8 @@ const FALLBACK_UMKM = [
         id: 'fb-2',
         name: 'Sambal Pecel Khas Kediri',
         category: 'Kuliner',
-        dusun: 'Dusun Sukorejo',
+        dusun: 'Dusun Ngadiloyo',
         description: 'Bumbu pecel otentik, gurih pedas siap seduh air hangat. Awet di simpan hingga 3 bulan di dalam freezer.',
-        price: 'Rp. 25.000 / 500gr',
         image_url: null,
         slug: 'sambal-pecel-khas-kediri-2',
         show_url: '#',
@@ -30,9 +28,8 @@ const FALLBACK_UMKM = [
         id: 'fb-3',
         name: 'Sambal Pecel Khas Kediri',
         category: 'Kuliner',
-        dusun: 'Dusun Sukorejo',
+        dusun: 'Dusun Kandang Sapi',
         description: 'Bumbu pecel otentik, gurih pedas siap seduh air hangat. Awet di simpan hingga 3 bulan di dalam freezer.',
-        price: 'Rp. 25.000 / 500gr',
         image_url: null,
         slug: 'sambal-pecel-khas-kediri-3',
         show_url: '#',
@@ -42,9 +39,8 @@ const FALLBACK_UMKM = [
         id: 'fb-4',
         name: 'Sambal Pecel Khas Kediri',
         category: 'Kuliner',
-        dusun: 'Dusun Sukorejo',
+        dusun: 'Dusun Ngadiluwih',
         description: 'Bumbu pecel otentik, gurih pedas siap seduh air hangat. Awet di simpan hingga 3 bulan di dalam freezer.',
-        price: 'Rp. 25.000 / 500gr',
         image_url: null,
         slug: 'sambal-pecel-khas-kediri-4',
         show_url: '#',
@@ -111,33 +107,18 @@ export default function UmkmGridSection({
                                     </h3>
 
                                     {/* Description */}
-                                    <p className="font-serif text-xs text-[#4E3120] leading-relaxed line-clamp-3 mb-2.5">
+                                    <p className="font-serif text-xs text-[#4E3120] leading-relaxed line-clamp-3 mb-2">
                                         {item.description}
                                     </p>
-
-                                    {/* Price */}
-                                    <div className="font-serif font-bold text-xs sm:text-sm text-[#2A1307] mb-3">
-                                        {item.price || 'Rp. 25.000 / 500gr'}
-                                    </div>
                                 </div>
 
-                                {/* Bottom Actions Row */}
-                                <div className="pt-2 flex items-center justify-between">
+                                {/* Bottom Action */}
+                                <div className="pt-3 border-t border-[#E2CEB9]/70">
                                     <a
                                         href={showUrl}
-                                        className="font-serif text-xs text-[#4E3120] hover:text-[#BD6E37] transition font-medium"
+                                        className="w-full inline-flex items-center justify-center py-2 px-4 rounded-xl bg-[#2A1307] hover:bg-[#3D1E0F] text-white font-serif text-xs font-semibold shadow-xs transition duration-150"
                                     >
-                                        Detail produk
-                                    </a>
-
-                                    <a
-                                        href={waUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2A1307] text-[11px] font-semibold text-white hover:bg-[#3D1E0F] transition shadow-sm"
-                                    >
-                                        <MessageCircle className="w-3 h-3 fill-current" />
-                                        <span>Pesan via WA</span>
+                                        <span>Lihat Detail Toko</span>
                                     </a>
                                 </div>
                             </article>

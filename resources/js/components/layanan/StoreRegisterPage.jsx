@@ -220,6 +220,20 @@ export default function StoreRegisterPage({ initialData = {} }) {
                                 />
                             </div>
 
+                            {/* Foto Produk / Logo Usaha (Opsional) */}
+                            <div>
+                                <label className="block text-[11px] sm:text-xs font-serif font-bold uppercase tracking-wider text-[#2A1307] mb-1.5">
+                                    FOTO PRODUK / LOGO USAHA (OPSIONAL)
+                                </label>
+                                <input
+                                    type="file"
+                                    name="image"
+                                    accept="image/jpeg,image/png,image/jpg,image/webp"
+                                    className="w-full px-4 py-2 rounded-xl bg-[#DECBB5]/50 border border-[#CBB39C] text-xs text-[#2A1307] file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-serif file:font-semibold file:bg-[#BD6E37] file:text-white hover:file:bg-[#A85B28] cursor-pointer transition"
+                                />
+                                <p className="text-[11px] text-[#7A5B45] font-serif mt-1">Format: JPG, JPEG, PNG, WEBP. Maksimal 2MB.</p>
+                            </div>
+
                             {/* Submit Button */}
                             <div className="pt-3">
                                 <button

@@ -157,7 +157,7 @@ export default function DemografiPage({ initialData = {} }) {
                                     {/* Embedded Map of Ngadiluwih area */}
                                     <iframe
                                         title="Peta Wilayah Ngadiluwih Kediri"
-                                        src="https://www.openstreetmap.org/export/embed.html?bbox=111.965%2C-7.935%2C112.035%2C-7.875&layer=mapnik&marker=-7.898%2C111.996"
+                                        src="https://www.openstreetmap.org/export/embed.html?bbox=111.986980%2C-7.898416%2C111.990980%2C-7.896016&layer=mapnik&marker=-7.897216%2C111.988980"
                                         className="w-full h-full min-h-[360px] sm:min-h-[420px] border-0"
                                         loading="lazy"
                                     />

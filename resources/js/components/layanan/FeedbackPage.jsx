@@ -189,20 +189,6 @@ export default function FeedbackPage({ initialData = {} }) {
                                 />
                             </div>
 
-                            {/* Saran (Opsional) */}
-                            <div>
-                                <label className="block text-[11px] sm:text-xs font-serif font-bold uppercase tracking-wider text-[#2A1307] mb-1.5">
-                                    SARAN (OPSIONAL)
-                                </label>
-                                <textarea
-                                    name="suggestion"
-                                    rows={3}
-                                    defaultValue={oldInput.suggestion || ''}
-                                    placeholder="Usulan solusi yang ingin Anda sampaikan (opsional)..."
-                                    className="w-full px-4 py-2.5 rounded-xl bg-[#DECBB5]/50 border border-[#CBB39C] text-xs text-[#2A1307] placeholder-[#8C6D58] focus:bg-white focus:outline-none focus:border-[#2A1307] transition"
-                                />
-                            </div>
-
                             {/* Submit Button */}
                             <div className="pt-3">
                                 <button

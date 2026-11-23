@@ -9,7 +9,7 @@
         'name' => $umkm->name ?? '',
         'slug' => $umkm->slug ?? '',
         'category' => $umkm->category ?? 'Kuliner & Camilan',
-        'dusun' => !empty($umkm->dusun) ? (str_starts_with($umkm->dusun, 'Dusun ') ? str_replace('Dusun ', '', $umkm->dusun) : $umkm->dusun) : 'Krajan',
+        'dusun' => !empty($umkm->dusun) ? (str_starts_with($umkm->dusun, 'Dusun ') ? str_replace('Dusun ', '', $umkm->dusun) : $umkm->dusun) : 'Ngadiluwih',
         'owner_name' => $umkm->owner_name ?? '',
         'address' => $umkm->address ?? '',
         'description' => $umkm->description ?? '',
